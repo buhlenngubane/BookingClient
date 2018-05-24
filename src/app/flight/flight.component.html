@@ -24,8 +24,8 @@
         <input type="text" name="secondSearch" placeholder="Placeholder" [formControl]="secondSearch" 
         [matAutocomplete]="auto2"  (keyup)="searchTerm$2.next($event.target.value)" class="Width" >
         <mat-autocomplete #auto2="matAutocomplete">
-          <mat-option *ngFor="let result of result | slice:0:9" [value]="result.destination">
-            {{ result.destination }}
+          <mat-option *ngFor="let result of result2 | slice:0:9" [value]="result.destination1">
+            {{ result.destination1 }}
           </mat-option>
         </mat-autocomplete>
       <!--</mat-form-field>-->
@@ -51,6 +51,17 @@
                   {{data}}
                 </mat-option>
               </mat-select>
+              
+              <!--<mat-select placeholder="FlightDetails" [formControl]="toppings" panelClass="{{panel.value}}">
+                  <mat-optgroup *ngFor="let data of data"  [label]="data"
+                                [disabled]="data.disabled">
+                  <mat-option [value]="data"><input type="number"></mat-option>
+                  </mat-optgroup>
+                </mat-select>-->
+                <!--<input type="number" min = "1" [formControl]=toppings>
+                <mat-select placeholder="Toppings" [formControl]="toppings" multiple>
+                    <mat-option [value]="toppingList[0]"></mat-option>
+                  </mat-select>-->
             </mat-form-field>
           </mat-list-item>
           <mat-list-item>

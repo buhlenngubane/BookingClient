@@ -158,13 +158,13 @@ export class AccommodationComponent implements OnInit {
     }
     this.minDate2 = this.dateTo;
 
-    this.serviceSearch.CommonShare.dateFrom=this.dateForm;
+    /*this.serviceSearch.CommonShare.dateFrom=this.dateForm;
     this.serviceSearch.CommonShare.dateTo=this.dateTo;
     this.serviceSearch.CommonShare.diff=this.diff;
     this.serviceSearch.CommonShare.max=this.maxDate;
     this.serviceSearch.CommonShare.min=this.minDate;
     this.serviceSearch.CommonShare.max2=this.maxDate2;
-    this.serviceSearch.CommonShare.min2=this.minDate2;
+    this.serviceSearch.CommonShare.min2=this.minDate2;*/
     console.log(this.datePipe.transform(this.dateForm,"yyyy-MM-dd"));
     //this.dateForm.disable();
     //this.dateTo.disable();

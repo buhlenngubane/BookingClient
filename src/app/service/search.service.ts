@@ -7,7 +7,7 @@ import 'rxjs/add/operator/switchMap';
 import { retryWhen, map, mergeMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { Property, Flight } from './common-interface';
+import { Property, Flight, FlightPic } from './common-interface';
 import { Subject } from 'rxjs/Subject';
 import { UsersService } from './user.service';
 import { DatePipe } from '@angular/common';
@@ -55,13 +55,16 @@ export class SearchService {
   }
   firstSearch = "";
   secondSearch = "";
+  details:Flight[];
+  //flightPics:FlightPic[];
 
   constructor(
     private http: HttpClient,
     private service: UsersService,
     private datePipe: DatePipe
   ) {
-    console.log("Is it undefined? " + this.panel);
+    this.property as Property[];
+    this.details as Flight[];
   }
 
   search(terms: Observable<string>, id: number) {
@@ -108,12 +111,34 @@ export class SearchService {
     return this.http.get(environment.base_url + `/Properties/GetProperties/${accId}`);
   }
 
-  SearchFlights(str:Flight): Observable<any> {
-    /*this.firstSearch = from;
-    this.secondSearch = to;
-    this.dateFrom = departure;
-    this.dateTo = returnTrip;*/
-    return this.http.get(environment.base_url + `/Flights/FlightDetails/GetDetail/${str.destId}`);
+  SearchFlights(id:number): boolean {
+    console.log("Id = "+id)
+    return this.http.get(environment.base_url + `/Flights/FlightDetails/GetDetail/${id}`)
+    .subscribe(
+      data=>{
+        console.log(data);
+        this.details=data as Flight[];
+        let temp=this.details;
+        let str="";
+        let index=0;
+        console.log(temp);
+        temp.forEach(element => {
+          if(index!=0)
+            str+=",";
+          str+=element.cid;
+          index++;
+        });
+        console.log(str);
+        this.service.getCompanyFlight(str)
+        //this.route.navigate(["/detail"]);
+      },
+      error=>{
+        console.error(error.message);
+      },
+      ()=>{
+        console.log("Done");
+      }
+    ).closed;
   }
 
   /*SearchCompany()

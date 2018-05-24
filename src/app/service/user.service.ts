@@ -9,8 +9,9 @@ import { environment } from '../../environments/environment';
 import { MatDialogRef } from '@angular/material';
 import { SignInComponent } from '../sign-in/sign-in.component';
 import { RegisterComponent } from '../register/register.component';
-import { changeLayout, Property, CheckAccommodation, Users, Flight } from './common-interface';
+import { changeLayout, Property, CheckAccommodation, Users, Flight, FlightPic, Destination } from './common-interface';
 import {Accommodations} from '../model/service-type';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class UsersService {
@@ -24,25 +25,30 @@ export class UsersService {
   private authenticated: boolean;
   private BASE_URL = environment.base_url;
   private data: string;
-  private getToken: string;
+  private getToken: string="";
   private payment:number;
   private accData:Accommodations[];
   private property:Property;
+  flights:Flight[];
+  destination:Destination[];
+  private flightPics=[] as FlightPic[];
   year = new Date().getFullYear();
   month = (new Date().getMonth());
   day = new Date().getDate();
   errorState: string="";
   error: boolean=false;
-  initailized:boolean;
+  initailized:boolean=false;
   check:changeLayout;
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private route:Router
   ) {
     //this.user=new User();
     this.error = false;
-    this.admin=false;
-    this.GetToken="";
+    //this.admin=false;
+    //this.GetToken="";
+
     //this.check=[] as changeLayout;
 
     /******ServiceLogic*******/
@@ -282,6 +288,25 @@ export class UsersService {
       });
   }
 
+  getCompanyFlight(arr:string):boolean
+  {
+    return this.http.get(this.BASE_URL+`/Companies/GetCompany/${arr}`)
+    .subscribe(
+      data=>{
+        console.log(data);
+        this.flightPics=data as FlightPic[];
+        console.log(this.flightPics);
+        this.route.navigate(["/detail"]);
+      },
+      error=>{
+        console.error(error.message);
+      },
+      ()=>{
+        console.log("Done");
+      }
+    ).closed;
+  }
+
   AccountDetails()
   {
     //console.log(accData);
@@ -416,6 +441,11 @@ export class UsersService {
     return this.http.get(this.BASE_URL+`/Flights/GetAll`);
   }
 
+  get Destination()
+  {
+    return this.http.get(this.BASE_URL+`/Flights/Destinations/GetAll`);
+  }
+
   get GetFlightDetails()
   {
     return this.http.get(this.BASE_URL+`/Flights/FlightDetails/GetDetail`);
@@ -424,6 +454,7 @@ export class UsersService {
   get Data() {
     return this.data;
   }
+
   get Authenticated() {
 
     return this.authenticated;
@@ -446,6 +477,11 @@ export class UsersService {
   get AccData()
   {
     return this.accData;
+  }
+
+  get FlightPics()
+  {
+    return this.flightPics;
   }
 
   get Payment()
