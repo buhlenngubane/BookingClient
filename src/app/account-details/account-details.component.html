@@ -1,0 +1,185 @@
+
+<mat-card-header style="text-align: center">
+    <mat-card-title>Acoount Details</mat-card-title>
+
+</mat-card-header>
+<mat-card-content>
+  <mat-accordion class="example-headers-align">
+    <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle="true" expandedHeight="48px">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Change Personal data
+        </mat-panel-title>
+        <mat-panel-description>
+          Click to edit
+          <mat-icon>account_circle</mat-icon>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <form [formGroup]="postChanges"></form>
+      <div class="row">
+        <mat-form-field>
+          <input matInput placeholder="Name" type="text" 
+          [(ngModel)]="name" [formControl]="postChanges.controls.Name">
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput placeholder="Surname" type="text" 
+          [(ngModel)]="surname" [formControl]="postChanges.controls.Surname">
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field>
+          <input matInput hintLabel="(e.g.A@123Book)" 
+          placeholder="Change Password" type="password" 
+          [(ngModel)]="password" [formControl]="postChanges.controls.Password">
+          <mat-hint align="end" class="form-control-feedback"
+              *ngIf="postChanges.controls.Password.errors && 
+     (postChanges.controls.Password.dirty || postChanges.controls.Password.touched) && 
+     postChanges.controls.Password.errors.minlength"
+              >{{postChanges.controls.Password.errors.minlength.requiredLength - 
+                postChanges.controls.Password.errors.minlength.actualLength}}
+                characters left.</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput placeholder="Confirm Password" type="password"
+           [formControl]="postChanges.controls.ConfirmPassword"
+          >
+          <mat-error align="end" 
+          *ngIf="postChanges.controls.ConfirmPassword.errors 
+          && postChanges.controls.ConfirmPassword.errors.pattern && 
+          (postChanges.controls.ConfirmPassword.dirty || postChanges.controls.ConfirmPassword.touched)" 
+         >
+            Passwords don't match
+          </mat-error>
+          <mat-hint 
+          *ngIf="password==postChanges.controls.ConfirmPassword.value && 
+          (postChanges.controls.ConfirmPassword.dirty || postChanges.controls.ConfirmPassword.touched)" 
+          class="success">
+            Passwords match
+          </mat-hint>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field>
+          <input matInput type="tel" placeholder="Phone Number" 
+          [(ngModel)]="phone" [formControl]="postChanges.controls.Phone">
+        </mat-form-field>
+
+        <mat-action-row>
+          <button mat-button color="primary" (click)="confirmed()" 
+          [disabled]="!postChanges.valid || loading.load">
+            Confirm
+          </button>
+        </mat-action-row>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+  <div class="row">
+    <mat-card>
+      <mat-card-content>
+        <h2 class="example-h2">Tabs with text labels</h2>
+        <mat-tab-group class="demo-tab-group">
+          <mat-tab label="Accommodation">
+            <div class="demo-tab-content">
+              <mat-spinner *ngIf="accLoading.load, else LoadData" [diameter]="30"></mat-spinner>
+              <ng-template #LoadData>
+                <div *ngIf="accLoading.error">
+                  {{accLoading.message}}
+                </div>
+                <div *ngIf="!accLoading.error && accData">
+                  <mat-grid-list cols="6" rowHeight="100">
+                    <mat-grid-tile>
+                      <p mat-line>Accommodation</p>
+                    </mat-grid-tile>
+                    <mat-grid-tile>
+                      <p mat-line>NumOfNights</p>
+                    </mat-grid-tile>
+                    <mat-grid-tile>
+                      <p mat-line>BookDate</p>
+                    </mat-grid-tile>
+                    <mat-grid-tile>
+                      <p mat-line>PayType</p>
+                    </mat-grid-tile>
+                    <mat-grid-tile>
+                      <p mat-line>PayStatus</p>
+                    </mat-grid-tile>
+                    <mat-grid-tile>
+                      <p mat-line>Total Paid</p>
+                    </mat-grid-tile>
+                    <div *ngFor="let Accommodation of accData">
+                          <mat-grid-tile>
+                            <p mat-line>{{Accommodation.accId}}</p>
+                          </mat-grid-tile>
+                          <mat-grid-tile>
+                            <p mat-line>{{Accommodation.numOfNights}}</p>
+                          </mat-grid-tile>
+                          <mat-grid-tile>
+                            <p mat-line>{{Accommodation.bookDate}}</p>
+                          </mat-grid-tile>
+                          <mat-grid-tile>
+                            <p mat-line>{{Accommodation.payType}}</p>
+                          </mat-grid-tile>
+                          <mat-grid-tile>
+                            <p mat-line>{{Accommodation.payStatus}}</p>
+                          </mat-grid-tile>
+                          <mat-grid-tile>
+                            <p mat-line>{{Accommodation.total}}</p>
+                          </mat-grid-tile>
+                          <mat-divider></mat-divider>
+                    </div>
+                  </mat-grid-list>
+                </div>
+              </ng-template>
+            </div>
+          </mat-tab>
+          <mat-tab label="Flight">
+            <div class="demo-tab-content">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla venenatis ante augue. Phasellus volutpat neque ac dui mattis
+              vulputate. Etiam consequat aliquam cursus. In sodales pretium ultrices. Maecenas lectus est, sollicitudin consectetur
+              felis nec, feugiat ultricies mi. Aliquam erat volutpat. Nam placerat, tortor in ultrices porttitor, orci enim
+              rutrum enim, vel tempor sapien arcu a tellus.
+            </div>
+          </mat-tab>
+          <mat-tab label="Car Rental">
+            <div class="demo-tab-content">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla venenatis ante augue. Phasellus volutpat neque ac dui mattis
+              vulputate. Etiam consequat aliquam cursus. In sodales pretium ultrices. Maecenas lectus est, sollicitudin consectetur
+              felis nec, feugiat ultricies mi. Aliquam erat volutpat. Nam placerat, tortor in ultrices porttitor, orci enim
+              rutrum enim, vel tempor sapien arcu a tellus.
+              <br />
+              <br /> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla venenatis ante augue. Phasellus volutpat neque
+              ac dui mattis vulputate. Etiam consequat aliquam cursus. In sodales pretium ultrices. Maecenas lectus est,
+              sollicitudin consectetur felis nec, feugiat ultricies mi. Aliquam erat volutpat. Nam placerat, tortor in ultrices
+              porttitor, orci enim rutrum enim, vel tempor sapien arcu a tellus.
+            </div>
+          </mat-tab>
+          <mat-tab label="Air Taxi">
+            No content
+          </mat-tab>
+        </mat-tab-group>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  
+</mat-card-content>
+<mat-card-footer>
+    <div class="row">
+        <mat-grid-list cols="2" rowHeight="20">
+          <mat-grid-tile>
+            <button mat-button (click)="closeDialog()">
+              Close Window
+            </button>
+          </mat-grid-tile>
+          <mat-grid-tile color="accent" *ngIf="(!loading.load && loading.error), else ElseBlock" class="fail">
+            {{loading.errorMessage}}
+          </mat-grid-tile>
+          <ng-template #ElseBlock *ngIf="!loading.load" class="success">
+            Saved Changes
+          </ng-template>
+          <mat-grid-tile>
+              <mat-spinner *ngIf="loading.load" [diameter]="30"></mat-spinner>
+          </mat-grid-tile>
+        </mat-grid-list>
+      </div>
+</mat-card-footer>

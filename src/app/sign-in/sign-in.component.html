@@ -1,0 +1,67 @@
+<mat-card class="card">
+  <mat-card-header>
+    <mat-card-title style="text-align: center;">Login</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form class="form" [formGroup]="_loginForm" #f="ngForm">
+      <table class="example-full-width" cellspacing="0">
+        <tr>
+          <td>
+            <mat-form-field class="full-width">
+              <input matInput placeholder="email@domain.com" 
+              type="email" name="email" 
+              [(ngModel)]="email" [formControl]="_loginForm.controls.Email"
+                required>
+                <mat-error align="end" *ngIf="_loginForm.controls.Email.errors && 
+                (_loginForm.controls.Email.dirty || _loginForm.controls.Email.touched)">
+                  Incorrect Format!
+                </mat-error>
+            </mat-form-field>
+            <!--<div class="form-control-feedback" *ngIf="_loginForm.controls.Email.errors && 
+     (_loginForm.controls.Email.dirty || _loginForm.controls.Email.touched)">
+              <p *ngIf="_loginForm.controls.Email.errors.pattern">
+                Incorrect Format!
+              </p>
+            </div>-->
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field class="full-width">
+              <input matInput placeholder="Password(e.g. B321@Booking)" 
+               
+              [(ngModel)]="password" type="password" 
+              name="password" [formControl]="_loginForm.controls.Password"
+                ngModel minlength="8" required>
+              <mat-hint align="end" class="form-control-feedback"
+              *ngIf="_loginForm.controls.Password.errors && 
+     (_loginForm.controls.Password.dirty || _loginForm.controls.Password.touched) && 
+     _loginForm.controls.Password.errors.minlength"
+              >{{_loginForm.controls.Password.errors.minlength.requiredLength - 
+                _loginForm.controls.Password.errors.minlength.actualLength}}
+                characters left.</mat-hint>
+                <mat-error *ngIf="_loginForm.controls.Password.errors && 
+                _loginForm.controls.Password.errors.pattern && 
+                (_loginForm.controls.Password.dirty || _loginForm.controls.Password.touched)">
+                  Password pattern not met.
+                </mat-error>
+            </mat-form-field>
+            <!--<div class="form-control-feedback" *ngIf="_loginForm.controls.Password.errors && 
+     (_loginForm.controls.Password.dirty || _loginForm.controls.Password.touched)">
+              <p *ngIf="_loginForm.controls.Password.errors.pattern">
+                Password pattern not met.
+              </p>
+
+            </div>-->
+          </td>
+        </tr>
+      </table>
+    </form>
+    <mat-spinner [style.display]="showSpinner ? 'block' : 'none'"></mat-spinner>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button (click)="onSignIn()" color="primary" [disabled]="!_loginForm.valid || loading">
+      <mat-spinner *ngIf="loading" [diameter]="30"></mat-spinner>Submit
+    </button>
+  </mat-card-actions>
+</mat-card>

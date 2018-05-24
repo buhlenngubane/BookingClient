@@ -1,0 +1,51 @@
+.container{
+    position: relative;
+}
+.topleft {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    font-size: 18px;
+    color: azure;
+    border-radius: 8px;
+}
+
+img.First{
+    border-radius: 8px;
+}
+
+div.polaroid {
+    width: 80%;
+    background-color: white;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin-bottom: 25px;
+  }
+  
+  div.contain {
+    text-align: center;
+    padding: 10px 20px;
+  }
+  .card{
+      max-width: 250px;
+  }
+  .full-width {
+    width: 100%;
+  }
+  .space{
+    padding:30px;
+}
+img.ImgGrid{
+    height:180px;
+    width:400px;
+}
+.spacer {
+    flex: 1 1 auto;
+  }
+  .example-container {
+    display: flex;
+    flex-direction: column;
+  }
+  a{
+      text-decoration: none;
+      text-decoration-style: none;
+  }

@@ -1,0 +1,9 @@
+mat-card-header{
+    text-align: center;
+}
+mat-spinner {
+    float:left; 
+    width: 5px; 
+    height: 5px; 
+    margin: 5px 10px 0px 0px;
+  }

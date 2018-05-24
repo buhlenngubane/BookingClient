@@ -1,0 +1,44 @@
+<mat-accordion>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Get
+      </mat-panel-title>
+      <mat-panel-description>
+        All Users
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <!--<mat-form-field>
+      <input matInput placeholder="First name">
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput placeholder="Age">
+    </mat-form-field>-->
+    <mat-card mat-line style="background-color: black; color: azure">
+      <div *ngIf="!users, else Data"><pre>{{commonLayout|json}}</pre></div>
+      <ng-template matline #Data>
+        <pre>{{users|json}}</pre></ng-template>
+    </mat-card>
+    <mat-action-row>
+      <button mat-button color="primary" (click)="GetUsers()" 
+      >
+        Confirm
+      </button>
+    </mat-action-row>
+  </mat-expansion-panel>
+  <mat-expansion-panel (opened)="panelOpenState = true" 
+    (closed)="panelOpenState = false">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Get
+      </mat-panel-title>
+      <mat-panel-description>
+        Specific {{serviceType}}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <p>I'm visible because I am open</p>
+  </mat-expansion-panel>
+
+</mat-accordion>

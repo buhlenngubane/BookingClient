@@ -1,0 +1,125 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title style="text-align: center;">Register</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form class="form" [formGroup]="_regForm">
+      <table class="table">
+        <tr>
+          <td>
+            <mat-form-field>
+              <input matInput type="text" name="name" 
+              placeholder="Name" 
+              [(ngModel)]="name"
+              [formControl]="_regForm.controls.Name" 
+              minlength="2" 
+              maxlength="20" 
+              required>
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field>
+              <input matInput type="text" name="surname" 
+              placeholder="Surname" 
+              [(ngModel)]="surname" 
+              [formControl]="_regForm.controls.Surname" 
+              minlength="2"
+              maxlength="20"
+              required>
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field>
+              <input matInput type="email" name="email" 
+              placeholder="Email" 
+              [(ngModel)]="email" 
+              [formControl]="_regForm.controls.Email" required>
+              <mat-hint align="end" *ngIf="_regForm.controls.Email.errors && 
+                (_regForm.controls.Email.dirty || _regForm.controls.Email.touched)">
+                  Incorrect Format!
+                </mat-hint>
+            </mat-form-field>
+            <!--<div class="form-control-feedback" 
+            *ngIf="_regForm.controls.Email.errors && 
+            (_regForm.controls.Email.dirty || _regForm.controls.Email.touched)">
+              <p *ngIf="_regForm.controls.Email.errors.pattern">
+                Incorrect Format!
+              </p>
+            </div>-->
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field>
+              <input matInput type="password" name="password" 
+              placeholder="Password(e.g. B321@Booking)" 
+              [(ngModel)]="password" 
+              [formControl]="_regForm.controls.Password" 
+              minlength="8" 
+              required>
+              <mat-hint align="end" class="form-control-feedback"
+              *ngIf="_regForm.controls.Password.errors && 
+     (_regForm.controls.Password.dirty || _regForm.controls.Password.touched)
+      && _regForm.controls.Password.errors.minlength"
+              >{{_regForm.controls.Password.errors.minlength.requiredLength - 
+                _regForm.controls.Password.errors.minlength.actualLength}}
+                characters left.</mat-hint>
+            </mat-form-field>
+            <!--<div class="form-control-feedback" 
+            *ngIf="_regForm.controls.Password.errors && 
+            (_regForm.controls.Password.dirty || _regForm.controls.Password.touched)">
+              <p *ngIf="_regForm.controls.Password.errors.pattern">Password pattern not met</p>
+              <p *ngIf="_regForm.controls.Password.errors.minlength">
+                {{_loginForm.controls.Password.errors.minlength.requiredLength - 
+                  _loginForm.controls.Password.errors.minlength.actualLength}}
+                characters left. </p>
+            </div>-->
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field>
+              <input matInput type="text" name="phone" 
+              placeholder="Phone" 
+              [(ngModel)]="phone" 
+              [formControl]="_regForm.controls.Phone" 
+              minlength="10"
+              required>
+              <mat-hint align="end" *ngIf="_regForm.controls.Phone.errors.minlength 
+              && 
+     (_regForm.controls.Phone.dirty || _regForm.controls.Phone.touched)">
+                  {{_regForm.controls.Phone.errors.minlength.requiredLength - 
+                    _regForm.controls.Phone.errors.minlength.actualLength}}
+                  characters left.
+              </mat-hint>
+            </mat-form-field>
+            <!--<div class="form-control-feedback" 
+            *ngIf="_regForm.controls.Phone.errors && 
+            (_regForm.controls.Phone.dirty || _regForm.controls.Password.touched)">
+              <p *ngIf="_regForm.controls.Password.errors.minlength">
+                {{_loginForm.controls.Phone.errors.minlength.requiredLength - 
+                  _loginForm.controls.Phone.errors.minlength.actualLength}}
+                characters left. </p>
+            </div>-->
+          </td>
+          
+        </tr>
+      </table>
+    </form>
+  </mat-card-content>
+  <mat-card-actions>
+      <!--<div *ngIf="!loading else Loading">-->
+    <button mat-raised-button (click)="submitReg()" color="primary" [disabled]="!_regForm.valid || loading">
+      Submit  
+      <mat-spinner *ngIf="loading" [diameter]="30"></mat-spinner>
+    </button>
+  <!--</div>
+    <ng-template #Loading>
+        <mat-spinner></mat-spinner>
+    </ng-template>-->
+  </mat-card-actions>
+</mat-card>

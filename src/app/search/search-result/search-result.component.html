@@ -1,0 +1,108 @@
+<mat-grid-list cols="4" rowHeight="210">
+
+  <mat-grid-tile [colspan]="4">
+    <h1 *ngIf="diff">{{diff}}</h1>
+  </mat-grid-tile>
+
+  <mat-grid-tile [rowspan]="4">
+
+    <mat-toolbar class="toolbar" style="position: absolute;
+    top: 16px;
+    left: 16px;
+    background-color: gold;">
+
+      <mat-toolbar-row>
+        <label for="search">Destination or Property :</label>
+      </mat-toolbar-row>
+
+      <mat-toolbar-row class="example-container">
+        <form class="form">
+            <!--<mat-form-field class="full-width" appearance="outline">-->
+              <input type="text"
+              name="search" 
+              [(ngModel)]="search" 
+              placeholder="search"
+              [matAutocomplete]="auto" 
+              (keyup)="searchTerm$.next($event.target.value)"
+              class="search">
+              <mat-autocomplete #auto="matAutocomplete">
+                <mat-option *ngFor="let result of result | slice:0:9" [value]="result.country+', '+result.location">
+                  {{ result.country }} {{result.location}}
+                </mat-option>
+              </mat-autocomplete>
+            <!--</mat-form-field>-->
+          </form>
+      </mat-toolbar-row>
+
+      <mat-toolbar-row>
+        </mat-toolbar-row>
+
+      <mat-toolbar-row>
+        <mat-form-field class="example-full-width">
+          <input matInput [min]="minDate" [max]="maxDate" [textMask]="mask" 
+          [(ngModel)]="dateForm" 
+          [matDatepicker]="picker1" placeholder="Choose a date" disabled>
+          <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+          <mat-datepicker #picker1 startView="month" [startAt]="startDate" disabled="false"></mat-datepicker>
+        </mat-form-field>
+        <span class="space">
+        </span>
+      </mat-toolbar-row>
+
+      <mat-toolbar-row>
+        </mat-toolbar-row>
+
+      <mat-toolbar-row>
+        <mat-form-field class="example-full-width">
+          <input matInput [min]="minDate" [max]="maxDate" [textMask]="mask" 
+          [matDatepicker]="picker2" placeholder="Choose a date" [(ngModel)]="dateTo" disabled>
+          <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+          <mat-datepicker #picker2 startView="month" [startAt]="startDate" disabled="false"></mat-datepicker>
+        </mat-form-field>
+    </mat-toolbar-row>
+
+    <mat-toolbar-row>
+      </mat-toolbar-row>
+
+      <mat-toolbar-row>
+          <mat-form-field>
+            <mat-select placeholder="Number of rooms to book" [formControl]="panel" panelClass="{{panel}}">
+              <!--<mat-option value="{{panel.number+panel.text}}">{{panel.number+panel.text}}</mat-option>-->
+              <mat-option value="{{num.number+num.text}}" *ngFor="let num of Num">{{num.number+num.text}}</mat-option>
+              <!--<mat-option value="green">Green</mat-option>
+                  <mat-option value="blue">Blue</mat-option>-->
+            </mat-select>
+          </mat-form-field>
+        </mat-toolbar-row>
+
+      <mat-toolbar-row>
+        <span class="fill-remaining-space"></span>
+        <span class="align-center"></span>
+        <span class="spacer"></span>
+        <a mat-raised-button routerLink="." class="anchor" color="primary">Search</a>
+      </mat-toolbar-row>
+    </mat-toolbar>
+
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="3" [rowspan]="4">
+
+    <mat-list role="list" style="position: absolute;
+    top: 16px;
+    left: 16px;">
+
+      <mat-list-item *ngFor="let prop of prop">
+        <div class="pointer" (click)="ifLoggedIn(prop)">
+          <div class="container" layout-wrap>
+
+            <img src="data:image/jpeg;base64,{{prop.picture}}" alt="{{prop.propName}}" srcset="" class="ImgGrid">
+            <div class="topleft">{{prop.propName}}</div>
+
+          </div>
+        </div>
+      </mat-list-item>
+
+    </mat-list>
+
+  </mat-grid-tile>
+</mat-grid-list>

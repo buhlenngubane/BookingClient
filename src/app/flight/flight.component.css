@@ -1,0 +1,17 @@
+.Font{
+    color: azure;
+    font-size: 40px;
+    
+}
+Width{
+    width: 5px;
+}
+.space{
+    padding:30px;
+}
+.pointer {
+    cursor: pointer;
+}
+.searchBar{
+    background-image: url("../../assets/images/phoenix-flights-bg.jpg")
+}
