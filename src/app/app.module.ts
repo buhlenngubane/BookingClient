@@ -19,7 +19,8 @@ import {MatDialogModule,
   MatAutocompleteModule,
   MatSnackBarModule,
   MatSelectModule,
-  MatTableModule
+  MatTableModule,
+  MatButtonToggleModule
 } from '@angular/material';
 
 import {MatExpansionModule} from '@angular/material/expansion';
@@ -84,6 +85,7 @@ import { DetailComponent } from './search/detail/detail.component';
     MatSnackBarModule,
     MatSelectModule,
     MatTableModule,
+    MatButtonToggleModule,
     RouterModule.forRoot(routes),
   ],
   providers: [UsersService, 

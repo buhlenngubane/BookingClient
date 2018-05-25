@@ -10,13 +10,14 @@ import { Time } from '@angular/common';
   styleUrls: ['./detail.component.css']
 })
 export class DetailComponent implements OnInit {
+  myFlight=this.service.flightAbbrev?this.service.flightAbbrev.split(" ")[0]:"";
+  myDestination=this.service.destAbbrev?this.service.destAbbrev.split(" ")[0]:"";
   myDetail=this.searchService.details;
   flightPics=this.service.FlightPics;
   departTime:string[]=[];
   date:Date[]=[];
   depart:string[]=[];
   return:string[]=[];
-  span:number[]=[];
 
   constructor(private service:UsersService,
     private searchService:SearchService,
@@ -24,26 +25,15 @@ export class DetailComponent implements OnInit {
     {
       //console.log("Excuting request")
       //searchService.SearchCompany();
-      if(!service.flights)
+      if(!this.myDetail)
       {
         route.navigate(["/flight"]);
       }
       console.log(this.myDetail);
       console.log(this.flightPics);
       //this.departTime=this.flightPics.
-      //this.span[0]=2;
-      if(this.myDetail){
-        let index=0;
-        this.myDetail.forEach(element=>{
-          let str=element.path;
-          this.depart[index]=str.split("-")[0];
-          this.return[index++]=str.split("-")[1];
-          if(this.return)
-            this.span[index]=1;
-          else
-            this.span[index]=2;
-        });
-    }
+      
+      
     }
 
   ngOnInit() {

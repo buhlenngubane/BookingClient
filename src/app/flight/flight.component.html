@@ -1,4 +1,4 @@
-<mat-grid-list cols="1" rowHeight="50px" class="searchBar">
+<mat-grid-list cols="1" rowHeight="60px" class="searchBar">
   <!--<div class="searchBar">-->
   <mat-grid-tile 
       [rowspan]="3" align="center" class="Font">
@@ -62,7 +62,11 @@
                 <mat-select placeholder="Toppings" [formControl]="toppings" multiple>
                     <mat-option [value]="toppingList[0]"></mat-option>
                   </mat-select>-->
+                  
             </mat-form-field>
+            <mat-form-field>
+            <input matInput type="number" placeholder="Number of travellers">
+          </mat-form-field>
           </mat-list-item>
           <mat-list-item>
             <button mat-raised-button color="primary" (click)="LoadDetails()"><mat-icon>search</mat-icon></button>

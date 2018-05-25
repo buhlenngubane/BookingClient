@@ -12,10 +12,11 @@ import { RegisterComponent } from '../register/register.component';
 import { changeLayout, Property, CheckAccommodation, Users, Flight, FlightPic, Destination } from './common-interface';
 import {Accommodations} from '../model/service-type';
 import { Router } from '@angular/router';
+import { FormControl } from '@angular/forms';
 
 @Injectable()
 export class UsersService {
-  private flight: Flight[];
+  private flight: Flight[]=[];
   private serviceType: any;
   private user: User;
   private password:string;
@@ -29,7 +30,7 @@ export class UsersService {
   private payment:number;
   private accData:Accommodations[];
   private property:Property;
-  flights:Flight[];
+  flights:Flight[]=[];
   destination:Destination[];
   private flightPics=[] as FlightPic[];
   year = new Date().getFullYear();
@@ -39,6 +40,8 @@ export class UsersService {
   error: boolean=false;
   initailized:boolean=false;
   check:changeLayout;
+  destAbbrev:string;
+  flightAbbrev:string;
 
   constructor(
     private http: HttpClient,
@@ -48,7 +51,7 @@ export class UsersService {
     this.error = false;
     //this.admin=false;
     //this.GetToken="";
-
+    
     //this.check=[] as changeLayout;
 
     /******ServiceLogic*******/
@@ -314,6 +317,44 @@ export class UsersService {
     
   }
 
+  GetFlight(form:FormControl, form2:FormControl)
+  {
+    return this.http.get(this.BASE_URL+`/Flights/GetAll`)
+    .subscribe(
+      data=>{
+        console.log(data);
+        this.flights = data as Flight[];
+        console.log(this.flights);
+        console.log(this.flights[0].locale);
+        form.setValue(this.flights[0].locale);
+        this.Destination
+        .subscribe(
+          data=>{
+            console.log(data);
+            this.destination = data as Destination[];
+            console.log(this.destination);
+            form2.setValue(this.destination[0].destination1);
+          },
+          error=>{
+            console.log("Error :" + error.message);
+          },
+          ()=>{
+            console.log("Done");
+          }
+        );
+        
+        
+      },
+      error=>{
+        console.error(error.message);
+        console.log("Why?")
+      },
+      ()=>{
+        console.log("Done");
+      }
+    );
+  }
+
   PaymentSuccess(id:number) :boolean
   {
     return this.http.post(this.BASE_URL+`/AccBookings/Book`, 
@@ -436,14 +477,10 @@ export class UsersService {
     return this.http.get(this.BASE_URL+`/Properties/GetAll`);
   }
 
-  get GetFlight()
-  {
-    return this.http.get(this.BASE_URL+`/Flights/GetAll`);
-  }
-
   get Destination()
   {
-    return this.http.get(this.BASE_URL+`/Flights/Destinations/GetAll`);
+    return this.http.get(this.BASE_URL+`/Flights/Destinations/GetAll`)
+    ;
   }
 
   get GetFlightDetails()

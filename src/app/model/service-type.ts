@@ -5,12 +5,12 @@ export class Accommodations
     location:string;
     picture:string;
 
-    constructor(accId,country,location,picture)
+    constructor()
     {
-        this.accId=accId;
+        /*this.accId=accId;
         this.country=country;
         this.location=location;
-        this.picture=picture;
+        this.picture=picture;*/
     }
 
     deserialize(input:any)

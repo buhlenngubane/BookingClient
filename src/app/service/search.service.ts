@@ -7,10 +7,11 @@ import 'rxjs/add/operator/switchMap';
 import { retryWhen, map, mergeMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { Property, Flight, FlightPic } from './common-interface';
+import { Property, Flight, FlightPic, Accommodation } from './common-interface';
 import { Subject } from 'rxjs/Subject';
 import { UsersService } from './user.service';
 import { DatePipe } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class SearchService {
@@ -61,6 +62,7 @@ export class SearchService {
   constructor(
     private http: HttpClient,
     private service: UsersService,
+    private route:Router,
     private datePipe: DatePipe
   ) {
     this.property as Property[];
@@ -106,9 +108,31 @@ export class SearchService {
       .get(environment.base_url + `/Flights/Destinations/Search/${term}`)
   }
 
-  Search(value: string): Observable<any> {
+  Search(value: string, dateForm:Date, dateTo:Date, panel:string, accommodation:Accommodation[]): boolean {
     var accId = +value;
-    return this.http.get(environment.base_url + `/Properties/GetProperties/${accId}`);
+    return this.http.get(environment.base_url + `/Properties/GetProperties/${accId}`)
+    .subscribe(
+      data => {
+        console.log(data);
+        let acc = accommodation.find(s=>s.accId==(+value));
+        if(acc)
+          this.SearchParam=acc.country+", "+acc.location;
+          
+        this.Property = data as Property[];
+        console.log(JSON.stringify(this.Property))
+        this.DateFrom = dateForm;
+        this.DateTo = dateTo;
+        this.Panel=panel;
+        this.Nights = this.diff;
+        this.route.navigate(["/search"]);
+      },
+      error => {
+        console.error(error.message);
+      },
+      () => {
+        console.log("search done.");
+      }
+    ).closed;
   }
 
   SearchFlights(id:number): boolean {

@@ -6,6 +6,7 @@ import { SearchService } from '../service/search.service';
 import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
+import { when } from 'q';
 //import { Flight } from '../model/service-type';
 
 @Component({
@@ -55,40 +56,9 @@ export class FlightComponent implements OnInit {
       //const element = array[index];
       this.travellers.push(index);
     }
-    service.GetFlight
-    .subscribe(
-      data=>{
-        console.log(data);
-        service.flights = data as Flight[];
-        console.log(service.flights);
-        console.log(service.flights[0].locale);
-        this.firstSearch.setValue(service.flights[0].locale);
-        service.Destination
-        .subscribe(
-          data=>{
-            console.log(data);
-            service.destination = data as Destination[];
-            console.log(service.destination);
-            this.secondSearch.setValue(service.destination[0].destination1);
-          },
-          error=>{
-            console.log("Error :" + error.message);
-          },
-          ()=>{
-            console.log("Done");
-          }
-        );
-        
-        
-      },
-      error=>{
-        console.error(error.message);
-        console.log("Why?")
-      },
-      ()=>{
-        console.log("Done");
-      }
-    ).closed;
+    
+    service.GetFlight(this.firstSearch,this.secondSearch)
+    .closed;
     
     this.searchService.search(this.searchTerm$,2)
       .subscribe(
@@ -136,9 +106,9 @@ export class FlightComponent implements OnInit {
   }
 
   ngOnInit() {
+    
     this.dateTo=new Date(this.service.year,this.service.month,this.service.day);
     this.minDate2=this.dateTo;
-
   }
   
   swap():void
@@ -165,6 +135,8 @@ export class FlightComponent implements OnInit {
       && (this.secondSearch && !this.secondSearch.value.startsWith(" ") && this.secondSearch.value.search(new RegExp("[0-9]","i")))
     )
     {
+      this.service.flightAbbrev=this.firstSearch.value;
+      this.service.destAbbrev=this.secondSearch.value;
       let dest = this.service.destination.find(s=>s.destination1==this.secondSearch.value);
       if(dest)
         this.searchService.SearchFlights(dest.destId)
