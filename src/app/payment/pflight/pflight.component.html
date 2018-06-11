@@ -1,0 +1,20 @@
+<div *ngIf="!state.success else ElseBlock">
+    <h1 style="text-align: center">
+      CheckOut Window
+    </h1>
+    <mat-list *ngIf="flight">
+      <mat-list-item *ngFor="let display of display">
+        <h3 matLine>{{display.name}}</h3>
+        <div matLine>{{display.data}}</div>
+        <mat-divider></mat-divider>
+      </mat-list-item>
+    </mat-list>
+    <div>
+  
+      <h2 *ngIf="paypalLoad">Paypal button is loading</h2>
+      <div id="paypal-checkout-btn"></div>
+    </div>
+  </div>
+  <ng-template #ElseBlock>
+    Success {{amount}}
+  </ng-template>

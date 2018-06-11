@@ -9,4 +9,7 @@
       background-color: azure;
       color:black;
   }
- 
+ a.routerLink{
+    background-color: azure;
+    color:black;
+ }

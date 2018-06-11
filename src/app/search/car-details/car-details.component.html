@@ -1,0 +1,38 @@
+<mat-grid-list cols="3">
+
+  <mat-grid-tile [rowspan]="result.length">
+
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="2" *ngFor="let result of result">
+
+    <mat-toolbar class="topleft">
+      <mat-toolbar-row [style.border-bottom]="'1px dashed #ddd'" class="Hght" layoutWrap>
+        <img src="data:image/jpeg;base64,{{result.ctype.picture}}" style="width: 70%;">
+        <span class="space"></span>
+        <table>
+          <tr>
+            <th colspan="2">Telephone</th>
+          </tr>
+          <tr>
+            <td>Whats Up</td>
+            <td>Year</td>
+          </tr>
+        </table>
+        <span class="spacer">
+
+        </span>
+        {{result.price}}
+      </mat-toolbar-row>
+      <mat-toolbar-row>
+          <div [style.border-right]="'1px dashed #ddd'">Hello</div>
+          <span class="spacer" ></span>
+          <button mat-raised-button color="primary" (click)="IfLoggedIn(result)">
+                    Book
+                  </button>
+      </mat-toolbar-row>
+    </mat-toolbar>
+
+  </mat-grid-tile>
+
+</mat-grid-list>

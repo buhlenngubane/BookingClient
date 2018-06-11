@@ -1,0 +1,26 @@
+<div *ngIf="!state.success else ElseBlock">
+    <h1 style="text-align: center">
+      CheckOut Window
+    </h1>
+    <mat-list *ngIf="airTaxi">
+      <mat-list-item *ngFor="let display of display">
+        <img src="data:image/jpeg,base64;display.ctype.picture" alt="car chosen" *ngIf="i==0">
+        <div *ngIf="i!=3; else ElseBlock">
+        <h3 matLine>{{display.name}}</h3>
+        <div matLine>{{display.data}}</div>
+        <mat-divider></mat-divider>
+        </div>
+        <ng-template #ElseBlock *ngIf="returnJourney">
+            
+        </ng-template>
+      </mat-list-item>
+    </mat-list>
+    <div>
+  
+      <h2 *ngIf="paypalLoad">Paypal button is loading</h2>
+      <div id="paypal-checkout-btn"></div>
+    </div>
+  </div>
+  <ng-template #ElseBlock>
+    Success {{amount}}
+  </ng-template>

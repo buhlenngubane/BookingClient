@@ -1,395 +1,688 @@
 import { Injectable } from '@angular/core';
-import { User } from '../model/user'
+import { User } from '../model/user';
 import 'rxjs/add/operator/map';
-import { Observable } from 'rxjs/Observable';
-import { ErrorObservable } from 'rxjs/observable/ErrorObservable'
+// import 'rxjs';
+import { Observable, Subscribable } from 'rxjs/Observable';
+import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { catchError, retry } from 'rxjs/operators';
-import { environment } from '../../environments/environment';
+import { environment } from '../../environments/environment.prod';
 import { MatDialogRef } from '@angular/material';
 import { SignInComponent } from '../sign-in/sign-in.component';
 import { RegisterComponent } from '../register/register.component';
-import { changeLayout, Property, CheckAccommodation, Users, Flight, FlightPic, Destination } from './common-interface';
-import {Accommodations} from '../model/service-type';
+import { changeLayout, Property, CheckAccommodation, Users, FlightPic, Car } from './common-interface';
+// tslint:disable-next-line:max-line-length
+import {
+  Accommodations,
+  Cars,
+  AirDetails,
+  CarRentalDetails,
+  Destinations,
+  FlightDetails,
+  Flights,
+  Properties,
+  CarRentals,
+  AccBooking,
+  FlBooking,
+  CarBooking,
+  AirBooking,
+  Loading
+} from '../model/service-type';
 import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
+import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
+import 'rxjs/add/observable/timer';
+import 'rxjs/add/observable/interval';
+// tslint:disable-next-line:import-blacklist
+import { Subscription } from 'rxjs';
 
 @Injectable()
 export class UsersService {
-  private flight: Flight[]=[];
-  private serviceType: any;
+  accommodations: Accommodations[] = [];
+  private flights: Flights[];
+  serviceType: string;
   private user: User;
-  private password:string;
-  private admin:boolean=false;
+  private password: string;
+  private admin = false;
   private myToken: Token;
   private body: object;
   private authenticated: boolean;
   private BASE_URL = environment.base_url;
   private data: string;
-  private getToken: string="";
-  private payment:number;
-  private accData:Accommodations[];
-  private property:Property;
-  flights:Flight[]=[];
-  destination:Destination[];
-  private flightPics=[] as FlightPic[];
+  private getToken = '';
+  private payment: number;
+  myObservable;
+  // timer = Observable.timer(10000, 1000);
+  sub: Subscription;
+  property: Properties;
+
+  // flights: Flights[] = [];
+  private destination: Destinations[];
+  flight: FlightDetails;
+  private flightPics = [] as FlightPic[];
+  private flightDetail: FlightDetails[] = [];
+  carRental: CarRentalDetails;
+  airTaxi: AirDetails;
   year = new Date().getFullYear();
   month = (new Date().getMonth());
   day = new Date().getDate();
-  errorState: string="";
-  error: boolean=false;
-  initailized:boolean=false;
-  check:changeLayout;
-  destAbbrev:string;
-  flightAbbrev:string;
+  errorState = '';
+  error = false;
+  initailized = false;
+  check: changeLayout = { error: false, errorMessage: '', load: false };
+  destAbbrev: string;
+  flightAbbrev: string;
+  carRentalDtls: CarRentalDetails[] = [];
+  search: string;
+
+  /**Booking**/
+  accData: AccBooking[] = [];
+  flightData: FlBooking[] = [];
+  carRentalData: CarBooking[] = [];
+  airTaxiData: AirBooking[] = [];
+
+  load: Loading = { error: false, load: true, errorMessage: '' };
+
+  // timer = Observable.timer(10000, 1000);
+  refreshCount = 0;
+  private _hubConnection: HubConnection;
 
   constructor(
     private http: HttpClient,
-    private route:Router
+    private route: Router
   ) {
-    //this.user=new User();
+    // this.user=new User();
     this.error = false;
-    //this.admin=false;
-    //this.GetToken="";
-    
-    //this.check=[] as changeLayout;
+    // this.admin=false;
+    // this.GetToken="";
+
+    // this.check=[] as changeLayout;
 
     /******ServiceLogic*******/
 
-    if (this.month == 12 && this.day == 31) {
+    if (this.month === 12 && this.day === 31) {
       this.year = new Date().getFullYear() + 1;
       console.log(this.day);
-    }
-    else {
-      //this.year = new Date().getFullYear();
-      console.log(this.day + " year " + this.year);
+    } else {
+      // this.year = new Date().getFullYear();
+      console.log(this.day + ' year ' + this.year);
     }
 
-    if (this.month == (1 || 3 || 4 || 5 || 7 || 8 || 10 || 12) && new Date().getDate() == 31) 
-    {
-      if (this.month == 12) {
+    if (this.month === (1 || 3 || 4 || 5 || 7 || 8 || 10 || 12) && new Date().getDate() === 31) {
+      if (this.month === 12) {
         this.month = 1;
         this.day = 2;
-      }
-      else {
-        this.month++;
-        this.day = 2
-      }
-    }
-    else if (this.month == 2) {
-      if (new Date().getFullYear() % 4 == 0 && this.day == 29) {
+      } else {
         this.month++;
         this.day = 2;
       }
-      else if (this.day == 28) {
+    } else if (this.month === 2) {
+      if (new Date().getFullYear() % 4 === 0 && this.day === 29) {
         this.month++;
         this.day = 2;
-      }
-      else
+      } else if (this.day === 28) {
+        this.month++;
+        this.day = 2;
+      } else {
         this.day += 2;
-    }
-    else if (this.day == 30) {
+      }
+    } else if (this.day === 30) {
       this.month++;
       this.day = 2;
-    }
-    else
+    } else {
       this.day += 2;
+    }
+
+    this._hubConnection = new HubConnectionBuilder().
+      withUrl(this.BASE_URL + 'async').
+      build();
+
+    this._hubConnection
+      .start()
+      .then(() => console.log('Connection started!'))
+      .catch(err => console.log('Error while establishing connection :('));
+
+    // this.timer.subscribe(tick => {
+    //     console.log('Ticking');
+    //  });
 
   }
 
-  userRegister(customer: object, regRef: MatDialogRef<RegisterComponent>) :boolean
-  {
-    //this.body = customer;
-    this.User = new User().deserialize(customer);
+  userRegister(customer: object, regRef: MatDialogRef<RegisterComponent>): boolean {
+    // this.body = customer;
+    this.User = new User(customer);
     console.log(this.user);
-
-    return this.http.post<User>(this.BASE_URL + "/Users/Register",
-      this.User)//, this.httpOptions)
+    this.refreshCount = 0;
+    return this.http.post<User>(this.BASE_URL + 'api/Users/Register',
+      this.User)// , this.httpOptions)
       .map((response) => {
         console.log(response);
-        //let cred = customer as Credetials;
-        //console.log("Email = " + cred.email + cred.password);
-        this.password=this.user.password;
-        this.user.password="";
+        // let cred = customer as Credetials;
+        // console.log("Email = " + cred.email + cred.password);
+        this.password = this.user.password;
+        this.user.password = '';
         this.SetToken(this.user.email, this.password)
           .subscribe(
-            (data: any) => {},
-            (error) => {
-              console.error(error + " for token!!!");
+            data => {
+              this.sub = Observable.interval(60000)
+                .subscribe(
+                  tick => {
+                    this.http.get(this.BASE_URL + `api/Token/Refresh`)
+                    .subscribe(
+                      success => {
+                        console.log('Refreshing');
+                      },
+                      err => {
+                        console.log(err.error);
+                        this.sub.unsubscribe();
+                      },
+                      () => {
+                        console.log('Refresh Done.');
+                      }
+                    );
+                  },
+                  error => {
+                    console.log(error.error);
+                  }
+                );
+            },
+            error => {
+              console.error(error + ' for token!!!');
               this.body = error;
-              regRef.disableClose=false;
-            }, () => { console.log("Done auth");
-            regRef.disableClose=false;
-             if (regRef.componentInstance) regRef.close(); }
+              regRef.disableClose = false;
+            }, () => {
+              console.log('Done auth');
+              regRef.disableClose = false;
+              if (regRef.componentInstance) { regRef.close(); }
+            }
             /*.pipe(
               catchError(this.handleError)*/
 
           );
       })
-      .subscribe((data: any) => { }, 
-      (error) => {
-        console.error(error + " for signIn!!!");
-        console.error(error);
-        this.data = error.error;
+      .subscribe((data: any) => { },
+        (error) => {
+          console.error(error + ' for signIn!!!');
+          console.error(error);
+          this.data = error.error;
 
-        if (this.data == "Email exists")
-          this.data;
-        else
-          this.data = "Error occured.";
-        this.error = true;
-        
-        if (regRef.componentInstance){
-          regRef.disableClose=false;
-         regRef.close();
-        }
-      }, 
-      () => 
-      { 
-        if (regRef.componentInstance) 
-        console.log("Token not finised"); 
-      }).closed;
+          if (this.data === 'Email exists') {
+            this.check.errorMessage = 'Email exists';
+          } else {
+            this.check.errorMessage = 'Error occured.';
+          }
+          this.check.error = true;
+
+          if (regRef.componentInstance) {
+            regRef.disableClose = false;
+            regRef.close();
+          }
+        },
+        () => {
+          if (regRef.componentInstance) {
+            console.log('Token not finised');
+          }
+        }).closed;
   }
 
-  userLogin(Email: string, Password: string, signInRef: MatDialogRef<SignInComponent>) : boolean
-  {
-    //console.log("before stringfy: "+ user.email);
-    this.body = { email: Email, password: Password };//JSON.stringify(credetials);
-    console.log("after stringfy: " + this.body);
+  userLogin(Email: string, Password: string, signInRef: MatDialogRef<SignInComponent>): boolean {
+    // console.log("before stringfy: "+ user.email);
+    this.body = { email: Email, password: Password }; // JSON.stringify(credetials);
+    console.log('after stringfy: ' + this.body);
 
-    return this.http.get(this.BASE_URL + `/Users/GetUser/${Email}&${Password}`)
-      //this.Body, this.httpOptions)
+
+    return this.http.get<User>(this.BASE_URL + `api/Users/GetUser/${Email}&${Password}`)
+      // this.Body, this.httpOptions)
       .subscribe((response) => {
         console.log(JSON.stringify(response));
 
-        this.User = new User().deserialize(response);
+        this.User = new User(response);
         /*if(this.user.userId==1)
           this.admin=true;*/
-        this.password=this.user.password;
-        this.User.password="";
-        console.log("Token launch");
+        this.password = this.user.password;
+        this.User.password = '';
+        console.log('Token launch');
         this.SetToken(Email, Password)
           .subscribe(
-            (data: any) => { },
-            (error) => {
-              console.error(error + " for token!!!");
-              this.body = error;
-            }, () => { console.log("Done auth"); 
-            if (signInRef.componentInstance) {
-              signInRef.disableClose=false;
+            data => {
+              this.sub = Observable.interval(120000)
+                .subscribe(
+                  tick => {
+                    this.http.get(this.BASE_URL + `api/Token/Refresh`)
+                    .subscribe(
+                      success => {
+                        console.log('Refreshing');
+                        console.log(success);
+                        this.myToken = success as Token;
+                        localStorage.removeItem('currentUser');
+                        localStorage.setItem('currentUser', success.toString());
+                        console.log('');
+                      },
+                      err => {
+                        console.log(err.error);
+                        this.sub.unsubscribe();
+                      },
+                      () => {
+                        console.log('Refresh Done.');
+                      }
+                    );
+                  },
+                  error => {
+                    console.log(error.error);
+                  }
+                );
+            },
+            error => {
+              console.error(error + ' for token!!!');
+              this.check.errorMessage = 'Something went wrong.';
+              this.check.error = true;
+              signInRef.disableClose = false;
+              signInRef.close();
+              // this.body = error;
+            }, () => {
+              console.log('Done auth');
+              if (signInRef.componentInstance) {
+                signInRef.disableClose = false;
+                signInRef.close();
+              }
+            }
+          );
+      },
+        (error) => {
+          console.error(error + ' for signIn!!!');
+          this.data = error.message;
+
+          if (this.data.search('unknown url') >= 1) {
+            this.check.errorMessage = 'Cannot reach server';
+          }
+          if (this.data.search('Email') >= 1) {
+            this.check.errorMessage = 'Email not found';
+          }
+          if (this.data.search('Password') >= 1) {
+            this.check.errorMessage = 'Password not found';
+          }
+
+          this.check.error = true;
+          if (signInRef.componentInstance) {
+            signInRef.disableClose = false;
             signInRef.close();
           }
-           }
-            /*.pipe(
-              catchError(this.handleError)*/
-
-          );
-      }, (error) => {
-        console.error(error + " for signIn!!!");
-        this.data = error.message;
-
-        if (this.data.search("unknown url") >= 1)
-          this.data = "Cannot reach server";
-        if (this.data.search("Email") >= 1)
-          this.data = "Email not found";
-        if (this.data.search("Password") >= 1)
-          this.data = "Password not found";
-
-        this.error = true;
-        if (signInRef.componentInstance){
-          signInRef.disableClose=false;
-         signInRef.close();
-        }
-      }, 
-      () => { 
-        if (signInRef.componentInstance) 
-        console.log("Token not finised"); 
-      }).closed;
+        },
+        () => {
+          if (signInRef.componentInstance) {
+            console.log('Token not finised');
+          }
+        }).closed;
   }
 
-  userUpdate(userUpdate: Users, loading:changeLayout) : boolean
-  {
+  userUpdate(userUpdate: Users, loading: changeLayout): boolean {
 
     this.body = userUpdate;
     console.log(this.body);
-    if(userUpdate.password=="")
-    {
-      //userUpdate.password=this.user.password;
+    this.refreshCount = 0;
+    if (userUpdate.password === '') {
+      // userUpdate.password=this.user.password;
       this.user.deserialize(userUpdate);
-      this.user.password=this.password;
+      this.user.password = this.password;
+    } else {
+      this.user.deserialize(userUpdate);
     }
-    else
-      this.user.deserialize(userUpdate);
 
-      return this.http.put(this.BASE_URL + "/Users/UpdateUser",
-        this.user)//, this.httpOptions)
-        .map(response => {
-          console.log(response);
-          this.password = this.user.password;
-          this.user.password="";
-          //this.user = new User().deserialize(response);
-        })
-        .subscribe(data => {
-          console.log(data);
-        }
-          , error => {
-            this.data = error.message;
-            this.error = true;
-            //console.error(this.httpOptions);
-            console.error(this.data);
-            if(this.data.search("400"))
-              loading.errorMessage="Internal server error";
+    return this.http.put(this.BASE_URL + 'api/Users/UpdateUser',
+      this.user)// , this.httpOptions)
+      .map(response => {
+        console.log(response);
+        this.password = this.user.password;
+        this.user.password = '';
+        // this.user = new User().deserialize(response);
+      })
+      .subscribe(data => {
+        console.log(data);
+      },
+        error => {
+          this.data = error.message;
+          this.check.error = true;
+          // console.error(this.httpOptions);
+          console.error(this.data);
+          if (this.data.search('400')) {
+            loading.errorMessage = 'Internal server error';
+          }
 
-            if(this.data.search("unknown url"))
-              loading.errorMessage="Server unreachable.";
+          if (this.data.search('unknown url')) {
+            loading.errorMessage = 'Server unreachable.';
+          }
 
-            loading.load=false;
-            loading.error=true;
-            //message.error="";
-          }, () => { console.log("Update Done uncheck interface");loading.load=false; }).closed;
+          loading.load = false;
+          loading.error = true;
+          // message.error="";
+        },
+        () => { console.log('Update Done uncheck interface'); loading.load = false; }).closed;
   }
 
-  userLogic(type: string) : void
-  {
+  userLogic(type: string): void {
     if (this.User != null) {
-      //auth = this.Authenticated;
+      // auth = this.Authenticated;
 
       if (this.Authenticated) {
         console.log(this.Authenticated);
-        this.error = false;
+        this.check.error = false;
+      } else {
+        // this.check.errorMessage = "Failed to authenticate. " + this.Data + ".";
+        // this.check.error = true;
+        console.log(this.check.error);
       }
-      else {
-        this.errorState = "Failed to authenticate. " + this.Data + ".";
-        this.error = true;
-        console.log(this.error)
-      }
-    }
-    else {
-      this.errorState = "Failed to " + type + ". " + this.Data + ".";
+    } else {
+      this.errorState = 'Failed to ' + type + '. ' + this.Data + '.';
 
     }
   }
 
-  serviceLogic() : void
-  {
-    
+  serviceLogic(): void {
+
   }
 
-  SetToken(email: string, password: string) : Observable<any>
-  {
-    console.log("Email = " + email + " Password = " + password);
-    return this.http.get(this.BASE_URL + `/Token/CreateToken/${email}&${password}`)//, this.httpOptions)
+  SetToken(email: string, password: string): Observable<any> {
+    console.log('Email = ' + email + ' Password = ' + password);
+    return this.http.get(this.BASE_URL + `api/Token/CreateToken/${email}&${password}`)// , this.httpOptions)
       .map((response) => {
-        //this.body = response;
+        // this.body = response;
         this.myToken = response as Token;
         console.log(this.myToken.token);
-        this.GetToken = "Bearer "+this.myToken.token;
-        localStorage.setItem("currentUser", this.myToken.token);
-        //console.log("currentUser = "+localStorage.getItem("currentUser"));
+        this.GetToken = 'Bearer ' + this.myToken.token;
+        localStorage.setItem('currentUser', this.myToken.token);
+        // console.log("currentUser = "+localStorage.getItem("currentUser"));
         this.Authenticated = true;
 
-        console.log("Auth is true!!!!");
-      });
+        console.log('Auth is true!!!!');
+      })
+      .pipe(
+        catchError(this.handleError)
+      );
   }
 
-  getCompanyFlight(arr:string):boolean
-  {
-    return this.http.get(this.BASE_URL+`/Companies/GetCompany/${arr}`)
-    .subscribe(
-      data=>{
-        console.log(data);
-        this.flightPics=data as FlightPic[];
-        console.log(this.flightPics);
-        this.route.navigate(["/detail"]);
-      },
-      error=>{
-        console.error(error.message);
-      },
-      ()=>{
-        console.log("Done");
-      }
-    ).closed;
+  getCompanyFlight(arr: string): boolean {
+    this.refreshCount = 0;
+    return this.http.get(this.BASE_URL + `api/Companies/GetCompany/${arr}`)
+      .subscribe(
+        data => {
+          console.log(data);
+          this.flightPics = data as FlightPic[];
+          console.log(this.flightPics);
+          this.route.navigate(['/detail']);
+        },
+        error => {
+          console.error(error.message);
+        },
+        () => {
+          console.log('Done');
+        }
+      ).closed;
   }
 
-  AccountDetails()
-  {
-    //console.log(accData);
-    return this.http.get(this.BASE_URL+`/AccBookings/GetBookings/${this.User.userId}`);
-    
-  }
 
-  GetFlight(form:FormControl, form2:FormControl)
-  {
-    return this.http.get(this.BASE_URL+`/Flights/GetAll`)
-    .subscribe(
-      data=>{
-        console.log(data);
-        this.flights = data as Flight[];
-        console.log(this.flights);
-        console.log(this.flights[0].locale);
-        form.setValue(this.flights[0].locale);
-        this.Destination
-        .subscribe(
-          data=>{
-            console.log(data);
-            this.destination = data as Destination[];
-            console.log(this.destination);
-            form2.setValue(this.destination[0].destination1);
-          },
-          error=>{
-            console.log("Error :" + error.message);
-          },
-          ()=>{
-            console.log("Done");
-          }
-        );
-        
-        
-      },
-      error=>{
-        console.error(error.message);
-        console.log("Why?")
-      },
-      ()=>{
-        console.log("Done");
-      }
-    );
-  }
 
-  PaymentSuccess(id:number) :boolean
-  {
-    return this.http.post(this.BASE_URL+`/AccBookings/Book`, 
-  id
-  )
-  .subscribe(
-    data =>{
+  AccountDetails(service: any[], loading?: Loading, serType?: string) {
+    this.refreshCount = 0;
+    // console.log(accData);
+    switch (serType) {
+      case ('accommodation'):
+        return this.http.get<AccBooking[]>(this.BASE_URL + `api/Accommodations/AccBookings/GetBookings/${this.User.userId}`)
+          .subscribe(
+            data => {
+              console.log(data);
+              data.forEach(
+                element => {
+                  service.push(element);
+                  this.accData.push(element);
+                }
+              );
+              console.log(this.accData);
+              console.log(service);
+              console.log(this.accData);
+              console.log(service);
+            },
+            error => {
+              console.log(error);
+              console.log(Loading);
+              loading.errorMessage = error.error;
+              loading.error = true;
+              loading.load = false;
+              console.log(loading);
+            },
+            () => {
+              console.log('Accounts Done');
+              loading.error = false;
+              loading.load = false;
+            }
+          ).closed;
 
-    }, 
-    error => {
+      case ('flight'):
+        return this.http.get<FlBooking[]>(this.BASE_URL + `api/Flights/FlBookings/GetFlBooking/${this.User.userId}`)
+          .subscribe(
+            data => {
+              console.log(data);
+              // this.accData = data;
+              // this.flightData = data;
+              // service = data;
+              service.splice(0);
+              this.flightData.splice(0);
+              data.forEach(
+                element => {
+                  service.push(element);
+                  this.flightData.push(element);
+                }
+              );
+              // accData = this.accData;
+              /// console.log(service);
+              // console.log(this.accData[0].bookDate);
+            },
+            error => {
+              console.log(error);
+              loading.errorMessage = error.error;
+              loading.error = true;
+              loading.load = false;
+            },
+            () => {
+              console.log('Accounts Done');
+              loading.error = false;
+              loading.load = false;
+            }
+          ).closed;
 
-    }, 
-    () => {
+      case ('carRental'):
+        return this.http.get<CarBooking[]>(this.BASE_URL + `api/CarRentals/CarBookings/GetCarBooking/${this.User.userId}`)
+          .subscribe(
+            data => {
+              console.log(data);
 
+              service.splice(0);
+              this.carRentalData.splice(0);
+              data.forEach(
+                element => {
+                  service.push(element);
+                  this.carRentalData.push(element);
+                }
+              );
+            },
+            error => {
+              console.log(error);
+              loading.errorMessage = error.error;
+              loading.error = true;
+              loading.load = false;
+            },
+            () => {
+              console.log('Accounts Done.');
+              loading.error = false;
+              loading.load = false;
+            }
+          ).closed;
+
+      case ('airTaxi'):
+        return this.http.get<AirBooking[]>(this.BASE_URL + `api/AirTaxis/AirBookings/GetAirBooking/${this.User.userId}`)
+          .subscribe(
+            data => {
+              console.log(data);
+
+              service.splice(0);
+              this.airTaxiData.splice(0);
+              data.forEach(
+                element => {
+                  service.push(element);
+                  this.airTaxiData.push(element);
+                }
+              );
+            },
+            error => {
+              console.log(error);
+              loading.errorMessage = error.error;
+              loading.error = true;
+              loading.load = false;
+            },
+            () => {
+              console.log('Accounts Done.');
+              loading.error = false;
+              loading.load = false;
+            }
+          ).closed;
     }
-  ).closed;
   }
 
-  logOut():boolean
-  {
-    return this.http.post(this.BASE_URL+`/Token/LogOut`,User)
-    .subscribe(
-      data=>{
-        
-      },
-      error=>{
+  GetFlight(form: FormControl, form2: FormControl): boolean {
+    if ((this.flights) && (form.value === '' && form2.value === '')) {
+      form.setValue(this.flights[0].locale);
+      form2.setValue(this.flights[0].destination[0].destination1);
+      return true;
+    }
 
-      },
-      ()=>{
+    return this.http.get<Flights[]>(this.BASE_URL + `api/Flights/GetAll`)
+      .subscribe(
+        data => {
+          console.log(data);
+          this.flights = data;
 
-      }
-    ).closed
+          console.log(this.flights);
+          console.log(this.flights[0].locale);
+          form.setValue(this.flights[0].locale);
+          console.log(this.flights.length);
+
+          form2.setValue(this.flights[0].destination[0].destination1);
+
+          /*this.http.get<Destinations[]>(this.BASE_URL + `/Flights/Destinations/GetAll`)
+            .subscribe(
+              data => {
+                console.log(data);
+                this.destination = data;
+                console.log(this.destination);
+                form2.setValue(this.destination[0].destination1);
+              },
+              error => {
+                console.log("Error :" + error.message);
+              },
+              () => {
+                console.log("Done");
+              }
+            );*/
+
+        },
+        error => {
+          console.error(error.message);
+          console.log('Why?');
+        },
+        () => {
+          console.log('Done');
+        }
+      ).closed;
   }
 
-  //*******Set*******//
+  SearchFlights(loc: string, des: string): boolean {
+    // console.log("Id = " + id)
+    console.log('In SearchFlights');
+    const locale = this.flights.find(s => s.locale === loc);
+    const dest = // this.destination.find(s=>s.destination1==des);
+      locale.destination.find(s => s.destination1 === des);
+
+    return this.http.get<FlightDetails[]>(environment.base_url + `api/Flights/FlightDetails/GetFlightDetail/${dest.destId}`)
+      .subscribe(
+        data => {
+          console.log(data);
+          this.flightDetail = data;
+          console.log(this.flightDetail);
+          console.log(this.flightDetail[0].departure);
+          this.route.navigate(['/flight-detail']);
+        },
+        error => {
+          console.error(error.message);
+        },
+        () => {
+          console.log('Done');
+        }
+      ).closed;
+  }
+
+  CarRentalDetails(search: string) {
+    return this.http.get<CarRentalDetails[]>(this.BASE_URL + `api/CarRentals/Cars/GetDetails/${search}`)
+      .subscribe(
+        data => {
+          console.log(data);
+          this.carRentalDtls = data;
+
+          console.log(this.carRentalDtls);
+          this.route.navigate(['car-detail']);
+
+        },
+        error => {
+          console.error(error.message);
+          // console.log("ID = "+ search);
+        },
+        () => {
+          console.log('Done.');
+        }
+      );
+  }
+
+
+
+  PaymentSuccess(id: number): boolean {
+    this.refreshCount = 0;
+    return this.http.post(this.BASE_URL + `api/AccBookings/Book`,
+      id
+    )
+      .subscribe(
+        data => {
+          console.log(data);
+        },
+        error => {
+          console.error(error.message);
+        },
+        () => {
+          console.log('Done.');
+        }
+      ).closed;
+  }
+
+  logOut(): boolean {
+
+    return this.http.post(this.BASE_URL + `api/Token/LogOut`, User)
+      .subscribe(
+        data => {
+          if (this.sub) {
+          this.sub.unsubscribe();
+          console.log('Refresh Gone');
+          }
+        },
+        error => {
+          console.error('Not logged out! ' + error.message);
+        },
+        () => {
+          this.user = null;
+          localStorage.removeItem('currentUser');
+          console.warn('Logged Out.');
+          console.log('Log|Out Done.');
+        }
+      ).closed;
+  }
+
+  // *******Set*******//
 
   set Authenticated(state) {
     this.authenticated = state;
@@ -398,55 +691,70 @@ export class UsersService {
     this.getToken = token;
   }
 
-  set User(loggedIn)
-  {
-    //this.user=new User();
-    
-    this.user=loggedIn;
-    //this.Admin=new Object();
-    if(this.user.userId==1)
-      this.admin=true;
-      console.log("setting user admin = "+this.Admin);
+  set User(loggedIn) {
+    // this.user=new User();
+
+    this.user = loggedIn;
+    // this.Admin=new Object();
+    if (this.user.admin === true) {
+      this.admin = true;
+    }
+    //   this.myObservable = this.timer.subscribe(tick => {
+    //     this.http.get(this.BASE_URL + 'api/Token/Refresh');
+    //     console.log('Refreshing token');
+    // });
+    console.log('setting user admin = ' + this.Admin);
   }
 
-  set ServiceType(serviceType)
-  {
-    this.serviceType=serviceType;
+  set ServiceType(serviceType) {
+    this.serviceType = serviceType;
   }
 
-  set Property(property)
-  {
-    this.property=property;
+  set Property(property) {
+    this.property = property;
   }
 
-  set Flight(flight)
-  {
-    this.flight=flight;
+  set Flight(flight) {
+    this.flight = flight;
   }
 
-  set Payment(payment)
-  {
-    this.payment=payment;
+  set Payment(payment) {
+    this.payment = payment;
   }
 
-  set AccData(accData)
-  {
-    this.accData=accData;
+  set AccData(accData) {
+    this.accData = accData;
   }
 
 
 
-//*******Get*******//
+  // *******Get*******//
 
-  get Me()
-  {
-    this.GetToken="Bearer "+localStorage.getItem("currentUser");
-    //if(){}
-    return this.http.get(this.BASE_URL+"/Token/SignIn");//,
-    //{headers:new HttpHeaders().set("Authorization","Bearer "+localStorage.getItem("currentUser"))})
+  get Me() {
+    this.GetToken = 'Bearer ' + localStorage.getItem('currentUser');
+    this.refreshCount = 0;
+    // if(){}
+    return this.http.get(this.BASE_URL + 'api/Token/SignIn'); // ,
+    // {headers:new HttpHeaders().set("Authorization","Bearer "+localStorage.getItem("currentUser"))})
     /*.pipe(
       catchError(this.handleError)
     );*/
+  }
+
+  RefreshMe(): boolean {
+    this.GetToken = 'Bearer ' + localStorage.getItem('currentUser');
+    return this.http.get(environment.base_url + 'api/Token/Refresh')
+      .subscribe(
+        data => {
+          console.log('Successfully refreshed!!!');
+        },
+        error => {
+          console.error(error.error);
+        },
+        () => {
+          console.log('Done');
+        }
+      ).closed;
   }
 
   get GetToken() {
@@ -457,35 +765,73 @@ export class UsersService {
     return this.getToken;
   }
 
-  get Admin()
-  {
+  get Admin() {
     return this.admin;
   }
 
-  get ServiceType()
-  {
+  get ServiceType() {
     return this.serviceType;
   }
 
-  get GetAccommodation()
-  {
-    return this.http.get(this.BASE_URL+`/Accommodations/GetAll`);
+  get Accommodations() {
+    return this.accommodations;
   }
 
-  get GetProperty()
-  {
-    return this.http.get(this.BASE_URL+`/Properties/GetAll`);
+  get GetAccommodation() {
+    console.log(this.accommodations.length);
+
+    if (this.accommodations.length > 0) {
+      return true;
+    }
+    this.refreshCount = 0;
+
+    return this.http.get<Accommodations[]>(this.BASE_URL + `api/Accommodations/GetAll`)
+      .subscribe(
+        data => {
+
+          console.log(data);
+          for (let index = 0; index < data.length; index++) {
+            this.accommodations[index] = data[index];
+            if (index === 14) {
+              break;
+            }
+          }
+
+        },
+        error => {
+          console.log(error.message);
+        },
+        () => {
+          console.log('Get done.');
+        }
+      );
   }
 
-  get Destination()
-  {
-    return this.http.get(this.BASE_URL+`/Flights/Destinations/GetAll`)
-    ;
+  get GetProperty() {
+    this.refreshCount = 0;
+    return this.http.get(this.BASE_URL + `api/Properties/GetAll`);
   }
 
-  get GetFlightDetails()
-  {
-    return this.http.get(this.BASE_URL+`/Flights/FlightDetails/GetDetail`);
+  get Destination() {
+    this.refreshCount = 0;
+    return this.destination;
+  }
+
+  get GetFlightDetails() {
+    this.refreshCount = 0;
+    return this.http.get(this.BASE_URL + `api/Flights/FlightDetails/GetDetail`);
+  }
+
+  get Flights() {
+    return this.flights;
+  }
+
+  get FlightDetail() {
+    return this.flightDetail;
+  }
+
+  get CarRentalDtls() {
+    return this.carRentalDtls;
   }
 
   get Data() {
@@ -501,28 +847,23 @@ export class UsersService {
     return this.user;
   }
 
-  get Property()
-  {
+  get Property() {
     return this.property;
   }
 
-  get Flight()
-  {
+  get Flight() {
     return this.flight;
   }
 
-  get AccData()
-  {
+  get AccData() {
     return this.accData;
   }
 
-  get FlightPics()
-  {
+  get FlightPics() {
     return this.flightPics;
   }
 
-  get Payment()
-  {
+  get Payment() {
     return this.payment;
   }
 
@@ -538,18 +879,13 @@ export class UsersService {
         `body was: ${error.error}`);
     }
     this.Authenticated = false;
-    console.log("authenticated = " + this.Authenticated);
+    console.log('authenticated = ' + this.Authenticated);
     // return an ErrorObservable with a user-facing error message
     return new ErrorObservable(
       'Something bad happened; please try again later.');
-  };
+  }
 
 }
 interface Token {
   token: string;
 }
-
-/*interface Credetials {
-  email: string;
-  password: string;
-}*/

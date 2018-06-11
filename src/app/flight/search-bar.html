@@ -1,0 +1,77 @@
+<mat-list>
+
+  <mat-list-item>
+
+    <mat-form-field class="commonWid">
+      <!--<mat-label>Outline form field</mat-label>-->
+      <input matInput type="search" name="firstSearch" placeholder="Placeholder" [formControl]="firstSearch" [matAutocomplete]="auto"
+        (keyup)="searchTerm$.next($event.target.value)">
+
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let result of result | slice:0:9" [value]="result.locale">
+          {{ result.locale }}
+        </mat-option>
+      </mat-autocomplete>
+
+    </mat-form-field>
+
+    <a (click)="swap()" class="pointer">
+      <mat-icon matSuffix>settings_ethernet</mat-icon>
+    </a>
+
+    <mat-form-field class="commonWid">
+
+      <input matInput type="search" name="secondSearch" placeholder="Placeholder" [formControl]="secondSearch" [matAutocomplete]="auto2"
+        (keyup)="searchTerm$2.next($event.target.value)">
+      <mat-autocomplete #auto2="matAutocomplete">
+        <mat-option *ngFor="let result of result2 | slice:0:9" [value]="result.destination1">
+          {{ result.destination1 }}
+        </mat-option>
+      </mat-autocomplete>
+
+    </mat-form-field>
+
+    <mat-form-field class="commonWid">
+      <input matInput [min]="minDate" [max]="maxDate" [matDatepicker]="picker1" placeholder="Choose a date" [(ngModel)]="dateFrom"
+        disabled>
+      <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+      <mat-datepicker #picker1 disabled="false"></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field class="commonWid">
+      <input matInput [min]="minDate2" [max]="maxDate2" 
+      [matDatepicker]="picker2" placeholder="Choose a date" 
+      [(ngModel)]="dateTo"
+        disabled>
+      <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+      <mat-datepicker #picker2 disabled="false"></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field>
+
+      <mat-select placeholder="FlightDetails" 
+      [formControl]="panel" panelClass="{{panel.value}}">
+        <mat-option *ngFor="let data of data" [value]="data">
+          {{data}}
+        </mat-option>
+      </mat-select>
+
+    </mat-form-field>
+
+    <mat-form-field>
+
+      <input matInput type="number" placeholder="Number of travellers"
+      [formControl]="travellers"
+      >
+
+    </mat-form-field>
+
+  </mat-list-item>
+
+  <mat-list-item>
+    <button mat-raised-button color="primary" (click)="LoadDetails()">
+      <mat-icon>search</mat-icon>
+    </button>
+  </mat-list-item>
+
+</mat-list>

@@ -1,25 +1,26 @@
 import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpResponse } from '@angular/common/http';
+import { HttpInterceptor, HttpRequest, HttpHandler, HttpResponse, HttpClient } from '@angular/common/http';
 import { UsersService } from './user.service';
 import { finalize, tap } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 @Injectable()
-export class TokenInterceptor{ //implements HttpInterceptor {
+export class TokenInterceptor { // implements HttpInterceptor {
 
   constructor(private auth: UsersService) {}
- 
+
   intercept(req: HttpRequest<any>, next: HttpHandler) {
-    
+
     const authToken = this.auth.GetToken;
     const started = Date.now();
     let ok: string;
- 
+
     // Clone the request and replace the original headers with
     // cloned headers, updated with the authorization.
-    //if(authToken!=""){
-      console.log("Interceptor Executing!!!");
+    // if(authToken!=""){
+      console.log('Interceptor Executing!!!');
     const authReq = req.clone({
-      setHeaders:{'Content-Type':'application/json',Authorization:authToken}
+      setHeaders: {'Content-Type': 'application/json', Authorization: authToken}
     });
 
     return next.handle(authReq)
@@ -27,6 +28,7 @@ export class TokenInterceptor{ //implements HttpInterceptor {
       tap(
         // Succeeds when there is a response; ignore other events
         event => ok = event instanceof HttpResponse ? 'succeeded' : '',
+
         // Operation failed; error is an HttpErrorResponse
         error => ok = 'failed'
       ),
@@ -38,6 +40,6 @@ export class TokenInterceptor{ //implements HttpInterceptor {
         console.log(msg);
       })
     );
-  
+
   }
 }

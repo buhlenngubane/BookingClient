@@ -31,21 +31,22 @@ div.polaroid {
   .full-width {
     width: 100%;
   }
-  .space{
-    padding:30px;
-}
+  .search{
+    background-color: antiquewhite;
+  }
 img.ImgGrid{
     height:180px;
     width:400px;
 }
-.spacer {
-    flex: 1 1 auto;
-  }
   .example-container {
     display: flex;
     flex-direction: column;
   }
+.date{
+    width: 40%;
+}
   a{
       text-decoration: none;
       text-decoration-style: none;
+      cursor: pointer;
   }

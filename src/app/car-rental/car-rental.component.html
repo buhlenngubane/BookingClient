@@ -1,3 +1,76 @@
-<p>
-  car-rental works!
-</p>
+<mat-grid-list cols="2" class="backIMG">
+    <mat-grid-tile [colspan]="1" class="IMG">
+      <!--<img src="../../assets/images/TRAVEL-BEst-Road-Trips-Sea-Cliff-Bridge-shutterstock_167705684.jpg" alt="Back-Image" width="1000" height="300">
+    <div class="topleft">
+    Hello
+  </div>-->
+      <mat-toolbar style="background-color: goldenrod" width="200px" height="100px" class="toolbar">
+
+        <mat-toolbar-row>
+          <label>Let’s find your ideal car</label>
+          
+        </mat-toolbar-row>
+
+        <mat-toolbar-row class="example-container">
+
+          <form class="form">
+            <input matInput type="search" name="search" placeholder="Pick-Up Location" [(ngModel)]="search" [matAutocomplete]="auto" 
+            (keyup)="searchTerm$.next($event.target.value)"
+              size="62" class="search">
+            <mat-autocomplete #auto="matAutocomplete">
+              <mat-option *ngFor="let result of result" [value]="result.location">
+                {{ result.location }}
+              </mat-option>
+            </mat-autocomplete>
+          </form>
+
+        </mat-toolbar-row>
+
+        <mat-toolbar-row>
+
+          <mat-form-field class="full-width">
+            <input matInput [min]="minDate" 
+            [max]="maxDate" [matDatepicker]="picker1" placeholder="Choose a date" [(ngModel)]="dateForm"
+              disabled>
+            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+            <mat-datepicker #picker1 disabled="false"></mat-datepicker>
+          </mat-form-field>
+
+          <span class="spacer"></span>
+
+          <mat-form-field class="full-width">
+            <input matInput [min]="minDate2" [max]="maxDate2" 
+            [matDatepicker]="picker2" placeholder="Choose a date" [(ngModel)]="dateTo"
+              disabled>
+            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+            <mat-datepicker #picker2 disabled="false"></mat-datepicker>
+          </mat-form-field>
+
+        </mat-toolbar-row>
+
+        <mat-toolbar-row>
+          <mat-form-field class="wid">
+
+                  <input matInput type="time" [formControl]="timeFrom" placeholder="Choose time from"
+                   class="without" step="900">
+          </mat-form-field>
+            <span class="spacer"></span>
+
+            <mat-form-field class="wid">
+                <input matInput type="time" [formControl]="timeTo" placeholder="Choose time to"
+                class="without" step="900">
+          </mat-form-field>
+        </mat-toolbar-row>
+
+        <mat-toolbar-row>
+          <span class="spacer"></span>
+          <a mat-raised-button (click)="Find()" class="anchor" color="primary">Search</a>
+        </mat-toolbar-row>
+
+
+      </mat-toolbar>
+    </mat-grid-tile>
+    <mat-grid-tile [colspan]="1">
+
+    </mat-grid-tile>
+</mat-grid-list>

@@ -1,0 +1,22 @@
+.space{
+    padding:30px;
+}
+.spacer {
+    flex: 1 1 auto;
+  }
+  .Wid{
+      width: 100%;
+      border-right: 1px dashed #ddd;
+  }
+  .vl {
+    border-left: 6px solid black;
+    height: auto;
+}
+.topleft {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+}
+.Hght{
+    height: auto;
+}

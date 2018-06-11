@@ -4,3 +4,31 @@
 .space{
     padding:30px;
 }
+.spacer {
+    flex: 1 1 auto;
+  }
+  .spaceLayout
+  {
+      padding-bottom: 20px;
+  }
+  .input{
+    background-color: antiquewhite;
+  }
+  .full-width{
+      width: 100%;
+  }
+input{
+    background-color: antiquewhite;
+}
+a{
+    text-decoration: none;
+    
+}
+nav{
+    text-decoration: none;
+    text-decoration-line: none;
+}
+.navLinks
+{
+    text-decoration: none;
+}

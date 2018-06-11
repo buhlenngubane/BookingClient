@@ -1,0 +1,17 @@
+
+.vl {
+    border-left: 6px solid black;
+    height: 500px;
+}
+.badge{
+    width: 20%;
+}
+.imgLayout{
+    width: 100px;
+}
+.comp{
+    font-size: 10px;
+}
+.spacer {
+    flex: 1 1 auto;
+  }

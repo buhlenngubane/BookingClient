@@ -1,0 +1,38 @@
+.backIMG{
+    background-image: url(
+        "../../assets/images/airTaxiPromo.jpg"
+    ) ;
+    background-size: 1000px, 100px;
+    background-repeat: no-repeat;
+}
+a{
+    text-decoration: none;
+    text-decoration-style: none;
+    cursor: pointer;
+    width: 100%;
+}
+.search{
+    width: 100%;
+    
+}
+.InputSearch{
+    background-color: antiquewhite;
+}
+.spacer {
+    flex: 1 1 auto;
+  }
+  .commonWid
+  {
+      width: 50%;
+  }
+.toolbar{
+    width: inherit;
+    background-color: goldenrod;
+}
+.else
+{
+    width: 100%;
+}
+.without::-webkit-datetime-edit-ampm-field {
+    display: none;
+  }

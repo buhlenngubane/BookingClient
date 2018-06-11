@@ -19,13 +19,13 @@ export class RegisterComponent implements OnInit {
   password: string;
   phone: string;
   private namePattern =
-    "[a-zA-Z]{2,}"
+    '[a-zA-Z]{2,}';
   private emailPattern =
-    "[a-z0-9._%+-]+@[a-z0-9.-]+[.][a-z]{2,4}";
+    '[a-z0-9._%+-]+@[a-z0-9.-]+[.][a-z]{2,4}';
   private passwordPattern =
-    "(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{8,}";
+    '(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{8,}';
   private phoneNumber =
-    "[0]{1}[0-9]{9}";
+    '[0]{1}[0-9]{9}';
 
   constructor(fb: FormBuilder,
     private service: UsersService,
@@ -53,7 +53,7 @@ export class RegisterComponent implements OnInit {
 
   submitReg() {
     this.loading = true;
-    this.dialogRef.disableClose=true;
+    this.dialogRef.disableClose = true;
     this.service.userRegister({
       name: this.name,
       surname: this.surname,

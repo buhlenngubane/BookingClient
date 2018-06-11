@@ -17,10 +17,10 @@
 
       <mat-toolbar-row class="example-container">
         <form class="form">
-            <!--<mat-form-field class="full-width" appearance="outline">-->
-              <input type="text"
+            <mat-form-field class="full-width">
+              <input matInput type="search"
               name="search" 
-              [(ngModel)]="search" 
+              [formControl]="search" 
               placeholder="search"
               [matAutocomplete]="auto" 
               (keyup)="searchTerm$.next($event.target.value)"
@@ -30,7 +30,7 @@
                   {{ result.country }} {{result.location}}
                 </mat-option>
               </mat-autocomplete>
-            <!--</mat-form-field>-->
+            </mat-form-field>
           </form>
       </mat-toolbar-row>
 
@@ -38,12 +38,12 @@
         </mat-toolbar-row>
 
       <mat-toolbar-row>
-        <mat-form-field class="example-full-width">
-          <input matInput [min]="minDate" [max]="maxDate" [textMask]="mask" 
+        <mat-form-field class="full-width">
+          <input matInput [min]="minDate" [max]="maxDate" 
           [(ngModel)]="dateForm" 
           [matDatepicker]="picker1" placeholder="Choose a date" disabled>
           <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-          <mat-datepicker #picker1 startView="month" [startAt]="startDate" disabled="false"></mat-datepicker>
+          <mat-datepicker #picker1 startView="month" disabled="false"></mat-datepicker>
         </mat-form-field>
         <span class="space">
         </span>
@@ -53,11 +53,11 @@
         </mat-toolbar-row>
 
       <mat-toolbar-row>
-        <mat-form-field class="example-full-width">
-          <input matInput [min]="minDate" [max]="maxDate" [textMask]="mask" 
+        <mat-form-field class="full-width">
+          <input matInput [min]="minDate2" [max]="maxDate2" 
           [matDatepicker]="picker2" placeholder="Choose a date" [(ngModel)]="dateTo" disabled>
           <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-          <mat-datepicker #picker2 startView="month" [startAt]="startDate" disabled="false"></mat-datepicker>
+          <mat-datepicker #picker2 startView="month" disabled="false"></mat-datepicker>
         </mat-form-field>
     </mat-toolbar-row>
 
@@ -66,7 +66,9 @@
 
       <mat-toolbar-row>
           <mat-form-field>
-            <mat-select placeholder="Number of rooms to book" [formControl]="panel" panelClass="{{panel}}">
+            <mat-select placeholder="Number of rooms to book" 
+            [formControl]="panel" panelClass="{{panel}}"
+            class="input">
               <!--<mat-option value="{{panel.number+panel.text}}">{{panel.number+panel.text}}</mat-option>-->
               <mat-option value="{{num.number+num.text}}" *ngFor="let num of Num">{{num.number+num.text}}</mat-option>
               <!--<mat-option value="green">Green</mat-option>

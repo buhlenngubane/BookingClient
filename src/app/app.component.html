@@ -7,7 +7,9 @@
     <span class="fill-remaining-space"></span>
     <span class="align-center"></span>
     <span class="spacer"></span>
-
+    <div *ngIf="error.error" class="row" style="color: red;">
+      {{error.errorMessage}}
+    </div>
     <div *ngIf="!auth, else elseBlock" class="row">
       <button mat-button type="submit" (click)="openRegDialog()" [disabled]="loading">
         Register
@@ -20,7 +22,7 @@
     <ng-template #elseBlock>
       <button mat-button [matMenuTriggerFor]="menu">Welcome {{Name}}</button>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="openAccDet()">
+        <button mat-menu-item (click)="openAccDet()" *ngIf="!admin">
           AccountDetails
         </button>
         <button mat-menu-item (click)="closeSession()">
@@ -31,23 +33,26 @@
 
   </mat-toolbar-row>
   <mat-toolbar-row>
-    <nav class="navLinks" *ngIf="!admin, else Admin">
-      <a mat-button routerLink="/home" routerLinkActive="active">Accommodation</a>
-      <a mat-button routerLink="/flight" routerLinkActive="active">Flights</a>
-      <a mat-button routerLink="/car-rentals" routerLinkActive="active">CarRentals</a>
-      <a mat-button routerLink="/air-taxi" routerLinkActive="active">AirTaxi</a>
+    <nav mat-tab-nav-bar class="navLinks" *ngIf="!admin, else Admin">
+      <a mat-button mat-tab-link routerLink="/home" routerLinkActive #rla="routerLinkActive"
+      [active]="rla.isActive">Accommodation</a>
+      <a mat-button mat-tab-link routerLink="/flight" routerLinkActive #rla="routerLinkActive"
+      [active]="rla.isActive">Flights</a>
+      <a mat-button mat-tab-link routerLink="/car-rentals" routerLinkActive #rla="routerLinkActive"
+      [active]="rla.isActive">CarRentals</a>
+      <a mat-button mat-tab-link routerLink="/air-taxi" routerLinkActive #rla="routerLinkActive"
+      [active]="rla.isActive">AirTaxi</a>
     </nav>
     <ng-template #Admin>
-    <nav class="navLinks">
-        <a mat-button routerLink="/admin" routerLinkActive="active">Admin</a>
+    <nav mat-tab-nav-bar class="navLinks">
+        <a mat-button mat-tab-link routerLink="/admin" routerLinkActive #rla="routerLinkActive"
+        [active]="rla.isActive">Admin</a>
     </nav>
   </ng-template>
     <span class="fill-remaining-space"></span>
     <span class="align-center"></span>
     <span class="spacer"></span>
-    <div *ngIf="error" class="row" style="color: red;">
-      {{errorState}}
-    </div>
+    
   </mat-toolbar-row>
 </mat-toolbar>
 </div>

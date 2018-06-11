@@ -5,5 +5,10 @@
 
 export const environment = {
   production: false,
-  base_url: "http://localhost:5000/api"
+  base_url: 'http://localhost:5000/',
+  /***flightType***/
+  economy: 0,
+  premium_economy: 200,
+  business: 500,
+  first_class: 1000
 };

@@ -1,0 +1,119 @@
+<mat-toolbar width="300px" height="100px" class="toolbar">
+
+        <mat-toolbar-row>
+          <label *ngIf="!change.nav">Let’s find your ideal car</label>
+          <label *ngIf="change.nav">Update search</label>
+        </mat-toolbar-row>
+
+        <mat-toolbar-row class="example-container">
+            <mat-form-field class="search">
+            <input matInput type="search" name="firstSearch" placeholder="Placeholder" 
+            [formControl]="firstSearch" 
+            [matAutocomplete]="auto" (keyup)="searchTerm$.next($event.target.value)" class="InputSearch">
+            <mat-autocomplete #auto="matAutocomplete">
+              <mat-option *ngFor="let result of result1 | slice:0:9" [value]="result.pickUp">
+                {{ result.pickUp }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          <!--<mat-form-field appearance="outline" style="background-color: ghostwhite; border-radius: 8px">-->
+            <!--<mat-label>Outline form field</mat-label>-->
+            
+
+        </mat-toolbar-row>
+
+        <mat-toolbar-row>
+          <mat-form-field class="search">
+            <input matInput type="search" name="secondSearch" placeholder="Placeholder" 
+            [formControl]="secondSearch" 
+            [matAutocomplete]="auto2"  (keyup)="searchTerm$2.next($event.target.value)"
+            class="InputSearch"
+            >
+            <mat-autocomplete #auto2="matAutocomplete">
+              <mat-option *ngFor="let result of result2 | slice:0:9" [value]="result.dropOff">
+                {{ result.dropOff }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </mat-toolbar-row>
+
+        <mat-toolbar-row>
+            <!-- {{change.nav}} -->
+        </mat-toolbar-row>
+
+        <mat-toolbar-row>
+          
+          <mat-form-field class="commonWid" *ngIf="!change.nav; else ElseBlock">
+            <input matInput [textMask]="mask" [min]="minDate" [max]="maxDate" [matDatepicker]="picker1" placeholder="Choose a date" [(ngModel)]="dateFrom"
+              disabled>
+            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+            <mat-datepicker #picker1 disabled="false"></mat-datepicker>
+          </mat-form-field>
+          <ng-template #ElseBlock>
+              <mat-form-field class="else">
+                  <input matInput [textMask]="mask" [min]="minDate" [max]="maxDate" [matDatepicker]="picker1" placeholder="Choose a date" [(ngModel)]="dateFrom"
+                    disabled>
+                  <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                  <mat-datepicker #picker1 disabled="false"></mat-datepicker>
+                </mat-form-field>
+          </ng-template>
+
+          <span class="spacer"></span>
+
+          <div *ngIf="!change.nav">
+
+          <mat-form-field >
+            <input matInput type="time" [formControl]="timeFrom" placeholder="Choose time to"
+            placeholder="Choose Time" class="without" step="300">
+          </mat-form-field>
+          
+        </div>
+        </mat-toolbar-row>
+
+        <mat-toolbar-row *ngIf="change.nav">
+            <mat-form-field>
+                <input matInput type="time" [formControl]="timeFrom" placeholder="Choose time from"
+                 class="without" step="300">
+              </mat-form-field>
+        </mat-toolbar-row>
+
+        <mat-toolbar-row>
+            <mat-slide-toggle [(ngModel)]="returnJ" ></mat-slide-toggle>
+            <span class="spacer"></span>
+            <mat-form-field *ngIf="!change.nav">
+                <input matInput type="number" placeholder="Number Of Passengers" [(ngModel)]="passengers">
+              </mat-form-field>
+        </mat-toolbar-row>
+
+        <mat-toolbar-row *ngIf="change.nav">
+            <mat-form-field class="else">
+              <input matInput type="number" placeholder="Number Of Passengers" [(ngModel)]="passengers">
+                
+              </mat-form-field>
+        </mat-toolbar-row>
+
+        <mat-toolbar-row *ngIf="returnJ">
+            
+                <mat-form-field class="else">
+                    <input matInput type="search" [textMask]="mask" [min]="minDate" [max]="maxDate" 
+                    [matDatepicker]="picker1" placeholder="Choose a date" [(ngModel)]="returnDate"
+                      disabled>
+                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                    <mat-datepicker #picker1 disabled="false"></mat-datepicker>
+                  </mat-form-field>
+            
+  
+            <span class="spacer"></span>
+  
+            <mat-form-field class="commonWid">
+            <input matInput type="time" [formControl]="timeTo" placeholder="Choose time to"
+            class="without" step="300">
+          </mat-form-field>
+        </mat-toolbar-row>
+
+        <mat-toolbar-row>
+          <a mat-raised-button (click)="Find()" class="anchor" color="primary">Search</a>
+        </mat-toolbar-row>
+
+
+      </mat-toolbar>

@@ -4,3 +4,6 @@
 .success{
     color: lightgreen;
 }
+.border {
+    border-right: 1px solid black;
+}

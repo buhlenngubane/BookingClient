@@ -57,7 +57,6 @@
         </tr>
       </table>
     </form>
-    <mat-spinner [style.display]="showSpinner ? 'block' : 'none'"></mat-spinner>
   </mat-card-content>
   <mat-card-actions>
     <button mat-raised-button (click)="onSignIn()" color="primary" [disabled]="!_loginForm.valid || loading">

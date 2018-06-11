@@ -11,49 +11,58 @@ declare let paypal: any;
   templateUrl: './payment.component.html',
   styleUrls: ['./payment.component.css']
 })
-export class PaymentComponent implements AfterViewChecked {
+export class PaymentComponent {
 
+
+  // tslint:disable-next-line:no-inferrable-types
   addScript: boolean = false;
+  // tslint:disable-next-line:no-inferrable-types
   paypalLoad: boolean = true;
-  success: boolean = false;
   amount: number;
-  property: Property = this.service.Property?this.service.Property:{propId:1,picture:" ",accId:1,availableRooms:1,propName:" ",pricePerNight:1};
-  displayProperty = [
-    {
-      name: "PropertyName",
-      data: this.property.propName ? this.property.propName : " "
-    }, {
-      name: "Number of rooms to book",
-      data: this.searchService.Panel ? this.searchService.Panel : " "
-    },
-    {
-      name: "Number of nights to book",
-      data: this.searchService.Nights ? this.searchService.Nights : " "
-    },
-    {
-      name: "Book from",
-      data: this.searchService.DateFrom ? this.searchService.DateFrom : " "
-    },
-    {
-      name: "to",
-      data: this.searchService.DateTo ? this.searchService.DateTo : " "
-    },
-    {
-      name: "Total Price",
-      data: this.searchService.Total ? this.searchService.Total : " "
-    }
-  ];
+  serviceType = this.service.serviceType;
 
   constructor(private service: UsersService,
-    private searchService: SearchService,
-    private route: Router
+    private searchService: SearchService
   ) {
-    if (!service.Property) {
-      route.navigate(["/home"]);
-      console.log("rerouting<<<");
+    // console.log(service.flight+" "+ service.User);
+    if (!service.User) {// {
+      searchService.GoBack('/home');
     }
-  }
 
+    console.log(service.serviceType);
+
+    switch (service.serviceType) {
+      case ('accommodation'):
+        if (!service.Property) {
+          // console.log('In Accommodation');
+          searchService.GoBack('/home');
+          break;
+        } else { break; }
+
+      case ('flight'):
+        if (!service.flight) {
+          searchService.GoBack('/flight');
+          break;
+        } else { break; }
+
+      case ('carRental'):
+        if (!service.carRental) {
+          searchService.GoBack('/carRental');
+          break;
+        }  else { break; }
+
+      case ('airTaxi'):
+        if (!service.airTaxi) {
+          searchService.GoBack('/airTaxi');
+          break;
+        } else { break; }
+    }
+    // }
+    // else
+      // this.load=true;
+      // console.log(service.flight+" "+service.User);
+
+  }
   paypalConfig = {
     env: 'sandbox',
     client: {
@@ -65,48 +74,52 @@ export class PaymentComponent implements AfterViewChecked {
       return actions.payment.create({
         payment: {
           transactions: [
-            { amount: { total: this.searchService.Total, currency: 'USD' } }
+            { amount: { total: this.searchService.Total(), currency: 'USD' } }
           ]
         }
       });
     },
     onAuthorize: (data, actions) => {
       return actions.payment.execute().then((payment) => {
-        //Do something when payment is successful.
-        this.amount = this.searchService.Total;
-        this.searchService.Book()
-        .subscribe(
-          data=>{
-            console.log(JSON.stringify(data));
-          },
-          error=>{
-            console.log(error.message);
-          },
-          ()=>{
-            console.log("Done.");
-          }
-        );
-        this.success = true;
-      })
+        console.log(payment);
+        // Do something when payment is successful.
+        this.amount = this.searchService.Total();
+        this.searchService.Book();
+
+        // this.state.success = true;
+      });
     }
   };
 
+  // tslint:disable-next-line:use-life-cycle-interface
   ngAfterViewChecked(): void {
     if (!this.addScript) {
       this.addPaypalScript().then(() => {
         paypal.Button.render(this.paypalConfig, '#paypal-checkout-btn');
         this.paypalLoad = false;
-      })
+      });
     }
   }
 
   addPaypalScript() {
     this.addScript = true;
     return new Promise((resolve, reject) => {
-      let scripttagElement = document.createElement('script');
+      const scripttagElement = document.createElement('script');
       scripttagElement.src = 'https://www.paypalobjects.com/api/checkout.js';
       scripttagElement.onload = resolve;
       document.body.appendChild(scripttagElement);
-    })
+    });
   }
+
 }
+
+@Component({selector: 'app-layout',
+  templateUrl: 'pay-layout.component.html',
+  styleUrls: ['./payment.component.css']})
+
+  export class PayLayoutComponent {
+    state; // =this.searchService.success[];
+    constructor(private service: UsersService, private searchService: SearchService) {
+    }
+
+  }

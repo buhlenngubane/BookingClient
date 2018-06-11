@@ -1,0 +1,41 @@
+img{
+    position: absolute;
+    top: 0%;
+    left: 0%;
+}
+.topleft {
+    position: absolute;
+    top: 8px;
+    left: 16px;
+    font-size: 18px;
+    opacity: 1;
+}
+.IMG{
+    padding-left: 50px;
+}
+.backIMG{
+    background-image: url("../../assets/images/TRAVEL-BEst-Road-Trips-Sea-Cliff-Bridge-shutterstock_167705684.jpg") ;
+    background-size: 1000px, 100px;
+    background-repeat: no-repeat;
+}
+.Font{
+    font-size: 10px;
+    
+}
+.spacer {
+    flex: 1 1 auto;
+  }
+  .search{
+      background-color: antiquewhite;
+  }
+  .without::-webkit-datetime-edit-ampm-field {
+    display: none;
+  }
+  .wid
+  {
+      padding-right: 20px;
+  }
+  .full-width
+  {
+    padding-right: 10px;
+  }

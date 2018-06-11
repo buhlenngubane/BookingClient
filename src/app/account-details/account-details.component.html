@@ -1,6 +1,6 @@
 
 <mat-card-header style="text-align: center">
-    <mat-card-title>Acoount Details</mat-card-title>
+    <mat-card-title mat-dialog-title>Acoount Details</mat-card-title>
 
 </mat-card-header>
 <mat-card-content>
@@ -79,29 +79,29 @@
     <mat-card>
       <mat-card-content>
         <h2 class="example-h2">Tabs with text labels</h2>
-        <mat-tab-group class="demo-tab-group">
+        <mat-tab-group class="demo-tab-group" (selectedTabChange)="tabChanged($event)">
           <mat-tab label="Accommodation">
-            <div class="demo-tab-content">
-              <mat-spinner *ngIf="accLoading.load, else LoadData" [diameter]="30"></mat-spinner>
+            <mat-dialog-content class="demo-tab-content">
+              <mat-spinner *ngIf="loading.load && focus[0]; else LoadData" [diameter]="30"></mat-spinner>
               <ng-template #LoadData>
-                <div *ngIf="accLoading.error">
-                  {{accLoading.message}}
+                <div *ngIf="loading.error">
+                  {{loading.errorMessage}}
                 </div>
-                <div *ngIf="!accLoading.error && accData">
+                <div *ngIf="!loading.error && focus[0]">
                   <mat-grid-list cols="6" rowHeight="100">
-                    <mat-grid-tile>
-                      <p mat-line>Accommodation</p>
+                    <mat-grid-tile class="border">
+                      <p mat-line>Property</p>
                     </mat-grid-tile>
-                    <mat-grid-tile>
+                    <mat-grid-tile class="border">
                       <p mat-line>NumOfNights</p>
                     </mat-grid-tile>
-                    <mat-grid-tile>
+                    <mat-grid-tile class="border">
                       <p mat-line>BookDate</p>
                     </mat-grid-tile>
-                    <mat-grid-tile>
+                    <mat-grid-tile class="border">
                       <p mat-line>PayType</p>
                     </mat-grid-tile>
-                    <mat-grid-tile>
+                    <mat-grid-tile class="border">
                       <p mat-line>PayStatus</p>
                     </mat-grid-tile>
                     <mat-grid-tile>
@@ -109,7 +109,7 @@
                     </mat-grid-tile>
                     <div *ngFor="let Accommodation of accData">
                           <mat-grid-tile>
-                            <p mat-line>{{Accommodation.accId}}</p>
+                            <p mat-line>{{Accommodation.propId}}</p>
                           </mat-grid-tile>
                           <mat-grid-tile>
                             <p mat-line>{{Accommodation.numOfNights}}</p>
@@ -127,35 +127,184 @@
                             <p mat-line>{{Accommodation.total}}</p>
                           </mat-grid-tile>
                           <mat-divider></mat-divider>
+                          
                     </div>
                   </mat-grid-list>
                 </div>
+                {{loading.error}} {{focus[0]}}
               </ng-template>
-            </div>
+            </mat-dialog-content>
           </mat-tab>
-          <mat-tab label="Flight">
-            <div class="demo-tab-content">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla venenatis ante augue. Phasellus volutpat neque ac dui mattis
-              vulputate. Etiam consequat aliquam cursus. In sodales pretium ultrices. Maecenas lectus est, sollicitudin consectetur
-              felis nec, feugiat ultricies mi. Aliquam erat volutpat. Nam placerat, tortor in ultrices porttitor, orci enim
-              rutrum enim, vel tempor sapien arcu a tellus.
-            </div>
+          <mat-tab label="Flight" >
+            <mat-dialog-content class="tab-content">
+                <mat-spinner *ngIf="loading.load && focus[1]; else FlightData" [diameter]="30"></mat-spinner>
+                <ng-template #FlightData>
+                  <div *ngIf="loading.error">
+                    {{loading.errorMessage}}
+                  </div>
+                  <div *ngIf="!loading.error && focus[1]">
+                    <mat-grid-list cols="7" rowHeight="100">
+                      <mat-grid-tile class="border">
+                        <p mat-line>Flight Detail</p>
+                      </mat-grid-tile>
+                      <mat-grid-tile class="border">
+                        <p mat-line>FlightType</p>
+                      </mat-grid-tile>
+                      <mat-grid-tile class="border">
+                        <p mat-line>Travellers</p>
+                      </mat-grid-tile>
+                      <mat-grid-tile class="border">
+                          <p mat-line>Book Date</p>
+                        </mat-grid-tile>
+                      <mat-grid-tile class="border">
+                        <p mat-line>PayType</p>
+                      </mat-grid-tile>
+                      <mat-grid-tile class="border">
+                        <p mat-line>PayStatus</p>
+                      </mat-grid-tile>
+                      <mat-grid-tile>
+                        <p mat-line>Total Paid</p>
+                      </mat-grid-tile>
+                      <div *ngFor="let Flight of flightData">
+                            <mat-grid-tile>
+                              <p mat-line>{{Flight.detailId}}</p>
+                            </mat-grid-tile>
+                            <mat-grid-tile>
+                              <p mat-line>{{Flight.flightType}}</p>
+                            </mat-grid-tile>
+                            <mat-grid-tile>
+                              <p mat-line>{{Flight.travellers}}</p>
+                            </mat-grid-tile>
+                            <mat-grid-tile>
+                                <p mat-line>{{Flight.bookDate}}</p>
+                              </mat-grid-tile>
+                            <mat-grid-tile>
+                              <p mat-line>{{Flight.payType}}</p>
+                            </mat-grid-tile>
+                            <mat-grid-tile>
+                              <p mat-line>{{Flight.payStatus}}</p>
+                            </mat-grid-tile>
+                            <mat-grid-tile>
+                              <p mat-line>{{Flight.total}}</p>
+                            </mat-grid-tile>
+                            <mat-divider></mat-divider>
+                      </div>
+                    </mat-grid-list>
+                  </div>
+                </ng-template>
+            </mat-dialog-content>
           </mat-tab>
           <mat-tab label="Car Rental">
-            <div class="demo-tab-content">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla venenatis ante augue. Phasellus volutpat neque ac dui mattis
-              vulputate. Etiam consequat aliquam cursus. In sodales pretium ultrices. Maecenas lectus est, sollicitudin consectetur
-              felis nec, feugiat ultricies mi. Aliquam erat volutpat. Nam placerat, tortor in ultrices porttitor, orci enim
-              rutrum enim, vel tempor sapien arcu a tellus.
-              <br />
-              <br /> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla venenatis ante augue. Phasellus volutpat neque
-              ac dui mattis vulputate. Etiam consequat aliquam cursus. In sodales pretium ultrices. Maecenas lectus est,
-              sollicitudin consectetur felis nec, feugiat ultricies mi. Aliquam erat volutpat. Nam placerat, tortor in ultrices
-              porttitor, orci enim rutrum enim, vel tempor sapien arcu a tellus.
-            </div>
+            <mat-dialog-content class="tab-content">
+                <mat-spinner *ngIf="loading.load && focus[2]; else carData" [diameter]="30"></mat-spinner>
+                <ng-template #carData>
+                  <div *ngIf="loading.error">
+                    {{loading.errorMessage}}
+                  </div>
+                  <div *ngIf="!loading.error && focus[2]">
+                    <mat-grid-list cols="7" rowHeight="100">
+                      <mat-grid-tile class="border">
+                        <p mat-line>Car</p>
+                      </mat-grid-tile>
+                      <mat-grid-tile class="border">
+                        <p mat-line>Book Date</p>
+                      </mat-grid-tile>
+                      <mat-grid-tile class="border">
+                        <p mat-line>Return Date</p>
+                      </mat-grid-tile>
+                      <mat-grid-tile class="border">
+                        <p mat-line>PayType</p>
+                      </mat-grid-tile>
+                      <mat-grid-tile class="border">
+                        <p mat-line>PayStatus</p>
+                      </mat-grid-tile>
+                      <mat-grid-tile>
+                        <p mat-line>Total Paid</p>
+                      </mat-grid-tile>
+                      <div *ngFor="let Car of carRentalData">
+                            <mat-grid-tile>
+                              <p mat-line>{{Car.carId}}</p>
+                            </mat-grid-tile>
+                            <mat-grid-tile>
+                                <p mat-line>{{Car.bookDate}}</p>
+                              </mat-grid-tile>
+                              <mat-grid-tile>
+                                  <p mat-line>{{Car.returnDate}}</p>
+                                </mat-grid-tile>
+                            <mat-grid-tile>
+                              <p mat-line>{{Car.payType}}</p>
+                            </mat-grid-tile>
+                            <mat-grid-tile>
+                              <p mat-line>{{Car.payStatus}}</p>
+                            </mat-grid-tile>
+                            <mat-grid-tile>
+                              <p mat-line>{{Car.total}}</p>
+                            </mat-grid-tile>
+                            <mat-divider></mat-divider>
+                      </div>
+                    </mat-grid-list>
+                  </div>
+                </ng-template>
+            </mat-dialog-content>
           </mat-tab>
           <mat-tab label="Air Taxi">
-            No content
+            <mat-dialog-content>
+                <mat-spinner *ngIf="loading.load && focus[3]; else taxiData" [diameter]="30"></mat-spinner>
+                <ng-template #taxiData>
+                  <div *ngIf="loading.error">
+                    {{loading.errorMessage}}
+                  </div>
+                  <div *ngIf="!loading.error && focus[3]">
+                    <mat-grid-list cols="7" rowHeight="100">
+                      <mat-grid-tile class="border">
+                        <p mat-line>Air Taxi</p>
+                      </mat-grid-tile>
+                      <mat-grid-tile class="border">
+                          <p mat-line>Book Date</p>
+                        </mat-grid-tile>
+                        <mat-grid-tile class="border">
+                          <p mat-line>Return Journey</p>
+                        </mat-grid-tile>
+                        <mat-grid-tile class="border">
+                          <p mat-line>Passengers</p>
+                        </mat-grid-tile>
+                      <mat-grid-tile class="border">
+                        <p mat-line>PayType</p>
+                      </mat-grid-tile>
+                      <mat-grid-tile class="border">
+                        <p mat-line>PayStatus</p>
+                      </mat-grid-tile>
+                      <mat-grid-tile>
+                        <p mat-line>Total Paid</p>
+                      </mat-grid-tile>
+                      <div *ngFor="let Taxi of airTaxiData">
+                            <mat-grid-tile>
+                              <p mat-line>{{Taxi.airDetailId}}</p>
+                            </mat-grid-tile>
+                            <mat-grid-tile>
+                              <p mat-line>{{Taxi.bookDate}}</p>
+                            </mat-grid-tile>
+                            <mat-grid-tile>
+                              <p mat-line>{{Taxi.returnJourney}}</p>
+                            </mat-grid-tile>
+                            <mat-grid-tile>
+                                <p mat-line>{{Taxi.passengers}}</p>
+                              </mat-grid-tile>
+                            <mat-grid-tile>
+                              <p mat-line>{{Taxi.payType}}</p>
+                            </mat-grid-tile>
+                            <mat-grid-tile>
+                              <p mat-line>{{Taxi.payStatus}}</p>
+                            </mat-grid-tile>
+                            <mat-grid-tile>
+                              <p mat-line>{{Taxi.total}}</p>
+                            </mat-grid-tile>
+                            <mat-divider></mat-divider>
+                      </div>
+                    </mat-grid-list>
+                  </div>
+                </ng-template>
+            </mat-dialog-content>
           </mat-tab>
         </mat-tab-group>
       </mat-card-content>
@@ -167,18 +316,18 @@
     <div class="row">
         <mat-grid-list cols="2" rowHeight="20">
           <mat-grid-tile>
-            <button mat-button (click)="closeDialog()">
+            <button mat-button mat-dialog-close>
               Close Window
             </button>
           </mat-grid-tile>
-          <mat-grid-tile color="accent" *ngIf="(!loading.load && loading.error), else ElseBlock" class="fail">
-            {{loading.errorMessage}}
+          <mat-grid-tile color="accent" *ngIf="msLoading.error && !msLoading.load" class="fail">
+            {{msLoading.errorMessage}}
           </mat-grid-tile>
-          <ng-template #ElseBlock *ngIf="!loading.load" class="success">
+          <!-- <ng-template *ngIf="!msLoading.load" class="success" #Saved>
             Saved Changes
-          </ng-template>
+          </ng-template> -->
           <mat-grid-tile>
-              <mat-spinner *ngIf="loading.load" [diameter]="30"></mat-spinner>
+              <mat-spinner *ngIf="msLoading.load" [diameter]="30"></mat-spinner>
           </mat-grid-tile>
         </mat-grid-list>
       </div>

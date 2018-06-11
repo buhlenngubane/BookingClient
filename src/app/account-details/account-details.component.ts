@@ -2,9 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { UsersService } from '../service/user.service';
 import { SignInComponent } from '../sign-in/sign-in.component';
-import { MatDialogRef } from '@angular/material';
+import { MatDialogRef, MatTabChangeEvent } from '@angular/material';
 import { User } from '../model/user';
 import { changeLayout, CheckAccommodation } from '../service/common-interface';
+import { AccBooking, CarBooking, FlBooking, AirBooking } from '../model/service-type';
+// import { Loading, Booking } from '../model/service-type';
 
 @Component({
   selector: 'app-account-details',
@@ -22,17 +24,20 @@ export class AccountDetailsComponent implements OnInit {
   password: string;
   phone: string;
   user: User;
-  checked: boolean;
+  focus: boolean[] = [];
   loading: any;
-  accLoading: any;
-  accData: any[];
+  msLoading: any;
+  accData: AccBooking[] = [];
+  flightData: FlBooking[] = [];
+  carRentalData: CarBooking[] = [];
+  airTaxiData: AirBooking[] = [];
 
   private emailPattern =
-    "^[a-z0-9._%+-]+@[a-z0-9.-]+[.][a-z]{2,4}$";
+    '^[a-z0-9._%+-]+@[a-z0-9.-]+[.][a-z]{2,4}$';
   private passwordPattern =
-    "(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{8,}";
+    '(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{8,}';
   private phoneNumber =
-    "[0]{1}[0-9]{9}";
+    '[0]{1}[0-9]{9}';
 
   constructor(fb: FormBuilder,
     private service: UsersService,
@@ -52,84 +57,164 @@ export class AccountDetailsComponent implements OnInit {
       }
     );
 
-    this.accLoading = {
-      load: true,
+    this.msLoading = {
+      load: false,
       error: false,
-      message: "",
+      message: '',
 
-    }
-    /*this.accData = [
-      {
-        bookingId: 0,
-        userId: 0,
-        accId: 0,
-        numOfNights: 0,
-        bookDate: new Date(),
-        payType: "",
-        payStatus: false,
-        total: 0
-      }
-    ]*/
+    };
 
-    this.loading = { load: false, error: false, errorMessage: "" };
-    this.checked = false;
-    //dialogRef.updateSize("30","30");
-    if (!service.AccData)
-      service.AccountDetails()
-        .subscribe(
-          data => {
-            console.log("Is service null "+ service.AccData);
-            this.accData = data as CheckAccommodation[];
-            service.AccData=this.accData;
-            console.log(this.accData);
-            console.log(this.accData[0].bookDate);
-
-          },
-          error => {
-            this.accLoading.message = "Failed to load data.";
-            this.accLoading.error = true;
-            this.accLoading.load = false;
-          },
-          () => {
-            console.log("Accounts Done");
-            this.accLoading.error = false;
-            this.accLoading.load = false;
-          }
-        )
-        .closed;
-    else
+    this.loading = { load: true, error: false, errorMessage: '' };
+    // this.checked = false;
+    // dialogRef.updateSize("30","30");
+    if (service.AccData.length === 0) {
+      this.focus[0] = true;
+          this.focus[1] = false;
+          this.focus[2] = false;
+          this.focus[3] = false;
+      this.service.AccountDetails(this.accData, this.loading, 'accommodation');
+      console.log(this.accData);
+    } else {
+      this.loading = {load: false, error: false, errorMessage: ''};
       this.accData = service.AccData;
+      console.log('Else' + service.AccData);
+      this.loading.load = false;
+    }
     console.log(this.accData);
   }
 
   ngOnInit() {
   }
 
+  async Wait() {
+    await this.ngOnInit();
+  }
+
   setStep(index: number) {
     this.step = index;
   }
 
+  // async setAccData() {
+  // }
+
   confirmed() {
-    console.log("userUpdate()");
-    this.loading = { load: true };
+    console.log('userUpdate()');
+    this.msLoading = { load: true };
     this.service.userUpdate({
       userId: this.service.User.userId,
       name: this.name ? this.name : this.service.User.name,
       surname: this.surname ? this.surname : this.service.User.surname,
       email: this.service.User.email,
-      password: this.password ? this.password : "",
+      password: this.password ? this.password : '',
       phone: this.phone ? this.phone : this.service.User.phone
-    }, this.loading);
+    }, this.msLoading);
 
-    console.log("userUpdate() called!!");
+    console.log('userUpdate() called!!');
 
     this.Submited = true;
     this.step++;
     this.postChanges.reset();
   }
 
-  closeDialog() {
-    this.dialogRef.close();
-  }
+  tabChanged = (tabChangeEvent: MatTabChangeEvent): void => {
+    switch (tabChangeEvent.tab.textLabel) {
+      case ('Accommodation'):
+        if (this.service.AccData.length === 0) {
+          // tslint:disable-next-line:no-unused-expression
+          this.loading.error = false;
+          this.loading.errorMessage = '';
+          this.loading.load = true;
+          this.service.AccountDetails(this.accData, {error: true, load: false, errorMessage: ''} , 'accommodation')
+          ;
+          this.focus[0] = true;
+          this.focus[1] = false;
+          this.focus[2] = false;
+          this.focus[3] = false;
 
+          console.log(tabChangeEvent.tab.textLabel);
+          break;
+        } else {
+          console.log(this.service.AccData);
+          this.focus[0] = true;
+          this.focus[1] = false;
+          this.focus[2] = false;
+          this.focus[3] = false;
+          this.accData = this.service.AccData;
+          this.loading = {load: false, error: false, errorMessage: 'What'};
+          break; }
+
+      case ('Flight'):
+        if (this.service.flightData.length === 0) {
+           // tslint:disable-next-line:no-unused-expression
+           this.loading.error = false;
+          this.loading.errorMessage = '';
+          this.loading.load = true;
+           this.service.AccountDetails(this.flightData, this.loading, 'flight');
+           this.focus[0] = false;
+          this.focus[1] = true;
+          this.focus[2] = false;
+          this.focus[3] = false;
+          console.log(tabChangeEvent.tab.textLabel);
+           break;
+          } else {
+            this.focus[0] = false;
+          this.focus[1] = true;
+          this.focus[2] = false;
+          this.focus[3] = false;
+            this.flightData = this.service.flightData;
+            this.loading = {load: false, error: false, errorMessage: ''};
+            console.log(tabChangeEvent.tab.textLabel);
+          break;
+        }
+
+      case ('Car Rental'):
+        if (this.service.carRentalData.length === 0) {
+          // tslint:disable-next-line:no-unused-expression
+          this.loading.error = false;
+          this.loading.errorMessage = '';
+          this.loading.load = true;
+          this.service.AccountDetails(this.carRentalData, this.loading, 'carRental');
+          this.focus[0] = false;
+          this.focus[1] = false;
+          this.focus[2] = true;
+          this.focus[3] = false;
+          console.log(tabChangeEvent.tab.textLabel);
+          break;
+        } else {
+          this.focus[0] = false;
+          this.focus[1] = false;
+          this.focus[2] = true;
+          this.focus[3] = false;
+          this.carRentalData = this.service.carRentalData;
+          this.loading = {load: false, error: false, errorMessage: ''};
+          console.log(tabChangeEvent.tab.textLabel);
+          break;
+        }
+
+      case ('Air Taxi'):
+        if (this.service.airTaxiData.length === 0) {
+          // tslint:disable-next-line:no-unused-expression
+          this.loading.error = false;
+          this.loading.errorMessage = '';
+          this.loading.load = true;
+          this.service.AccountDetails(this.airTaxiData, this.loading, 'airTaxi');
+          this.focus[0] = false;
+          this.focus[1] = false;
+          this.focus[2] = false;
+          this.focus[3] = true;
+          console.log(tabChangeEvent.tab.textLabel);
+          break;
+        } else {
+          this.focus[0] = false;
+          this.focus[1] = false;
+          this.focus[2] = false;
+          this.focus[3] = true;
+          this.airTaxiData = this.service.airTaxiData;
+          this.loading = {load: false, error: false, errorMessage: ''};
+          console.log(tabChangeEvent.tab.textLabel); break; }
+
+      default :
+      console.log(tabChangeEvent.tab.textLabel);
+    }
+  }
 }

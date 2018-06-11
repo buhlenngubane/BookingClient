@@ -1,0 +1,39 @@
+<mat-grid-list cols="4">
+  <mat-grid-tile [rowspan]="result.length" class="Wid">
+      <app-air-search-bar class="topleft"></app-air-search-bar>
+  </mat-grid-tile>
+  <mat-grid-tile [colspan]="3" *ngFor="let result of result; let i = index" class="topleft">
+    
+  <mat-toolbar class="commonWid">
+    <mat-toolbar-row class="label" *ngIf="i==0">
+        <h3>What kind of taxi would you like?</h3>
+    </mat-toolbar-row>
+    <mat-toolbar-row *ngIf="i==0"></mat-toolbar-row>
+    <mat-toolbar-row class="container">
+            <div class="bottomleft">Top Right
+              <br>
+              WhatsUp
+              <br>
+              <mat-icon>person</mat-icon>{{result.taxi.numOfSeats}} Passengers
+              <br>
+              <mat-icon>
+                work
+              </mat-icon>{{result.taxi.numOfBaggage}} Standard bags
+              <br>
+              <mat-icon>done</mat-icon>{{result.driverPolicy}}
+            </div>
+            <span class="spacer"></span>
+            <div>
+            <b [style.font-size]="30">{{result.price}}</b>
+            <br>
+            Included in Price:
+            <br>
+            Taxes, Service <br>Charges and Gratuity
+            <br>
+            <button mat-raised-button style="background-color: forestgreen;" 
+            (click)="IfLoggedIn(result)">Book Taxi</button>
+          </div>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  </mat-grid-tile>
+</mat-grid-list>
