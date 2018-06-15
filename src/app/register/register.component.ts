@@ -19,13 +19,13 @@ export class RegisterComponent implements OnInit {
   password: string;
   phone: string;
   private namePattern =
-    '[a-zA-Z]{2,}';
+    '[a-zA-Z]';
   private emailPattern =
     '[a-z0-9._%+-]+@[a-z0-9.-]+[.][a-z]{2,4}';
   private passwordPattern =
     '(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{8,}';
   private phoneNumber =
-    '[0]{1}[0-9]{9}';
+    '^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$';
 
   constructor(fb: FormBuilder,
     private service: UsersService,
@@ -40,7 +40,7 @@ export class RegisterComponent implements OnInit {
           [Validators.required, Validators.pattern(this.emailPattern)]),
         'Password': new FormControl('',
           [Validators.required,
-          Validators.pattern(this.passwordPattern)]),
+          Validators.pattern(this.passwordPattern), Validators.minLength(8)]),
         'Phone': new FormControl('',
           [Validators.required, Validators.pattern(this.phoneNumber),
           Validators.minLength(10)])
@@ -49,6 +49,18 @@ export class RegisterComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  getError(control: FormControl) {
+    try {
+      return control.hasError('required') ? 'Input required' :
+      control.hasError('minlength') ?
+      control.errors.minlength.requiredLength - control.errors.minlength.actualLength + ' Charrecters required' :
+      control.hasError('pattern') ?  'Not a valid pattern' :
+        '';
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   submitReg() {

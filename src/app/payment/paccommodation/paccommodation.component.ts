@@ -36,7 +36,7 @@ export class PaccommodationComponent {
     },
     {
       name: 'Total Price',
-      data: this.searchService.Total() ? this.searchService.Total() : ' '
+      data: this.searchService.Total() ? 'R ' + this.searchService.Total() : ' '
     }
   ];
   state = this.searchService.success[0];

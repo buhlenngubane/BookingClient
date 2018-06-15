@@ -32,6 +32,9 @@
           <input matInput hintLabel="(e.g.A@123Book)" 
           placeholder="Change Password" type="password" 
           [(ngModel)]="password" [formControl]="postChanges.controls.Password">
+          <mat-error *ngIf='postChanges.controls.Password.invalid'>
+            {{getError(postChanges.controls.Password)}}
+          </mat-error>
           <mat-hint align="end" class="form-control-feedback"
               *ngIf="postChanges.controls.Password.errors && 
      (postChanges.controls.Password.dirty || postChanges.controls.Password.touched) && 
@@ -50,7 +53,7 @@
           && postChanges.controls.ConfirmPassword.errors.pattern && 
           (postChanges.controls.ConfirmPassword.dirty || postChanges.controls.ConfirmPassword.touched)" 
          >
-            Passwords don't match
+            {{getError(postChanges.controls.ConfirmPassword, 'ConfirmPassword')}}
           </mat-error>
           <mat-hint 
           *ngIf="password==postChanges.controls.ConfirmPassword.value && 
@@ -320,12 +323,12 @@
               Close Window
             </button>
           </mat-grid-tile>
-          <mat-grid-tile color="accent" *ngIf="msLoading.error && !msLoading.load" class="fail">
+          <mat-grid-tile color="accent" *ngIf="msLoading.error && !msLoading.load; else Saved" class="fail">
             {{msLoading.errorMessage}}
           </mat-grid-tile>
-          <!-- <ng-template *ngIf="!msLoading.load" class="success" #Saved>
+          <ng-template class="success" #Saved>
             Saved Changes
-          </ng-template> -->
+          </ng-template>
           <mat-grid-tile>
               <mat-spinner *ngIf="msLoading.load" [diameter]="30"></mat-spinner>
           </mat-grid-tile>

@@ -14,8 +14,8 @@ img{
     padding-left: 50px;
 }
 .backIMG{
-    background-image: url("../../assets/images/TRAVEL-BEst-Road-Trips-Sea-Cliff-Bridge-shutterstock_167705684.jpg") ;
-    background-size: 1000px, 100px;
+    background-image: url("../../assets/images/lp-hero-gb-afl.jpg") ;
+    background-size: 100%;
     background-repeat: no-repeat;
 }
 .Font{
@@ -28,14 +28,27 @@ img{
   .search{
       background-color: antiquewhite;
   }
-  .without::-webkit-datetime-edit-ampm-field {
+  /* .without::-webkit-datetime-edit-ampm-field {
     display: none;
-  }
+  } */
   .wid
   {
+      width: 50%;
       padding-right: 20px;
   }
-  .full-width
-  {
+.field {
+    width: 100%;
+}
+.spaceLayout {
+    padding-bottom: 30px;
+}
+.full-width {
+    width: 100%;
     padding-right: 10px;
+  }
+  .search{
+    background-color: antiquewhite;
+  }
+  .toolbar {
+      width: 95%;
   }

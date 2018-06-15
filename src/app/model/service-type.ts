@@ -61,17 +61,6 @@ export class Flights {
             ]
         }
     ];
-    'flBooking': [
-        {
-            'bookingId': number,
-            'userId': number,
-            'flightId': number,
-            'flightType': string,
-            'bookDate': Date,
-            'payStatus': true,
-            'total': number
-        }
-    ];
 
     constructor(data?: any) {
         Object.assign(this, data);
@@ -83,7 +72,7 @@ export class Destinations {
     'destId': 0;
     'flightId': number;
 
-    destination1: string;
+    'destination1': string;
 
     constructor(data?: any) {
         Object.assign(this, data);
@@ -115,22 +104,7 @@ export class FlightDetails {
             'destination': [
                 null
             ];
-            'flBooking': [
-                {
-                    'bookingId': number,
-                    'userId': number,
-                    'flightId': number,
-                    'flightType': string,
-                    'bookDate': Date,
-                    'travallers': number,
-                    'payStatus': boolean,
-                    'total': number
-                }
-            ]
         };
-        'flightDetail': [
-            null
-        ]
     };
 
     constructor(data?: any) {
@@ -185,14 +159,7 @@ export class CarRentalDetails {
             'location': string,
             'physicalAddress': string,
             'numOfSuppliers': number,
-            'ccompany': [
-              null
-            ]
           };
-
-        'car': [
-            null
-        ]
     };
     'ctype': {
         'ctypeId': number;
@@ -203,22 +170,7 @@ export class CarRentalDetails {
         'numOfAirbags': number;
         'transmission': string;
         'picture': string;
-        'car': [
-            null
-        ]
     };
-
-    'carBooking': [
-        {
-          'bookingId': number,
-          'userId': number,
-          'carId': number,
-          'bookDate': Date,
-          'returnDate': Date,
-          'payType': string,
-          'total': number
-        }
-      ];
 
     constructor(data?: any) {
         Object.assign(this, data);
@@ -276,19 +228,6 @@ export class AirDetails {
         'driverPolicy': string;
         'airDetail': [null]
     };
-    'airBooking': [
-        {
-            'bookingId': number,
-            'userId': number,
-            'airDetailId': number,
-            'bookDate': Date,
-            'returnJourney': Date,
-            'passengers': number,
-            'payType': string,
-            'payStatus': boolean,
-            'total': number
-        }
-    ];
 
     constructor(data?: any) {
         Object.assign(this, data);

@@ -1,9 +1,6 @@
 <mat-grid-list cols="2" class="backIMG">
     <mat-grid-tile [colspan]="1" class="IMG">
-      <!--<img src="../../assets/images/TRAVEL-BEst-Road-Trips-Sea-Cliff-Bridge-shutterstock_167705684.jpg" alt="Back-Image" width="1000" height="300">
-    <div class="topleft">
-    Hello
-  </div>-->
+     
       <mat-toolbar style="background-color: goldenrod" width="200px" height="100px" class="toolbar">
 
         <mat-toolbar-row>
@@ -11,26 +8,35 @@
           
         </mat-toolbar-row>
 
-        <mat-toolbar-row class="example-container">
-
-          <form class="form">
-            <input matInput type="search" name="search" placeholder="Pick-Up Location" [(ngModel)]="search" [matAutocomplete]="auto" 
-            (keyup)="searchTerm$.next($event.target.value)"
-              size="62" class="search">
-            <mat-autocomplete #auto="matAutocomplete">
-              <mat-option *ngFor="let result of result" [value]="result.location">
-                {{ result.location }}
-              </mat-option>
-            </mat-autocomplete>
-          </form>
-
-        </mat-toolbar-row>
+        <mat-toolbar-row class="spaceLayout">
+            <!--<form class="form">-->
+              <mat-form-field class="full-width">
+              <input matInput type="search"  name="search" 
+              placeholder="search" [formControl]="search" 
+              [matAutocomplete]="auto" 
+              (keyup)="searchTerm$.next($event.target.value)" class="search">
+              <mat-autocomplete #auto="matAutocomplete">
+                <mat-option *ngFor="let result of result " [value]="result.location">
+                  {{result.location}}
+                </mat-option>
+              </mat-autocomplete>
+              <mat-error *ngIf='search.invalid && search.pristine'>
+                {{errorMessage}}
+              </mat-error>
+              <mat-hint align="end" *ngIf='loading.error && search.untouched'>
+                {{loading.errorMessage}}
+              </mat-hint>
+            </mat-form-field>
+            <!--</form>-->
+          </mat-toolbar-row>
 
         <mat-toolbar-row>
 
-          <mat-form-field class="full-width">
+          <mat-form-field class="wid">
             <input matInput [min]="minDate" 
-            [max]="maxDate" [matDatepicker]="picker1" placeholder="Choose a date" [(ngModel)]="dateForm"
+            [max]="maxDate" 
+            (dateChange)="addEvent('change', $event)" 
+            [matDatepicker]="picker1" placeholder="Choose a date" [(ngModel)]="dateForm"
               disabled>
             <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
             <mat-datepicker #picker1 disabled="false"></mat-datepicker>
@@ -38,8 +44,10 @@
 
           <span class="spacer"></span>
 
-          <mat-form-field class="full-width">
-            <input matInput [min]="minDate2" [max]="maxDate2" 
+          <mat-form-field class="wid">
+            <input matInput 
+            [min]="minDate2" 
+            [max]="maxDate2" 
             [matDatepicker]="picker2" placeholder="Choose a date" [(ngModel)]="dateTo"
               disabled>
             <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>

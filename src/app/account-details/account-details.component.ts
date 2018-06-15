@@ -4,7 +4,6 @@ import { UsersService } from '../service/user.service';
 import { SignInComponent } from '../sign-in/sign-in.component';
 import { MatDialogRef, MatTabChangeEvent } from '@angular/material';
 import { User } from '../model/user';
-import { changeLayout, CheckAccommodation } from '../service/common-interface';
 import { AccBooking, CarBooking, FlBooking, AirBooking } from '../model/service-type';
 // import { Loading, Booking } from '../model/service-type';
 
@@ -86,16 +85,25 @@ export class AccountDetailsComponent implements OnInit {
   ngOnInit() {
   }
 
-  async Wait() {
-    await this.ngOnInit();
-  }
-
   setStep(index: number) {
     this.step = index;
   }
 
-  // async setAccData() {
-  // }
+  getError(control: FormControl, str?: string) {
+    try {
+      console.log('in return ' + // JSON.stringify(
+        control.getError('pattern').actualValue);
+      return control.hasError('required') ? 'You must enter a value' :
+      control.hasError('minlength') ?
+      control.errors.minlength.requiredLength - control.errors.minlength.actualLength + ' Charrecters required' :
+      str === 'ConfirmPassword' ? '' :
+      control.hasError('pattern') ? 'Passwords don\'t match' :
+      control.hasError('pattern') ?  'Not a valid pattern' :
+        '';
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   confirmed() {
     console.log('userUpdate()');

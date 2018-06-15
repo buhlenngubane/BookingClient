@@ -9,7 +9,7 @@
         All {{repeat.serviceType}}<span *ngIf="active === repeat.serviceType">, Collapse Me</span>
       </mat-panel-description>
     </mat-expansion-panel-header>
-    <mat-card mat-line style="background-color: black; color: azure">
+    <mat-card style="background-color: black; color: azure">
     <mat-card-content>
         <pre>{{repeat.data|slice:0:9|json}}</pre>
     </mat-card-content>

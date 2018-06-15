@@ -67,7 +67,6 @@ export class AppComponent {
         /*this.errorState="Server Error.";
         this.error=true;*/
         // if (this.offline.includes('401')) {
-          localStorage.removeItem('__paypal_storage__');
           localStorage.removeItem('currentUser');
           console.warn('Removed Token!!!');
           // this.route.navigateByUrl("/home");

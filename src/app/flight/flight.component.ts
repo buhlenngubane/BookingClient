@@ -3,7 +3,7 @@ import { UsersService } from '../service/user.service';
 import { Subject } from 'rxjs/Subject';
 import { SearchService } from '../service/search.service';
 import { Router } from '@angular/router';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 import { when } from 'q';
 import { Flights } from '../model/service-type';
@@ -18,13 +18,13 @@ import { Flights } from '../model/service-type';
 export class FlightComponent implements OnInit {
   constructor(
     private service: UsersService,
-  private searchService: SearchService
-) {
+    private searchService: SearchService
+  ) {
     searchService.success[1].success = false;
+    service.GetFlight();
   }
 
   ngOnInit() {
-
 
   }
 
@@ -40,12 +40,13 @@ export class SearchBarComponent {
   result: Flights[] = [];
   result2: Flights[] = [];
   id: number;
-  data: string[] = ['Economy', 'Premium Economy', 'Business', 'FirstClass'];
+  private data: string[] = ['Economy', 'Premium Economy', 'Business', 'FirstClass'];
   searchTerm$ = new Subject<string>();
   searchTerm$2 = new Subject<string>();
 
-  firstSearch = new FormControl('');
-  secondSearch = new FormControl('');
+  firstSearch = this.service.form;
+  secondSearch = this.service.form2;
+
   panel = new FormControl(this.data[0]);
   travellers = new FormControl('1');
   Type: string = this.data[0];
@@ -57,18 +58,24 @@ export class SearchBarComponent {
   maxDate2 = new Date(this.dateFrom.getFullYear() + 1, 7, 1);
   maxDate = new Date(this.dateFrom.getFullYear() + 1, 6, 30);
 
+  loading = { errorMessage: '', error: false, errorMessage2: '', error2: false };
+
   constructor(private service: UsersService,
     private searchService: SearchService) {
-      // if(searchService.Clocation || searchService.dest)
-      console.log('GetFlight');
-      service.GetFlight(this.firstSearch, this.secondSearch)
-      ;
+    // if(searchService.Clocation || searchService.dest)
+    console.log('GetFlight');
 
-      searchService.search(this.searchTerm$, 2, this.result);
-      searchService.search(this.searchTerm$2, 3, this.result2, this.firstSearch);
+    if (localStorage.getItem('info#2')) {
+      this.firstSearch.setValue(localStorage.getItem('info#2').split(':')[0]);
+      this.secondSearch.setValue(localStorage.getItem('info#2').split(':')[1]);
+    }
 
-      this.dateTo = new Date(this.service.year, this.service.month, this.service.day);
+    searchService.search(this.searchTerm$, 2, this.result);
+    searchService.search(this.searchTerm$2, 3, this.result2, this.firstSearch);
+
+    this.dateTo = new Date(this.service.year, this.service.month, this.service.day);
     this.minDate2 = this.dateTo;
+
   }
 
   swap(): void {
@@ -79,11 +86,12 @@ export class SearchBarComponent {
   }
 
   LoadDetails(): void {
-    if ((this.firstSearch && !this.firstSearch.value.startsWith(' ') &&
-    this.firstSearch.value.search(new RegExp('[0-9]', 'i')))
-      && (this.secondSearch && !this.secondSearch.value.startsWith(' ') &&
-      this.secondSearch.value.search(new RegExp('[0-9]', 'i')))
+
+    if (
+      !this.firstSearch.invalid && !this.secondSearch.invalid
     ) {
+      console.log(JSON.stringify(this.firstSearch.errors) +
+       ' or ' + JSON.stringify(this.secondSearch.errors));
       this.service.flightAbbrev = this.firstSearch.value;
       this.service.destAbbrev = this.secondSearch.value;
 
@@ -95,10 +103,27 @@ export class SearchBarComponent {
 
       console.log('But is ' + this.searchService.flightType);
       this.searchService.numOfTravellers = this.travellers.value;
-      this.service.SearchFlights(this.firstSearch.value, this.secondSearch.value);
-  } else {
-    // this.snack.open("Search Bar must contain letters")._dismissAfter(4000);
-  }
+      // this.result.length === 0 ? this.loading.errorMessage = 'Flights unavailable' :
+      // this.result2.length === 0 ? this.loading.errorMessage = 'Flights unavailable' :
+      this.service.SearchFlights(this.firstSearch.value,
+        this.secondSearch.value, this.dateFrom, this.dateTo, this.loading);
+    } else if (this.firstSearch.invalid) {
+
+      this.firstSearch.markAsTouched();
+      this.firstSearch.hasError('required') ? this.loading.errorMessage = 'Input required' :
+        this.firstSearch.hasError('pattern') ? this.loading.errorMessage = 'Only letters required' :
+          this.loading.errorMessage = '';
+    } else if (this.secondSearch.invalid) {
+      console.log('In hear ' + this.secondSearch.hasError('required') +
+       ' _ ' + this.secondSearch.hasError('pattern'));
+      this.secondSearch.markAsTouched();
+      this.secondSearch.hasError('requred') ? this.loading.errorMessage2 = 'Input required' :
+        this.secondSearch.hasError('pattern') ? this.loading.errorMessage2 = 'Only letters required' :
+          this.loading.errorMessage2 = '';
+    } else {
+
+      console.log('In hear ' + this.firstSearch.hasError('required') + ' _ ' + this.firstSearch.hasError('pattern'));
+    }
 
   }
 }

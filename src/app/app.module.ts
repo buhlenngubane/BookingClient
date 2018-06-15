@@ -21,8 +21,10 @@ import {MatDialogModule,
   MatSelectModule,
   MatTableModule,
   MatButtonToggleModule,
-  // MatSlideToggleModule,
-  MAT_DIALOG_DEFAULT_OPTIONS
+  MatSlideToggleModule,
+  MAT_DIALOG_DEFAULT_OPTIONS,
+  MatStepperModule,
+  MatDividerModule
 } from '@angular/material';
 
 import {MatExpansionModule} from '@angular/material/expansion';
@@ -39,7 +41,7 @@ import { AirTaxiComponent, AirSearchBarComponent } from './air-taxi/air-taxi.com
 import { AccountDetailsComponent } from './account-details/account-details.component';
 import { httpInterceptorProviders } from './service/interceptor-barell/index';
 import { routes } from './app.routes';
-import { AdminComponent, AdminPostComponent } from './admin/admin.component';
+import { AdminComponent, AdminPostComponent, AdminPutComponent, AdminDeleteComponent } from './admin/admin.component';
 import { PaymentComponent, PayLayoutComponent } from './payment/payment.component';
 import { AdminService } from './service/admin.service';
 import { SearchService } from './service/search.service';
@@ -55,6 +57,8 @@ import { PairTaxiComponent } from './payment/pair-taxi/pair-taxi.component';
 import { PflightComponent } from './payment/pflight/pflight.component';
 import { PaccommodationComponent } from './payment/paccommodation/paccommodation.component';
 import { GrowlModule } from 'primeng/primeng';
+import { FooterComponent } from './footer.component';
+import { AboutUsComponent } from './about-us/about-us.component';
 
 @NgModule({
   declarations: [
@@ -80,7 +84,11 @@ import { GrowlModule } from 'primeng/primeng';
     PflightComponent,
     PaccommodationComponent,
     PayLayoutComponent,
-    AdminPostComponent
+    AdminPostComponent,
+    AdminPutComponent,
+    AdminDeleteComponent,
+    FooterComponent,
+    AboutUsComponent
   ],
   imports: [
     BrowserModule,
@@ -108,10 +116,13 @@ import { GrowlModule } from 'primeng/primeng';
     MatSelectModule,
     MatTableModule,
     MatButtonToggleModule,
-    // MatSlideToggleModule,
+    MatSlideToggleModule,
     GrowlModule,
-    RouterModule.forRoot(routes),
+    MatStepperModule,
+    MatDividerModule,
+    RouterModule.forRoot(routes, {onSameUrlNavigation: 'reload'}),
   ],
+  exports: [RouterModule],
   providers: [UsersService,
     httpInterceptorProviders,
     AdminService,

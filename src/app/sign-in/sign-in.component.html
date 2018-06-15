@@ -12,17 +12,11 @@
               type="email" name="email" 
               [(ngModel)]="email" [formControl]="_loginForm.controls.Email"
                 required>
-                <mat-error align="end" *ngIf="_loginForm.controls.Email.errors && 
+                <mat-error align="end" *ngIf="_loginForm.controls.Email.invalid && 
                 (_loginForm.controls.Email.dirty || _loginForm.controls.Email.touched)">
-                  Incorrect Format!
+                  {{getError(_loginForm.controls.Email)}}
                 </mat-error>
             </mat-form-field>
-            <!--<div class="form-control-feedback" *ngIf="_loginForm.controls.Email.errors && 
-     (_loginForm.controls.Email.dirty || _loginForm.controls.Email.touched)">
-              <p *ngIf="_loginForm.controls.Email.errors.pattern">
-                Incorrect Format!
-              </p>
-            </div>-->
           </td>
         </tr>
         <tr>
@@ -40,19 +34,12 @@
               >{{_loginForm.controls.Password.errors.minlength.requiredLength - 
                 _loginForm.controls.Password.errors.minlength.actualLength}}
                 characters left.</mat-hint>
-                <mat-error *ngIf="_loginForm.controls.Password.errors && 
-                _loginForm.controls.Password.errors.pattern && 
+                <mat-error *ngIf="_loginForm.controls.Password.invalid &&
                 (_loginForm.controls.Password.dirty || _loginForm.controls.Password.touched)">
-                  Password pattern not met.
+                  <!-- Password pattern not met. -->
+                  {{getError(_loginForm.controls.Password)}}
                 </mat-error>
             </mat-form-field>
-            <!--<div class="form-control-feedback" *ngIf="_loginForm.controls.Password.errors && 
-     (_loginForm.controls.Password.dirty || _loginForm.controls.Password.touched)">
-              <p *ngIf="_loginForm.controls.Password.errors.pattern">
-                Password pattern not met.
-              </p>
-
-            </div>-->
           </td>
         </tr>
       </table>
@@ -60,7 +47,8 @@
   </mat-card-content>
   <mat-card-actions>
     <button mat-raised-button (click)="onSignIn()" color="primary" [disabled]="!_loginForm.valid || loading">
-      <mat-spinner *ngIf="loading" [diameter]="30"></mat-spinner>Submit
+      <mat-spinner *ngIf="loading; else Submit" [diameter]="30"></mat-spinner>
+      <ng-template #Submit>Submit</ng-template>
     </button>
   </mat-card-actions>
 </mat-card>

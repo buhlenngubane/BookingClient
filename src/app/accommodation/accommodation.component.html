@@ -19,6 +19,12 @@
               {{ result.country }} {{result.location}}
             </mat-option>
           </mat-autocomplete>
+          <mat-error *ngIf='search.invalid && search.pristine'>
+            {{errorMessage}}
+          </mat-error>
+          <mat-hint align="end" *ngIf='error && search.untouched'>
+            {{errorMessage}}
+          </mat-hint>
         </mat-form-field>
         <!--</form>-->
       </mat-toolbar-row>
@@ -27,7 +33,9 @@
 
         <mat-form-field class="date">
           <input matInput
-          [min]="minDate" [max]="maxDate" 
+          [min]="minDate" 
+          [max]="maxDate" 
+          (dateChange)="addEvent('change', $event)" 
           [matDatepicker]="picker1" placeholder="Choose a date" [(ngModel)]="dateForm"
             disabled>
           <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
@@ -66,7 +74,7 @@
         <span class="fill-remaining-space"></span>
         <span class="align-center"></span>
         <span class="spacer"></span>
-        <button mat-raised-button (click)="Find()" color="primary">Search</button>
+        <button mat-raised-button (click)="Find(search)" color="primary">Search</button>
       </mat-toolbar-row>
 
 
@@ -87,22 +95,29 @@
     </a>
   </mat-grid-tile>
 
+  <mat-grid-tile [colspan]='2' >
+    <span class="space" *ngFor="let acc of accommodation | slice:2">
+    <mat-card class="card" (click)="Search(acc.accId)">
+      <a routerLink="">
+        <!-- <div *ngFor="let acc of accommodation; index as i"> -->
+          <div class="poraloid"  layout-wrap>
+            <img mat-card-image src="data:image/jpeg;base64,{{acc.picture}}" alt="{{acc.location}}" srcset="" class="First">
+            <!-- <div [style.background-image]="Sanitize('data:image/jpeg;base64,' + acc.picture)"></div> -->
+            <mat-card-header >
+              <mat-card-title style="color: black">{{acc.country}}</mat-card-title>
+    
+            </mat-card-header>
+    
+            <mat-card-content style="color: black">
+              This is America
+            </mat-card-content>
+          </div>
+          
+        <!-- </div> -->
+      </a>
+      
+    </mat-card>
+   </span>
+  </mat-grid-tile>
+
 </mat-grid-list>
-
-<mat-card class="card" *ngIf="accommodation">
-  <a routerLink="">
-    <div *ngFor="let acc of accommodation; index as i">
-      <div class="poraloid" *ngIf="i===2" layout-wrap>
-        <img mat-card-image src="data:image/jpeg;base64,{{acc.picture}}" alt="{{acc.location}}" srcset="" class="First">
-        <mat-card-header>
-          <mat-card-title style="color: black">{{acc.country}}</mat-card-title>
-
-        </mat-card-header>
-
-        <mat-card-content style="color: black">
-          This is America
-        </mat-card-content>
-      </div>
-    </div>
-  </a>
-</mat-card>

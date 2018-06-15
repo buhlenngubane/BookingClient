@@ -1,9 +1,8 @@
-
 <mat-accordion>
         <mat-expansion-panel *ngFor="let data of loop">
           <mat-expansion-panel-header>
             <mat-panel-title>
-                    Post
+                    Delete
             </mat-panel-title>
             <mat-panel-description>
                     {{data.text}}
@@ -12,21 +11,20 @@
       
           <mat-card style="background-color: black; color: azure">
                 <mat-card-content *ngIf="!data.change; else TextArea">
-                          <pre>{{data.obj|json}}</pre>
+                          Specify {{data.text}} id
                     </mat-card-content>
                 <ng-template #TextArea>
-                        <mat-card-content style="background-color: azure; color: black">
-                                <mat-form-field class="wid">
-                                    <textarea matInput name="acc" id="" rows="30" [(ngModel)] = "data.bind">
-                                            
-                                    </textarea>
+                        <mat-card-content>
+                                <mat-form-field>
+                                    <input matInput name="acc" id="" placeholder="id" 
+                                    [(ngModel)] = "data.bind" style="background-color: aliceblue; color: black"/>
                                 </mat-form-field>
                             </mat-card-content>
                 </ng-template>
           </mat-card>
           <mat-action-row>
                 <button mat-button color="primary" (click)="data.change=true">
-                  Post
+                  Delete
                 </button>
                 <button mat-raised-button color="primary" (click)="PostAll(data)" *ngIf="data.change">
                     Submit

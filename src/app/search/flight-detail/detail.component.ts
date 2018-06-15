@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UsersService } from '../../service/user.service';
 import { SearchService } from '../../service/search.service';
-import { Router } from '@angular/router';
-import { Time } from '@angular/common';
 import { FlightDetails } from '../../model/service-type';
 import { FormControl } from '@angular/forms';
 
@@ -12,31 +10,32 @@ import { FormControl } from '@angular/forms';
   styleUrls: ['./detail.component.css']
 })
 export class DetailComponent implements OnInit {
-  myFlight = this.service.flightAbbrev ?
-  this.service.flightAbbrev.split(' ')[0] : '';
+  private myFlight =
+  this.service.form.value.split(' ')[0];
 
-  myDestination = this.service.destAbbrev ?
-  this.service.destAbbrev.split(' ')[0] : '';
+  private myDestination =
+  this.service.form2.value.split(' ')[0];
 
-  myDetail = this.service.FlightDetail;
-  flightPics = this.service.FlightPics;
-  departTime: string[] = [];
-  date: Date[];
-  depart: string[] = [];
-  return: string[] = [];
-  panel: FormControl[];
-  travellers: FormControl[];
+  private myDetail = this.service.FlightDetail;
+  // departTime: string[] = [];
+  // date: Date[];
+  // depart: string[] = [];
+  // return: string[] = [];
+  // panel: FormControl[];
+  // travellers: FormControl[];
 
   constructor(private service: UsersService,
     private searchService: SearchService) {
       if (service.FlightDetail.length === 0) {
-        searchService.GoBack('/flight');
+        localStorage.getItem('info#2') ?
+         service.SearchFlights(localStorage.getItem('info#2').split(':')[0],
+          localStorage.getItem('info#2').split(':')[1]) :
+            searchService.GoBack('/flight');
       }
       console.log('Initial flightType' + searchService.flightType);
     }
 
   ngOnInit() {
-
   }
 
   IfLoggedIn(flight: FlightDetails) {
@@ -47,6 +46,8 @@ export class DetailComponent implements OnInit {
     console.log(flight);
     console.log('Final flightType' + this.searchService.flightType);
     this.searchService.PaymentReceive('flight-detail', {Detail: flight});
+    } else {
+      this.service.check.errorMessage = 'SignIn or Register to book';
     }
   }
 

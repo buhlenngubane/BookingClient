@@ -14,11 +14,16 @@ export class AirDetailsComponent implements OnInit {
   // nav:boolean=true;
   constructor(private service: UsersService
   , private searchService: SearchService) {
-      console.log(searchService.airDetails);
+      console.log(searchService.airDetails.length);
       console.log(this.result.length);
-      if (!searchService.airDetails) {
+      if (searchService.airDetails.length === 0) {
+        localStorage.getItem('info#4') ?
+         searchService.AirTaxis(localStorage.getItem('info#4').split(':')[0],
+          localStorage.getItem('info#4').split(':')[1]) :
+           searchService.GoBack('/airTaxi');
+      } /*else {
         searchService.GoBack('/air-taxi');
-      }
+      }*/
    }
 
   ngOnInit() {

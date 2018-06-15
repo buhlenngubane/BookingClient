@@ -2,7 +2,8 @@
     background-image: url(
         "../../assets/images/airTaxiPromo.jpg"
     ) ;
-    background-size: 1000px, 100px;
+    /* background-size: 1000px, 1000px; */
+    background-size: 100%;
     background-repeat: no-repeat;
 }
 a{
@@ -26,13 +27,19 @@ a{
       width: 50%;
   }
 .toolbar{
-    width: inherit;
+    width: 100%;
     background-color: goldenrod;
 }
 .else
 {
     width: 100%;
 }
-.without::-webkit-datetime-edit-ampm-field {
+/* .without::-webkit-datetime-edit-ampm-field {
     display: none;
-  }
+  } */
+.pad {
+    padding-bottom: 30px;
+}
+.padTop {
+    padding-top: 35px;
+}

@@ -1,0 +1,335 @@
+
+  <mat-grid-list cols='5'>
+    <mat-grid-tile [colspan]='2' [rowspan]='2'>
+      <div class="leftTop">
+        <a mat-button (click)="Change('About Booking', 2)">About Booking.com
+          <span>
+            <sup>TM</sup>
+          </span>
+        </a>
+        <br/>
+        <div *ngFor='let about of AboutUsContent'>
+          <a mat-button (click)="Change(about.text, about.rows)">{{about.text}}</a>
+        </div>
+      </div>
+    </mat-grid-tile>
+    <div *ngIf="path === 'About Booking'">
+      <mat-grid-tile [colspan]='3' [rowspan]='2'>
+        <div class="leftTop">
+          <h2>
+            About Booking.com
+            <sup>TM</sup>
+            <br/>
+          </h2>
+          <br/> Established in 1996 in Amsterdam, Booking.com has grown from a small Dutch start-up to one of the largest travel
+          e-commerce companies in the world. Part of Booking Holdings Inc. (NASDAQ: BKNG), Booking.com now employs more than
+          15,000 employees in 198 offices in 70 countries worldwide.
+          <br/>
+          <br/> With a mission to empower people to experience the world, Booking.com invests in digital technology that helps take
+          the friction out of travel. At Booking.com, we connect travellers with the worldâ€™s largest selection of incredible
+          places to stay, including everything from apartments, vacation homes, and family-run B&Bs to 5-star luxury resorts,
+          tree houses and even igloos. The Booking.com website and mobile apps are available in over 40 languages, offer more
+          than 28,662,243 total reported listings, and cover 134,830 destinations in 227 countries and territories worldwide.
+          <br/>
+          <br/> Each day, more than 1,550,000 room nights are reserved on our platform. So whether travelling for business or leisure,
+          customers can instantly book their ideal accommodation quickly and easily with Booking.com, without booking fees
+          and backed up by our promise to price match. Via our customer experience team, customers can reach Booking.com 24/7
+          for assistance and support in over 40 languages, any time of the day or night.
+        </div>
+      </mat-grid-tile>
+      <mat-grid-tile class="Img" [colspan]='5' [rowspan]='2'>
+        <p>
+          Booking.com B.V. is based in Amsterdam in the Netherlands, and is supported internationally by 198 offices in over 70 countries
+          around the world: Accra - Amman - Amsterdam - Antalya - Athens - Atlanta - Auckland - Bangalore - Bangkok - Barcelona
+          - Beijing - Berlin - Bilbao - BogotÃ¡ - Bolzano - Bordeaux - Boston - Bratislava - Brisbane - Bristol - Brussels -
+          Bucharest - Budapest - Buenos Aires - Cairo - Calgary - Cambridge - CancÃºn - Cape Town - Casablanca - Catania - Chengdu
+          - Chicago - Colombo - Copenhagen - Dallas - Denver - Dubai - Dublin - Dubrovnik - Dusseldorf - Edinburgh - Faro -
+          Florence - Frankfurt am Main - Freiburg im Breisgau - Fukuoka - Grand Rapids - Guadalajara - Guangzhou - Haikou -
+          Hamburg - Hanoi - Helsinki - Heraklion - Ho Chi Minh City - Hong Kong - Honolulu - Houston - Innsbruck - Istanbul
+          - Ä°zmir - Jakarta - Jeddah - Jeju - Johannesburg - Kiev - Koh Samui - Krakow - Kuala Lumpur - Kuta (Bali) - Las Palmas
+          de Gran Canaria - Las Vegas - Lille - Lima - Limassol - Lisbon - Ljubljana - London - Los Angeles - Lyon - Madrid
+          - MÃ¡laga - Manchester - Manila - Marrakech - Melbourne - Mexico City - Miami - Milan - Montpellier - MontrÃ©al - Moscow
+          - Mumbai - Munich - Naha - Nairobi - Natal - New Delhi - New Orleans - New York - Nice - Norwalk - Orlando - Osaka
+          - Oslo - Palma de Mallorca - Panama City - Paris - Phoenix - Phuket - Porto Alegre - Prague - Qingdao - Rennes -
+          ReykjavÃ­k - Riga - Rimini - Rio de Janeiro - Rome - Saint Petersburg - Sallanches - Salzburg - San Diego - San Francisco
+          - San Jose - San Juan - Santiago - Santo Domingo - SÃ£o Paulo - Sapporo - Seattle - Seoul - Seville - Shanghai - Siem
+          Reap - Singapore - Sochi - Sofia - Sorrento - Split - Stockholm - Strasbourg - Sydney - Taipei - Tallinn - Tbilisi
+          - Tel Aviv - ThessalonÃ­ki - Tokyo - Toronto - Trabzon - Vancouver - Venice - Verona - Vienna - Vilnius - Warsaw -
+          Washington - Xi'an - Yangon - Yogyakarta - Zagreb - Zurich
+          <br/>
+          <br/> Booking.com B.V. is registered with the trade register of the Chamber of Commerce in Amsterdam, the Netherlands,
+          under registration number 31047344. VAT registration number is NL805734958B01. Registration number with Dutch Data
+          Protection Authority is 1288246.
+  
+        </p>
+      </mat-grid-tile>
+      <mat-grid-tile [rowspan]='2'>
+  
+      </mat-grid-tile>
+      <mat-grid-tile class="right" [rowspan]='2'>
+        <h3 class="rightTop">What Booking.com
+          <br/>offers</h3>
+      </mat-grid-tile>
+      <mat-grid-tile [colspan]='2' [rowspan]='2'>
+        <p class="leftTop">
+          <b>Incredible choice</b>
+          <br/> Whether you want to stay in a chic city apartment, a luxury beach resort or a cosy B&B in the countryside, Booking.com
+          provides you with amazing diversity and breadth of choice - all in one place.
+          <br/>
+          <br/>
+  
+          <b>Low rates</b>
+          <br/> Booking.com guarantees to offer you the best available rates. And with our promise to price match, you can rest
+          assured that youâ€™re always getting a great deal.
+          <br/>
+          <br/>
+  
+          <b>Instant confirmation</b>
+          <br/> At Booking.com, every reservation is instantly confirmed. Once youâ€™ve found your perfect stay, a few clicks are
+          all it takes.
+          <br/>
+          <br/>
+  
+          <b>No reservation fees</b>
+          <br/> We donâ€™t charge you any booking fees or add any administrative charges. And in many cases, your booking can be cancelled
+          free of charge.
+          <br/>
+          <br/>
+  
+          <b>Secure booking</b>
+          <br/> We facilitate hundreds of thousands of transactions every day through our secure platform, and work to the highest
+          standards to guarantee your privacy. For further details, please check our Privacy Statement.
+          <br/>
+          <br/>
+  
+          <b>24/7 support</b>
+          <br/> Whether youâ€™ve just booked or are already enjoying your trip, our customer experience team are on hand around the
+          clock to answer your questions and advocate on your behalf in more than 40 languages. Make sure to check out our
+          FAQ for travellers.
+        </p>
+      </mat-grid-tile>
+      <mat-grid-tile [rowspan]='2'>
+  
+      </mat-grid-tile>
+  
+      <mat-grid-tile>
+  
+      </mat-grid-tile>
+      <mat-grid-tile>
+        <h3 class="rightTop">Bringing value to our
+          <br/>accommodation
+          <br/>partners</h3>
+      </mat-grid-tile>
+      <mat-grid-tile [colspan]='2'>
+        <p class="leftTop">
+          At Booking.com, we believe that all great properties deserve to be discovered. Thatâ€™s why we make it quick and easy for accommodation
+          providers all around the world to market their properties, reach new customers and grow their business via our platform.
+          <br/>
+          <br/> For more information and to list your property on Booking.com, please see our Accommodation Partner Programme.
+  
+        </p>
+      </mat-grid-tile>
+    </div>
+    <div *ngIf="path === 'Legal'">
+        <mat-grid-tile [colspan]='3' [rowspan]='2'>
+            <div class="leftTop">
+          <h1>Legal</h1><br/><br/>
+          Booking.com B.V. (the company behind Booking.comâ„¢) is registered and based in Amsterdam, 
+          the Netherlands ("Booking.com", "we", "us" or "our"), 
+          from where it renders an online accommodation reservation service (the "Service") on its website 
+          (the "Website"), and is supported internationally by its local group companies (the "support companies"). 
+          The support companies provide only internal support to Booking.com B.V. 
+          The support companies do not render the Service and do not own, 
+          operate or manage the Website or any other website.<br/><br/>
+  
+          For all questions about Booking.com, the Service (i.e. the online accommodation reservation service) 
+          and the Website or if you wish to send or serve any documents, correspondence, 
+          notices or other communications in respect of Booking.com, the Service, the Website, 
+          or for press enquiries, please contact Booking.com B.V. directly.<br/><br/>
+  
+          Booking.com B.V. does not accept or assume any domicile at any place, 
+          location or office in the world (also not at the office of its support companies), 
+          other than its registered office in Amsterdam. 
+          The support companies do not operate and are not authorized to act as any form of process or service agent of Booking.com B.V. 
+          No reservation can be made in or through the support companies.
+          </div>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]='2' class="commonColor">
+            <div class="leftTop">
+                Name and address
+            </div>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]='3' class="commonColor">
+          <div class="leftTop">
+              Booking.com B.V.<br/>
+              Herengracht 597<br/>
+              1017 CE Amsterdam<br/>
+              Netherlands<br/><br/>
+             
+             Postal address:<br/>
+              Postbus 1639<br/>
+              1000 BP Amsterdam<br/>
+              Netherlands<br/>
+          </div>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]='2' class="commonColor">
+            <div class="leftTop">
+                CEO
+            </div>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]='3' class="commonColor">
+          <div class="leftTop">
+              Gillian Tans
+          </div>
+        </mat-grid-tile>
+  
+        <mat-grid-tile [colspan]='2' class="commonColor">
+          <div class="leftTop">
+              Contact information
+          </div>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]='3' class="commonColor">
+          <div class="leftTop">
+            Telephone: +31 70 770 3884<br/>
+            Fax: +31 20 712 5609<br/>
+            E-mail: customer.service@booking.com<br/> 
+          </div>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]='2' class="commonColor">
+          <div class="leftTop">
+              Company registration
+          </div>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]='3' class="commonColor">
+          <div class="leftTop">
+              Kamer van Koophandel Amsterdam (Commercial Register of the Chamber of Commerce and Industries Amsterdam)
+              File number: 31047344
+              VAT registration number: NL805734958B01
+              Registration number Dutch Data Protection Authority: 1288246
+          </div>
+        </mat-grid-tile>
+    </div>
+    <div *ngIf="path === 'Law Enforcement Guidelines'">
+        <mat-grid-tile [colspan]='3' [rowspan]='9'>
+          <div class="leftTop">
+              <h1>Law Enforcement Guidelines</h1> 
+              <br/><br/>
+              These operational Law Enforcement Guidelines on data disclosure requests are addressed to Law Enforcement Authorities seeking information from Booking.com about its customers and/or business partners. 
+              <br/><br/>
+              Please note, any enquiry unrelated to a Law Enforcement Request will not receive a response. For any other matter please contact our Customer Service Department. 
+              
+              <br/><br/>
+              
+              <h2>Who is responsible for handling data disclosure requests?</h2><br/> 
+              <br/>
+              As the owner and operator of www.booking.com and the Booking.com websites and apps, Booking.com B.V. in the Netherlands is responsible for handling all data disclosure requests relating to customer and accommodation partner data worldwide. 
+              <br/><br/>
+               Booking.com B.V. is the data controller for any personal data collected through the Booking.com online reservation services. Moreover, Booking.com B.V. is the contracting partner for all accommodation partners worldwide, except in Brazil. 
+              <br/><br/>
+               All data disclosure requests must be addressed to Booking.com B.V. even in the event Booking.com has a local entity in the country where the requesting Law Enforcement Authority is established. Booking.com only discloses data following a data disclosure request which is legally binding to Booking.com B.V. under Dutch laws. Exceptions are made for emergency situations. 
+              <br/><br/>
+               Local entities of Booking.com only provide an internal supporting role to and for the benefit of Booking.com B.V. and may not disclose data upon request of a Law Enforcement Authority. Moreover, local entities of Booking.com may not have full access to all information collected through the Booking.com online services. 
+              
+              <br/><br/>
+              
+              Information for Law Enforcement Authorities located within the Netherlands <br/>
+              <br/>
+              Dutch Law Enforcement Authorities requesting (personal) information must comply with the following requirements: 
+              <br/>
+              <ul><li>The request must be legally binding for Booking.com B.V.; 
+              </li>
+              <li>The request must be addressed to Booking.com B.V., Herengracht 597, 1017 CE Amsterdam. 
+              </li>
+              </ul>
+              <br/><br/>
+              
+              Information for Law Enforcement Authorities located outside the Netherlands 
+              <br/><br/>
+              Law Enforcement Authorities located outside the Netherlands requesting (personal) information from Booking.com B.V. must comply with the following requirements: 
+              <ul>
+                <li>The request must be addressed to Booking.com B.V., Herengracht 597, 1017 CE Amsterdam, and 
+                </li>
+                <li>The request must be submitted as part of a judicial assistance procedure to the Dutch authorities (under a Mutual Legal Assistance Treaty). In case of doubt, please contact your national center for international legal assistance. 
+                </li>
+                </ul>
+              <br/><br/>
+              
+              What information should be included in the data disclosure request? 
+              <br/><br/>
+              Booking.com B.V. will only disclose information upon receipt of a request which is legally binding to Booking.com B.V. under Dutch laws. This request should include in any event the following information: 
+              <ul>
+              <li>Formal writing, directed and addressed to Booking.com B.V. A request addressed to â€œBooking.comâ€ or â€œCustomer Service at Booking.comâ€ will not be considered valid; 
+              </li>
+              <li>Clear ground for the legal basis of the request; 
+              </li>
+              <li>of the natural person or legal entity about whom the information is requested; 
+              </li>
+              <li>Name and signature of the issuing authority, badge/ID number of the responsible agent or officer, email address and a direct contact number; 
+              </li>
+              <li>At least provide:
+                <ul>
+                    <li>Booker email address or reservation number (only a Bookerâ€™s name is not sufficient); 
+                      </li>
+                </ul> 
+              </li>
+              </ul>
+              Accommodation name and city or accommodation ID number; 
+              <ul>
+              <li>
+              Specific summary of data that is required to be disclosed and the period within which data is sought; 
+              </li>
+              <li>Expected response period.
+               </li>
+               </ul>
+              Please be as specific as possible and remember that all data disclosure requests must be reasonable, proportionate and necessary for the stated purpose. 
+              
+              <br/><br/>
+              
+              What happens in an emergency situation? 
+              <br/><br/>
+              Booking.com B.V. will make exceptions to its normal data disclosure procedure, if Booking.com B.V. believes that an emergency situation (such as a terrorist act, serious harm to or death of a person) has occurred or may imminently occur if the requested information is not provided in a timely manner. 
+              <br/><br/>
+              Emergency Disclosure Requests must fulfill the following requirements:
+              <ul> 
+              <li> Address the request to Booking.com B.V., Herengracht 597, 1017 CE Amsterdam; 
+              </li> 
+              <li>Indicate that youâ€™re submitting an Emergency Disclosure Request; 
+              </li>
+              <li>Indicate the nature of the emergency situation (such as serious harm to or death of a person); 
+              </li>
+              <li>If possible, identify the (group of) person(s) in danger; 
+              </li>
+              <li>Specify which information is needed and why disclosure of data by Booking.com could (help to) prevent the emergency. Please be as detailed as possible; and 
+              </li>
+              <li>Include full contact details and signature of the submitting law enforcement officer, including a direct phone number. 
+              </li>
+              </ul>
+              <br/><br/>
+              
+              Important Considerations
+              <ul> 
+              <li>The Booking.com Customer Service Team is not authorized to disclose any information by telephone or email outside of the process as explained in these Law Enforcement Guidelines. 
+              </li>
+              <li>Booking.com B.V. will not respond to correspondence sent to our employeesâ€™ corporate/personal email addresses. 
+              </li> 
+              <li>Booking.com B.V. will only respond to Law Enforcement Requests sent in accordance with these Law Enforcement Guidelines. 
+              </li>
+              <li>Booking.com B.V. has strict procedures in place for the protection of payment card data. Credit card details are generally hashed and therefore not readable 10 days after the reservation was made. 
+              </li>
+              <li>Booking.com B.V. reserves the right to notify its customers or accommodations when their personal data is being sought, except where providing such notice is prohibited by law. 
+              </li>
+              </ul>
+          </div>
+        </mat-grid-tile>
+    </div>
+    <div *ngIf="path === 'Offices WorldWide'">
+        <mat-grid-tile [colspan]='3' [rowspan]='2'>
+  
+        </mat-grid-tile>
+    </div>
+    <div *ngIf="path === 'Contact Us'">
+        <mat-grid-tile [colspan]='3' [rowspan]='2'>
+          
+        </mat-grid-tile>
+    </div>
+  </mat-grid-list>

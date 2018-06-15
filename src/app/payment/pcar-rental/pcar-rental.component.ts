@@ -29,7 +29,7 @@ export class PcarRentalComponent implements OnInit {
     },
     {
       name: 'Total Price',
-      data: this.searchService.Total('carRental')
+      data: 'R ' + this.searchService.Total('carRental')
     }
   ];
 

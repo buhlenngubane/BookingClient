@@ -29,7 +29,7 @@ export class PairTaxiComponent implements OnInit {
     },
     {
       name: 'Total Price',
-      data: this.searchService.Total('airTaxi')
+      data: 'R ' + this.searchService.Total('airTaxi')
     }
   ];
   returnJourney = this.searchService.returnJourney ? this.searchService.returnJourney : this.searchService.returnJourney;

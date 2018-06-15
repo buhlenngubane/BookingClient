@@ -12,7 +12,12 @@
           {{ result.locale }}
         </mat-option>
       </mat-autocomplete>
-
+      <mat-error *ngIf='firstSearch.invalid'>
+        {{loading.errorMessage}}
+      </mat-error>
+      <mat-hint *ngIf='loading.error && firstSearch.untouched'>
+        {{loading.errorMessage}}
+      </mat-hint>
     </mat-form-field>
 
     <a (click)="swap()" class="pointer">
@@ -28,7 +33,9 @@
           {{ result.destination1 }}
         </mat-option>
       </mat-autocomplete>
-
+      <mat-error *ngIf='secondSearch.invalid'>
+        {{loading.errorMessage2}}
+      </mat-error>
     </mat-form-field>
 
     <mat-form-field class="commonWid">
@@ -75,3 +82,4 @@
   </mat-list-item>
 
 </mat-list>
+{{firstSearch.invalid}} {{loading.errorMessage}}

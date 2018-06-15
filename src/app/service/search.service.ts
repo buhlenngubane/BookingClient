@@ -1,24 +1,12 @@
 import { Injectable, EventEmitter } from '@angular/core';
 // tslint:disable-next-line:import-blacklist
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/switchMap';
-import { retryWhen, map, mergeMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import {
-  Property,
-  Flight,
-  FlightPic,
-  Accommodation,
-  CarRental,
-  Destination,
-  PickUp,
-  dropOff
-} from './common-interface';
-import { Subject } from 'rxjs/Subject';
 import { UsersService } from './user.service';
 import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
@@ -37,17 +25,18 @@ import {
   CarBooking,
   AirBooking
 } from '../model/service-type';
-import { element } from 'protractor';
 import { FormControl } from '@angular/forms';
 import { Success } from '../service/common-interface';
+import { isObject } from 'util';
 
 @Injectable()
 export class SearchService {
 
-  private property: Properties[];
+  private property: Properties[] = [];
   private searchParam = new FormControl('');
   dateFrom: Date = new Date();
   dateTo: Date = new Date();
+
   diff = 1;
   panel = '1 room';
   num = [{ text: ' room', number: 1 }];
@@ -64,7 +53,6 @@ export class SearchService {
   /***Fight***/
   flight: Flights[] = [];
   dest: Destinations[] = [];
-  details: Flight[] = [];
   fDateFrom = new Date();
   fDateTo = new Date();
   flightType = 'Economy';
@@ -92,9 +80,9 @@ export class SearchService {
 
   navigate: ChangeNav = new ChangeNav();
   success: Success[] = [{ success: false },
-    { success: false },
-    { success: false },
-    { success: false }];
+  { success: false },
+  { success: false },
+  { success: false }];
   routeString: string;
 
   constructor(
@@ -108,7 +96,7 @@ export class SearchService {
     console.log(this.flightType + ' Whats going on?');
   }
 
-
+  /***Search Functions for Services***/
 
   search(terms: Observable<string>, id: number,
     result?, str?: FormControl) {
@@ -124,10 +112,10 @@ export class SearchService {
               try {
                 result.splice(0);
 
-                data.slice(0, 9).forEach(
+                data.forEach(
                   // tslint:disable-next-line:no-shadowed-variable
                   element => {
-                    result.push(new Accommodations(element));
+                    result.push(element);
                   }
                 );
                 this.accommodation = result;
@@ -164,7 +152,7 @@ export class SearchService {
                 result.splice(0);
                 // if(data)
                 // {
-                data.slice(0, 9).forEach(
+                data.forEach(
                   // tslint:disable-next-line:no-shadowed-variable
                   element => {
                     result.push(new Flights(element));
@@ -183,10 +171,6 @@ export class SearchService {
               console.error(error.message);
               // this.retry = error.message;
 
-              // if (this.retry.search("Not Found")) {
-              console.log('Retrying>>>');
-              // serviceSearch.search(this.searchTerm$).distinctUntilChanged;
-              // }
             },
             () => {
               console.log('search done.');
@@ -207,24 +191,26 @@ export class SearchService {
 
                 result.splice(0);
                 if (this.flight.length === 1) {
+                  console.log(JSON.stringify(this.flight));
                   data.filter(s => s.flightId === this.flight[0].flightId)
                     .forEach(
                       // tslint:disable-next-line:no-shadowed-variable
                       element => {
-                        result.push(new Destinations(element));
+                        result.push(element);
                       }
                     );
                   console.log('True ' + data.filter(s => s.flightId === this.flight[0].flightId));
                 } else if (str.value !== '' && this.flight.length === 0) {
-                  data.filter(s => s.flightId === this.service.Flight[0].flightId)
+                  console.log(this.service.Flights);
+                  data.filter(s => s.flightId === this.service.Flights[0].flightId)
                     .forEach(
                       // tslint:disable-next-line:no-shadowed-variable
                       element => {
 
-                        result.push(new Destinations(element));
+                        result.push(element);
                       }
                     );
-                     } else {
+                } else {
                   data.forEach(
                     // tslint:disable-next-line:no-shadowed-variable
                     element => {
@@ -232,7 +218,7 @@ export class SearchService {
                       result.push(new Destinations(element));
                     }
                   );
-                     }
+                }
                 console.log(this.flight.length);
               } catch (Error) {
                 console.error(Error);
@@ -241,12 +227,6 @@ export class SearchService {
             },
             error => {
               console.error(error.message);
-              // this.retry = error.message;
-
-              // if (this.retry.search("Not Found")) {
-              console.log('Retrying>>>');
-              // serviceSearch.search(this.searchTerm$).distinctUntilChanged;
-              // }
             },
             () => {
               console.log('search done.');
@@ -265,7 +245,7 @@ export class SearchService {
               try {
                 result.splice(0);
 
-                data.slice(0, 9).forEach(
+                data.forEach(
                   // tslint:disable-next-line:no-shadowed-variable
                   element => {
                     result.push(new CarRentals(element));
@@ -295,18 +275,18 @@ export class SearchService {
               try {
                 result.splice(0);
 
-                data.slice(0, 9).forEach(
+                data.forEach(
                   // tslint:disable-next-line:no-shadowed-variable
                   element => {
-                    result.push(new PickUps(element));
+                    result.push(element);
                   }
                 );
 
                 this.airSearch1 = result;
                 console.log(result + ' Length == ' + this.airSearch1.length);
-                if (data) {
-                  console.log(result[0].pickUp);
-                }
+                // if (data) {
+                console.log(result[0].pickUp);
+                // }
               } catch (Error) {
                 console.error(Error);
               }
@@ -336,7 +316,7 @@ export class SearchService {
                   console.log(this.airSearch1);
                   console.log(data.filter(s => s.pickUpId === this.airSearch1[0].pickUpId));
                   data.filter(s => s.pickUpId === this.airSearch1[0].pickUpId)
-                    .slice(0, 9).forEach(
+                    .forEach(
                       // tslint:disable-next-line:no-shadowed-variable
                       element => {
                         result.push(new dropOffs(element));
@@ -370,6 +350,8 @@ export class SearchService {
     }
   }
 
+  /*Return Functions For Search*/
+
   searchEntries(term) {
     let concat = term;
 
@@ -386,7 +368,7 @@ export class SearchService {
 
   searchEntriesFlightLocale(term) {
     return this.http
-      .get<Flights[]>(environment.base_url + `/Flights/Search/${term}`);
+      .get<Flights[]>(environment.base_url + `api/Flights/Search/${term}`);
   }
 
   searchEntriesFlightDestination(term) {
@@ -410,38 +392,76 @@ export class SearchService {
       `api/AirTaxis/AirTaxiDropOffs/Search/${term}`);
   }
 
-  Search(value: string, search: FormControl,
-    dateForm: Date, dateTo: Date, panel: string, accommodation: Accommodation[]): boolean {
-    const accId = +value;
-    return this.http.get<Properties[]>(environment.base_url +
-      `api/Accommodations/Properties/GetProperties/${accId}`)
-      .subscribe(
-        data => {
-          console.log(data);
+  /***Additional Function For Services***/
 
-          this.Property = data;
-          /*data.slice(20).forEach(
-            element=>{
-              this.Property.push
+  Search(value: number,
+    dateForm: Date, dateTo: Date, panel: string, accommodationOrsearch?: Accommodations | FormControl):
+    boolean {
+    const accId = value;
+    try {
+      return this.http.get<Properties[]>(environment.base_url +
+        `api/Accommodations/Properties/GetProperties/${accId}`)
+        .subscribe(
+          data => {
+            console.log(data);
+
+            this.property.splice(0);
+            data.forEach(
+              element => {
+                this.property.push(element);
+              }
+            );
+            // this.property = data;
+
+            console.log(JSON.stringify(this.Property));
+
+            // this.searchParam = search;
+            this.DateFrom = dateForm;
+            this.DateTo = dateTo;
+            this.Panel = panel;
+            this.Nights = this.diff;
+
+            this.property.length > 0 ?
+              this.route.navigate(['/acc-detail']) : this.route.navigate(['/home']);
+            // if (this.route.isActive('/acc-detail', exact)) {
+            //   console.log('*********In same dir');
+            //    this.route.onSameUrlNavigation = 'reload';
+            // } else {
+            // this.route.navigate(['/acc-detail']); }
+            // if (accommodationOrsearch isObject())
+            const search = accommodationOrsearch as FormControl;
+            /**Try FormControl conversion**/
+            try {
+              // console.log(search.status === null);
+              if (localStorage.getItem('info#1') && search.status) {
+                console.log(search);
+                search.setValue(localStorage.getItem('info#1'));
+              }
+            } catch (error) {
+              console.log(error);
             }
-          )*/
-
-          console.log(JSON.stringify(this.Property));
-
-          this.searchParam = search;
-          this.DateFrom = dateForm;
-          this.DateTo = dateTo;
-          this.Panel = panel;
-          this.Nights = this.diff;
-          this.route.navigate(['/acc-detail']);
-        },
-        error => {
-          console.error(error.message);
-        },
-        () => {
-          console.log('search done.');
-        }
-      ).closed;
+            /**
+             * Trying Accommodations conversion
+             */
+            const accom = accommodationOrsearch as Accommodations;
+            try {
+              if (accom.country) {
+                localStorage.setItem('info#1', accom.country + ', ' + accom.location + ':' + accId);
+              }
+            } catch (error) {
+              console.log(error);
+            }
+          },
+          error => {
+            console.error(error.message);
+          },
+          () => {
+            console.log('search done.');
+          }
+        ).closed;
+    } catch (error) {
+      console.error(error);
+    }
   }
 
 
@@ -454,23 +474,37 @@ export class SearchService {
   }
 
   // tslint:disable-next-line:no-shadowed-variable
-  AirTaxis(pickUp: string, dropOff: string) {
+  AirTaxis(pickUp: string, dropOff: string, loading?) {
     // tslint:disable-next-line:no-shadowed-variable
-    const PickUp = this.airSearch1.find(s => s.pickUp === pickUp);
-    const DropOff = this.airSearch2.find(s => s.dropOff === dropOff);
-    console.log(PickUp.pickUpId);
-    console.log(DropOff.dropOffId);
+    // const PickUp = this.airSearch1.find(s => s.pickUp === pickUp);
+    // const DropOff = this.airSearch2.find(s => s.dropOff === dropOff);
+    // console.log(PickUp.pickUpId);
+    // console.log(DropOff.dropOffId);
+    console.log(pickUp + ', ' + dropOff);
     return this.http.get<AirDetails[]>(environment.base_url +
-      `api/AirTaxis/AirDetails/GetAirDetail/${PickUp.pickUpId}&${DropOff.dropOffId}`)
+      `api/AirTaxis/AirDetails/GetAirDetail/${pickUp}&${dropOff}`)
       .subscribe(
         data => {
           console.log(data);
-          this.airDetails = data;
-          console.log(this.airDetails);
-          this.navigate.nav = true;
-          console.log(this.navigate.nav);
-          this.route.navigate(['/air-detail']);
-
+          // this.airDetails = data;
+          if (data.length !== 0) {
+            this.airDetails.splice(0);
+            data.forEach(
+              element => {
+                this.airDetails.push(element);
+              }
+            );
+            console.log(this.airDetails);
+            /****/
+            this.navigate.nav = true;
+            console.log(this.navigate.nav);
+            this.route.navigate(['/air-detail']);
+            localStorage.setItem('info#4', pickUp + ':' + dropOff);
+          } else {
+            if (loading) {
+              loading.errorMessage = 'AirTaxi not yet available';
+            }
+          }
         },
         error => {
           console.error(error.message);
@@ -480,6 +514,8 @@ export class SearchService {
         }
       );
   }
+
+  /***Initial Payment Process***/
 
   PaymentReceive(myRoute: string, obj: any) {
     console.log('In payment!');
@@ -536,6 +572,67 @@ export class SearchService {
 
     }
   }
+
+  /***Calculate Total***/
+
+  Total(serviceType?: string) {
+    // let rooms = this.panel;
+    console.log(serviceType);
+    switch (serviceType) {
+      case ('accommodation'):
+        if (this.service.Property && this.Panel) {
+          // let number = rooms.split(" ");
+          this.total = this.service.Property.accDetail[0].pricePerNight * (this.Nights * (this.Rooms));
+
+          console.log(this.total + ' service ' +
+            this.service.Property.accDetail[0].pricePerNight + ' Nights ' + this.Nights + ' Panel number: ' +
+            this.Rooms + ' Panel text: ' + this.panel + ' panel strigfy: ' + this.panel);
+        }
+
+      // tslint:disable-next-line:no-switch-case-fall-through
+      case ('flight'):
+        if (this.service.flight) {
+          console.log('Flight type : ' + this.flightType);
+          switch (this.flightType) {
+            case ('Economy'): {
+              this.total = (this.service.flight.price + environment.economy) * this.numOfTravellers;
+              console.log(this.total + ' ' + environment.economy + ' ' + this.numOfTravellers);
+            }
+
+            // tslint:disable-next-line:no-switch-case-fall-through
+            case ('Premium Economy'):
+              this.total = (this.service.flight.price + environment.premium_economy) * this.numOfTravellers;
+
+            // tslint:disable-next-line:no-switch-case-fall-through
+            case ('Business'):
+              this.total = (this.service.flight.price + environment.business) * this.numOfTravellers;
+
+            // tslint:disable-next-line:no-switch-case-fall-through
+            case ('First Class'):
+              this.total = (this.service.flight.price + environment.first_class) * this.numOfTravellers;
+          }
+        }
+
+      // tslint:disable-next-line:no-switch-case-fall-through
+      case ('carRental'):
+        {
+          if (this.service.carRental) {
+            this.total = this.service.carRental.price;
+          }
+        }
+
+      // tslint:disable-next-line:no-switch-case-fall-through
+      case ('airTaxi'):
+        {
+          if (this.service.airTaxi) {
+            this.total = this.service.airTaxi.price * this.numOfPassengers;
+          }
+        }
+    }
+    return this.total;
+  }
+
+  /*Payment And Store Booking to database*/
 
   Book(): boolean {
     switch (this.routeString) {
@@ -660,9 +757,9 @@ export class SearchService {
       default: console.error('Nothing Happened!'); return true;
     }
 
-
-
   }
+
+  /*Routing Function*/
 
   GoBack(str: string) {
     this.route.navigate([str]);
@@ -764,64 +861,4 @@ export class SearchService {
   get Nights() {
     return this.nights;
   }
-
-  Total(serviceType?: string) {
-    // let rooms = this.panel;
-    console.log(serviceType);
-    switch (serviceType) {
-      case ('accommodation'):
-        if (this.service.Property && this.Panel) {
-          // let number = rooms.split(" ");
-          this.total = this.service.Property.accDetail[0].pricePerNight * (this.Nights * (this.Rooms));
-
-          console.log(this.total + ' service ' +
-          this.service.Property.accDetail[0].pricePerNight + ' Nights ' + this.Nights + ' Panel number: ' +
-            this.Rooms + ' Panel text: ' + this.panel + ' panel strigfy: ' + this.panel);
-        }
-
-      // tslint:disable-next-line:no-switch-case-fall-through
-      case ('flight'):
-        if (this.service.flight) {
-          console.log('Flight type : ' + this.flightType);
-          switch (this.flightType) {
-            case ('Economy'): {
-              this.total = (this.service.flight.price + environment.economy) * this.numOfTravellers;
-              console.log(this.total + ' ' + environment.economy + ' ' + this.numOfTravellers);
-            }
-
-            // tslint:disable-next-line:no-switch-case-fall-through
-            case ('Premium Economy'):
-              this.total = (this.service.flight.price + environment.premium_economy) * this.numOfTravellers;
-
-            // tslint:disable-next-line:no-switch-case-fall-through
-            case ('Business'):
-              this.total = (this.service.flight.price + environment.business) * this.numOfTravellers;
-
-            // tslint:disable-next-line:no-switch-case-fall-through
-            case ('First Class'):
-              this.total = (this.service.flight.price + environment.first_class) * this.numOfTravellers;
-          }
-        }
-
-      // tslint:disable-next-line:no-switch-case-fall-through
-      case ('carRental'):
-        {
-          if (this.service.carRental) {
-            this.total = this.service.carRental.price;
-          }
-        }
-
-      // tslint:disable-next-line:no-switch-case-fall-through
-      case ('airTaxi'):
-        {
-          if (this.service.airTaxi) {
-            this.total = this.service.airTaxi.price * this.numOfPassengers;
-          }
-        }
-    }
-    return this.total;
-  }
-
-
-
 }

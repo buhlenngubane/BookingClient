@@ -1,9 +1,8 @@
-
 <mat-accordion>
         <mat-expansion-panel *ngFor="let data of loop">
           <mat-expansion-panel-header>
             <mat-panel-title>
-                    Post
+                    Put
             </mat-panel-title>
             <mat-panel-description>
                     {{data.text}}
@@ -26,9 +25,9 @@
           </mat-card>
           <mat-action-row>
                 <button mat-button color="primary" (click)="data.change=true">
-                  Post
+                  Put
                 </button>
-                <button mat-raised-button color="primary" (click)="PostAll(data)" *ngIf="data.change">
+                <button mat-raised-button color="primary" (click)="PutAll(data)" *ngIf="data.change">
                     Submit
                 </button>
               </mat-action-row>

@@ -1,0 +1,33 @@
+.Img {
+    background-image: url('../../assets/images/a7839b84893900094996ae6a38.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    color: white;
+  }
+.leftTop {
+    position: absolute;
+    top: 8px;
+    left: 16px;
+  }
+  .rightTop {
+    position: absolute;
+    top: 8px;
+    right: 16px;
+  }
+  a {
+    text-align: left;
+    top: 8px;
+  }
+  a:hover {
+    background-color: aqua;
+    color: white;
+    
+  }
+  a:active {
+    background-color: aqua;
+    color: white;
+  }
+  .commonColor {
+    background-color: aliceblue;
+    border-color: aliceblue;
+  }

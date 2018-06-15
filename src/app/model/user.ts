@@ -9,6 +9,13 @@ export class User implements Deserializable<User> {
     phone: string;
     admin: boolean;
     constructor(input?: any) {
+        this.userId = 0;
+        this.name = 'string';
+        this.surname = 'string';
+        this.email = 'string';
+        this.password = 'unauthorized';
+        this.phone = 'string';
+        this.admin = false;
         Object.assign(this, input);
         return this;
     }

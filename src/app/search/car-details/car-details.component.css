@@ -16,7 +16,33 @@
     position: absolute;
     top: 16px;
     left: 16px;
+    
 }
 .Hght{
     height: auto;
 }
+/* .right {
+    position: absolute;
+    right: 16px;
+}
+div.wid {
+    width: 50%;
+    border: 1px solid #000000;
+    word-wrap: break-word;
+} */
+div {
+    width: 50%; 
+    border-right: 1px dashed #ddd;
+    word-wrap: break-word;      /* IE 5.5-7 */
+      white-space: -moz-pre-wrap; /* Firefox 1.0-2.0 */
+      white-space: pre-wrap;
+}
+
+/* div.a {
+    word-wrap: normal;
+}
+
+div.b {
+    word-break: break-all;
+    
+} */

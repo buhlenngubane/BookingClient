@@ -1,7 +1,5 @@
 import { Component, OnInit, AfterViewChecked } from '@angular/core';
 import { UsersService } from '../service/user.service';
-import { Property } from '../service/common-interface';
-import { Router } from '@angular/router';
 import { SearchService } from '../service/search.service';
 
 declare let paypal: any;
@@ -63,6 +61,7 @@ export class PaymentComponent {
       // console.log(service.flight+" "+service.User);
 
   }
+  total = Math.round(this.searchService.Total() / 13);
   paypalConfig = {
     env: 'sandbox',
     client: {
@@ -71,10 +70,11 @@ export class PaymentComponent {
     },
     commit: true,
     payment: (data, actions) => {
+      console.log(this.total);
       return actions.payment.create({
         payment: {
           transactions: [
-            { amount: { total: this.searchService.Total(), currency: 'USD' } }
+            { amount: { total: this.total, currency: 'USD' } }
           ]
         }
       });

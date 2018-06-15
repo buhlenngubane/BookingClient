@@ -16,7 +16,9 @@ export class CarDetailsComponent implements OnInit {
   result = this.service.carRentalDtls;
   constructor(private service: UsersService,
   private searchService: SearchService) {
-    if (!service.carRentalDtls) {
+    if (service.carRentalDtls.length === 0) {
+      localStorage.getItem('info#3') ?
+      this.service.CarRentalDetails(localStorage.getItem('info#3')) :
       searchService.GoBack('/car-rentals');
     }
    }

@@ -7,8 +7,8 @@
   <mat-grid-tile [colspan]="2" *ngFor="let result of result">
 
     <mat-toolbar class="topleft">
-      <mat-toolbar-row [style.border-bottom]="'1px dashed #ddd'" class="Hght" layoutWrap>
-        <img src="data:image/jpeg;base64,{{result.ctype.picture}}" style="width: 70%;">
+      <mat-toolbar-row [style.border-bottom]="'1px dashed #ddd'" class="Hght" layout-wrap>
+        <img src="data:image/jpeg;base64,{{result.ctype.picture}}" style="width: 50%;">
         <span class="space"></span>
         <table>
           <tr>
@@ -24,8 +24,10 @@
         </span>
         {{result.price}}
       </mat-toolbar-row>
-      <mat-toolbar-row>
-          <div [style.border-right]="'1px dashed #ddd'">Hello</div>
+      <mat-toolbar-row class="Hght">
+          
+          <div>Hellosdfsdfasdfsadfsdfdfsdfsdfgdfgdfgfdgdfgdesfgdfsgsdhdfgdfgfghdfghfghdfgh</div>
+          <!-- <div class="b"> This div contains a very long word: thisisaveryveryveryveryveryverylongword. The long word will break and wrap to the next line.</div> -->
           <span class="spacer" ></span>
           <button mat-raised-button color="primary" (click)="IfLoggedIn(result)">
                     Book

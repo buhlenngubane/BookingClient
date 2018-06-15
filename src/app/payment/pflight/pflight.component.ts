@@ -29,7 +29,7 @@ export class PflightComponent implements OnInit {
     },
     {
       name: 'Total Price',
-      data: this.searchService.Total('flight') ? this.searchService.Total('flight') : ' '
+      data: this.searchService.Total('flight') ? 'R ' + this.searchService.Total('flight') : ' '
     }
   ];
   state = this.searchService.success[1];

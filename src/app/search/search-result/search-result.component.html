@@ -1,7 +1,8 @@
 <mat-grid-list cols="4" rowHeight="210">
 
-  <mat-grid-tile [colspan]="4">
-    <h1 *ngIf="diff">{{diff}}</h1>
+  <mat-grid-tile [colspan]="4" style="height: 80px;">
+    <h1 *ngIf="prop">{{prop.length}}</h1>
+    <button (click)='show()'>Click Me</button>
   </mat-grid-tile>
 
   <mat-grid-tile [rowspan]="4">
@@ -30,6 +31,12 @@
                   {{ result.country }} {{result.location}}
                 </mat-option>
               </mat-autocomplete>
+              <mat-error *ngIf='search.invalid && search.pristine'>
+                {{errorMessage}}
+              </mat-error>
+              <mat-hint align="end" *ngIf='error && search.untouched'>
+                {{errorMessage}}
+              </mat-hint>
             </mat-form-field>
           </form>
       </mat-toolbar-row>
@@ -39,7 +46,9 @@
 
       <mat-toolbar-row>
         <mat-form-field class="full-width">
-          <input matInput [min]="minDate" [max]="maxDate" 
+          <input matInput [min]="minDate" 
+          (dateChange)="addEvent('change', $event)" 
+          [max]="maxDate" 
           [(ngModel)]="dateForm" 
           [matDatepicker]="picker1" placeholder="Choose a date" disabled>
           <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
@@ -81,7 +90,7 @@
         <span class="fill-remaining-space"></span>
         <span class="align-center"></span>
         <span class="spacer"></span>
-        <a mat-raised-button routerLink="." class="anchor" color="primary">Search</a>
+        <a mat-raised-button routerLink="." class="anchor" color="primary" (click) = "Find(search)">Search</a>
       </mat-toolbar-row>
     </mat-toolbar>
 

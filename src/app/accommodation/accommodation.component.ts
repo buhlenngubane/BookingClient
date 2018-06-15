@@ -3,10 +3,10 @@ import { UsersService } from '../service/user.service';
 import { Accommodations } from '../model/service-type';
 import { SearchService } from '../service/search.service';
 import { Subject } from 'rxjs/Subject';
-import { Accommodation, Property } from '../service/common-interface';
-import { Router } from '@angular/router';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
+import { DomSanitizer } from '@angular/platform-browser';
+import { MatDatepickerInputEvent } from '@angular/material';
 
 @Component({
   selector: 'app-accommodation',
@@ -16,7 +16,8 @@ import { DatePipe } from '@angular/common';
 export class AccommodationComponent implements OnInit {
 
   accommodation = this.service.accommodations; // : Accommodations[];
-  search = new FormControl('');
+  search: FormControl;
+  searchPattern = '[A-Za-z ]{0,}[,]?[ A-Za-z ]{0,}';
   searchTerm$ = new Subject<string>();
   result: Accommodations[] = []; // = this.serviceSearch.accommodation;
   retry: string;
@@ -34,18 +35,20 @@ export class AccommodationComponent implements OnInit {
   Num = [{ text: ' room', number: 1 }];
   value1: any;
   value2: any;
-  error: boolean;
-  errorStatus = '';
+  error = false;
+  errorMessage = '';
 
   constructor(
     private service: UsersService,
     private serviceSearch: SearchService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private _sanitizer: DomSanitizer
   ) {
       serviceSearch.success[0].success = false;
     // this.panel = this.Num[0].number + this.Num[0].text;
     // console.log(this.panel.value);
     // console.log(this.Num[0].number + " YES!!!!!!!!!!");
+    this.search = new FormControl('', [Validators.required, Validators.pattern(this.searchPattern)]);
     for (let index = 1; index < 30; index++) {
       // this.Num=new Object()[index]=[{name:"sting"}];
       /*if(index==0)
@@ -87,36 +90,76 @@ export class AccommodationComponent implements OnInit {
     // this.dateTo.disable();
   }
 
+  addEvent(type: string, event: MatDatepickerInputEvent<Date>) {
+    // this.events.push(`${type}: ${event.value}`);
+    const changeDate = new Date(event.value.getFullYear(), event.value.getMonth(), event.value.getDate());
+    changeDate.setHours(48);
+    this.dateTo = changeDate;
+    // new Date(event.value.getFullYear(), event.value.getMonth(), event.value.getDate() + 2);
+    this.minDate2 = this.dateTo;
+  }
+
+  Sanitize(image) {
+    let str = '';
+    str = image;
+    console.log(str);
+    console.log(image);
+    return this._sanitizer.bypassSecurityTrustStyle(`url(${str})`);
+  }
+
   Search(value: string): void {
     console.log('Value == ' + value);
     this.error = false;
-    if (this.accommodation) {
-      this.serviceSearch.Search(value, this.search, this.dateForm, this.dateTo, this.panel.value, this.accommodation);
+    const display = this.service.accommodations.find(m => m.accId === +value);
+    // const arr = this.search.value.split(', ');
+    if (display) {
+      this.search.setValue(display.country + ', ' + display.location);
+      this.serviceSearch.SearchParam = this.search;
     }
+    // if (this.accommodation) {
+      this.serviceSearch.Search(+value, this.dateForm, this.dateTo, this.panel.value, display);
+    // }
   }
 
-  Find(): void {
+  Find(search: FormControl): void {
 
-    if (this.search && !this.search.value.startsWith(' ') && this.search.value.search(new RegExp('[0-9]', 'i'))) {
+    if (
+      !this.search.invalid
+      // this.search && !this.search.value.startsWith(' ') && this.search.value.search(new RegExp('[0-9]', 'i'))
+  ) {
       const arr = this.search.value.split(', ');
       console.log(arr);
-      // console.log(this.result.find(m => m.country == arr[0] && m.location == arr[1]));
-      const display = this.serviceSearch.accommodation.find(m => m.country === arr[0] && m.location === arr[1]);
+      // search current result of searchString
+      const display = this.service.accommodations.find(m => m.country === arr[0] && m.location === arr[1]);
       // this.result.splice(0).push(display);
       console.log(display);
-      this.serviceSearch.SearchParam = this.search.value;
+      this.serviceSearch.SearchParam = this.search;
+
       if (display) {
         console.log('Should redirect ' + display.accId.toString());
         this.error = false;
-        this.serviceSearch.Search(display.accId.toString(),
-        this.search, this.dateForm, this.dateTo, this.panel.value, this.accommodation);
+
+        this.serviceSearch.Search(display.accId// .toString()
+        , this.dateForm, this.dateTo, this.panel.value, display);
+      } else {
+        // search.setErrors(Validators.pattern(''));
+        search.markAsUntouched();
+        this.errorMessage = 'Accommodation not yet available';
+        this.error = true;
+        console.log('Set error ' + this.error);
       }
+    } else if (search.untouched) {
+      console.log('Untouched');
+      search.markAsTouched();
+      this.errorMessage = 'Please fill in search.';
     } else {
-      this.service.check.errorMessage = 'Search bar(letters only)';
-      this.service.check.error = true;
+      this.error = false;
+      const str = search.value + '';
+
+      search.markAsPristine();
+      search.hasError('required') ? this.errorMessage = 'Please fill in search.' :
+      this.errorMessage = 'Input pattern invalid.';
       console.log('hear');
-      // if(this.search)
-      // console.log("In Errors "+ !this.search.search(new RegExp(/^[A-Za-z]/,"i")) + " " +!this.search.startsWith(" "));
     }
   }
 

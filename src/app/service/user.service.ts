@@ -10,18 +10,16 @@ import { environment } from '../../environments/environment.prod';
 import { MatDialogRef } from '@angular/material';
 import { SignInComponent } from '../sign-in/sign-in.component';
 import { RegisterComponent } from '../register/register.component';
-import { changeLayout, Property, CheckAccommodation, Users, FlightPic, Car } from './common-interface';
+import { changeLayout, Users} from './common-interface';
 // tslint:disable-next-line:max-line-length
 import {
   Accommodations,
-  Cars,
   AirDetails,
   CarRentalDetails,
   Destinations,
   FlightDetails,
   Flights,
   Properties,
-  CarRentals,
   AccBooking,
   FlBooking,
   CarBooking,
@@ -29,7 +27,7 @@ import {
   Loading
 } from '../model/service-type';
 import { Router } from '@angular/router';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
 import 'rxjs/add/observable/timer';
 import 'rxjs/add/observable/interval';
@@ -55,14 +53,20 @@ export class UsersService {
   // timer = Observable.timer(10000, 1000);
   sub: Subscription;
   property: Properties;
-
-  // flights: Flights[] = [];
+  /**Flight**/
   private destination: Destinations[];
   flight: FlightDetails;
-  private flightPics = [] as FlightPic[];
   private flightDetail: FlightDetails[] = [];
+  form = new FormControl('', [Validators.required
+    , Validators.pattern('[A-Za-z]{0,}[A-Za-z ,-]*')]);
+  form2 = new FormControl('', [Validators.required
+    , Validators.pattern('[A-Za-z]{0,}[A-Za-z ,-]*')]);
+  /**CarRental**/
   carRental: CarRentalDetails;
+  carRentalDtls: CarRentalDetails[] = [];
+  /**AirTaxi**/
   airTaxi: AirDetails;
+
   year = new Date().getFullYear();
   month = (new Date().getMonth());
   day = new Date().getDate();
@@ -72,7 +76,6 @@ export class UsersService {
   check: changeLayout = { error: false, errorMessage: '', load: false };
   destAbbrev: string;
   flightAbbrev: string;
-  carRentalDtls: CarRentalDetails[] = [];
   search: string;
 
   /**Booking**/
@@ -142,17 +145,24 @@ export class UsersService {
       .then(() => console.log('Connection started!'))
       .catch(err => console.log('Error while establishing connection :('));
 
-    // this.timer.subscribe(tick => {
-    //     console.log('Ticking');
-    //  });
-
+    this._hubConnection
+      .onclose(
+        () => {
+          this._hubConnection
+            .start()
+            .then(() => console.log('Connection started!'))
+            .catch(err => console.log('Error while establishing connection :('));
+        }
+      );
   }
+
+  /***User Function Calls***/
 
   userRegister(customer: object, regRef: MatDialogRef<RegisterComponent>): boolean {
     // this.body = customer;
     this.User = new User(customer);
     console.log(this.user);
-    this.refreshCount = 0;
+
     return this.http.post<User>(this.BASE_URL + 'api/Users/Register',
       this.User)// , this.httpOptions)
       .map((response) => {
@@ -163,24 +173,14 @@ export class UsersService {
         this.user.password = '';
         this.SetToken(this.user.email, this.password)
           .subscribe(
-            data => {
-              this.sub = Observable.interval(60000)
+            () => {
+
+              this.sub = Observable.interval(30000)
                 .subscribe(
                   tick => {
-                    this.http.get(this.BASE_URL + `api/Token/Refresh`)
-                    .subscribe(
-                      success => {
-                        console.log('Refreshing');
-                      },
-                      err => {
-                        console.log(err.error);
-                        this.sub.unsubscribe();
-                      },
-                      () => {
-                        console.log('Refresh Done.');
-                      }
-                    );
-                  },
+                    this.RefreshMe();
+                  }
+                  ,
                   error => {
                     console.log(error.error);
                   }
@@ -195,12 +195,10 @@ export class UsersService {
               regRef.disableClose = false;
               if (regRef.componentInstance) { regRef.close(); }
             }
-            /*.pipe(
-              catchError(this.handleError)*/
 
           );
       })
-      .subscribe((data: any) => { },
+      .subscribe(() => { },
         (error) => {
           console.error(error + ' for signIn!!!');
           console.error(error);
@@ -225,7 +223,7 @@ export class UsersService {
         }).closed;
   }
 
-  userLogin(Email: string, Password: string, signInRef: MatDialogRef<SignInComponent>): boolean {
+  userLogin(Email: string, Password: string, signInRef: MatDialogRef<SignInComponent>) {
     // console.log("before stringfy: "+ user.email);
     this.body = { email: Email, password: Password }; // JSON.stringify(credetials);
     console.log('after stringfy: ' + this.body);
@@ -245,32 +243,7 @@ export class UsersService {
         this.SetToken(Email, Password)
           .subscribe(
             data => {
-              this.sub = Observable.interval(120000)
-                .subscribe(
-                  tick => {
-                    this.http.get(this.BASE_URL + `api/Token/Refresh`)
-                    .subscribe(
-                      success => {
-                        console.log('Refreshing');
-                        console.log(success);
-                        this.myToken = success as Token;
-                        localStorage.removeItem('currentUser');
-                        localStorage.setItem('currentUser', success.toString());
-                        console.log('');
-                      },
-                      err => {
-                        console.log(err.error);
-                        this.sub.unsubscribe();
-                      },
-                      () => {
-                        console.log('Refresh Done.');
-                      }
-                    );
-                  },
-                  error => {
-                    console.log(error.error);
-                  }
-                );
+              console.log(data);
             },
             error => {
               console.error(error + ' for token!!!');
@@ -290,15 +263,17 @@ export class UsersService {
       },
         (error) => {
           console.error(error + ' for signIn!!!');
-          this.data = error.message;
+          // this.data = error.error;
 
-          if (this.data.search('unknown url') >= 1) {
+          this.check.errorMessage = error.error;
+
+          if (this.check.errorMessage.includes('unknown url')) {
             this.check.errorMessage = 'Cannot reach server';
           }
-          if (this.data.search('Email') >= 1) {
+          if (this.check.errorMessage.includes('Email')) {
             this.check.errorMessage = 'Email not found';
           }
-          if (this.data.search('Password') >= 1) {
+          if (this.check.errorMessage.includes('Password')) {
             this.check.errorMessage = 'Password not found';
           }
 
@@ -342,13 +317,14 @@ export class UsersService {
         error => {
           this.data = error.message;
           this.check.error = true;
+          loading.errorMessage = error.error;
           // console.error(this.httpOptions);
           console.error(this.data);
-          if (this.data.search('400')) {
+          if (this.check.errorMessage.includes('400')) {
             loading.errorMessage = 'Internal server error';
           }
 
-          if (this.data.search('unknown url')) {
+          if (loading.errorMessage.includes('unknown url')) {
             loading.errorMessage = 'Server unreachable.';
           }
 
@@ -356,7 +332,10 @@ export class UsersService {
           loading.error = true;
           // message.error="";
         },
-        () => { console.log('Update Done uncheck interface'); loading.load = false; }).closed;
+        () => {
+          console.log('Update Done uncheck interface');
+          loading.load = false;
+         }).closed;
   }
 
   userLogic(type: string): void {
@@ -377,21 +356,30 @@ export class UsersService {
     }
   }
 
-  serviceLogic(): void {
-
-  }
+  /***Token Getting***/
 
   SetToken(email: string, password: string): Observable<any> {
     console.log('Email = ' + email + ' Password = ' + password);
-    return this.http.get(this.BASE_URL + `api/Token/CreateToken/${email}&${password}`)// , this.httpOptions)
+    return this.http.get(this.BASE_URL + `api/Token/CreateToken/${email}&${password}`)
       .map((response) => {
         // this.body = response;
         this.myToken = response as Token;
         console.log(this.myToken.token);
-        this.GetToken = 'Bearer ' + this.myToken.token;
+        this.getToken = 'Bearer ' + this.myToken.token;
         localStorage.setItem('currentUser', this.myToken.token);
         // console.log("currentUser = "+localStorage.getItem("currentUser"));
         this.Authenticated = true;
+
+        this.sub = Observable.interval(30000)
+          .subscribe(
+            tick => {
+              this.RefreshMe();
+            }
+            ,
+            error => {
+              console.log(error.error);
+            }
+          );
 
         console.log('Auth is true!!!!');
       })
@@ -400,18 +388,28 @@ export class UsersService {
       );
   }
 
-  getCompanyFlight(arr: string): boolean {
-    this.refreshCount = 0;
-    return this.http.get(this.BASE_URL + `api/Companies/GetCompany/${arr}`)
+  RefreshMe(): boolean {
+    // this.GetToken = 'Bearer ' + localStorage.getItem('currentUser');
+    return this.http.get(environment.base_url + 'api/Token/Refresh')
+      .map(data => {
+        localStorage.removeItem('currentUser');
+        console.log('Removed Token!!! New token: ' + this.myToken);
+        this.myToken = data as Token;
+        this.getToken = 'Bearer ' + this.myToken.token;
+        localStorage.setItem('currentUser', this.myToken.token);
+      })
+      .pipe(
+        catchError(this.handleError)
+      )
       .subscribe(
-        data => {
-          console.log(data);
-          this.flightPics = data as FlightPic[];
-          console.log(this.flightPics);
-          this.route.navigate(['/detail']);
+        () => {
+          console.log('Successfully refreshed!!!');
         },
         error => {
-          console.error(error.message);
+          console.log(error.error);
+          localStorage.removeItem('currentUser');
+          console.warn('Removed Token!!!');
+          this.sub.unsubscribe();
         },
         () => {
           console.log('Done');
@@ -419,14 +417,13 @@ export class UsersService {
       ).closed;
   }
 
-
+  /***Get Account Details***/
 
   AccountDetails(service: any[], loading?: Loading, serType?: string) {
-    this.refreshCount = 0;
-    // console.log(accData);
     switch (serType) {
       case ('accommodation'):
-        return this.http.get<AccBooking[]>(this.BASE_URL + `api/Accommodations/AccBookings/GetBookings/${this.User.userId}`)
+        return this.http.get<AccBooking[]>(this.BASE_URL +
+           `api/Accommodations/AccBookings/GetBookings/${this.User.userId}`)
           .subscribe(
             data => {
               console.log(data);
@@ -457,7 +454,8 @@ export class UsersService {
           ).closed;
 
       case ('flight'):
-        return this.http.get<FlBooking[]>(this.BASE_URL + `api/Flights/FlBookings/GetFlBooking/${this.User.userId}`)
+        return this.http.get<FlBooking[]>(this.BASE_URL +
+           `api/Flights/FlBookings/GetFlBooking/${this.User.userId}`)
           .subscribe(
             data => {
               console.log(data);
@@ -490,7 +488,8 @@ export class UsersService {
           ).closed;
 
       case ('carRental'):
-        return this.http.get<CarBooking[]>(this.BASE_URL + `api/CarRentals/CarBookings/GetCarBooking/${this.User.userId}`)
+        return this.http.get<CarBooking[]>(this.BASE_URL +
+           `api/CarRentals/CarBookings/GetCarBooking/${this.User.userId}`)
           .subscribe(
             data => {
               console.log(data);
@@ -518,7 +517,8 @@ export class UsersService {
           ).closed;
 
       case ('airTaxi'):
-        return this.http.get<AirBooking[]>(this.BASE_URL + `api/AirTaxis/AirBookings/GetAirBooking/${this.User.userId}`)
+        return this.http.get<AirBooking[]>(this.BASE_URL +
+           `api/AirTaxis/AirBookings/GetAirBooking/${this.User.userId}`)
           .subscribe(
             data => {
               console.log(data);
@@ -547,13 +547,9 @@ export class UsersService {
     }
   }
 
-  GetFlight(form: FormControl, form2: FormControl): boolean {
-    if ((this.flights) && (form.value === '' && form2.value === '')) {
-      form.setValue(this.flights[0].locale);
-      form2.setValue(this.flights[0].destination[0].destination1);
-      return true;
-    }
+  /***Get and Store Service data locally***/
 
+  GetFlight(): boolean {
     return this.http.get<Flights[]>(this.BASE_URL + `api/Flights/GetAll`)
       .subscribe(
         data => {
@@ -562,27 +558,12 @@ export class UsersService {
 
           console.log(this.flights);
           console.log(this.flights[0].locale);
-          form.setValue(this.flights[0].locale);
+          if (!localStorage.getItem('info#2')) {
+          this.form.setValue(this.flights[0].locale);
           console.log(this.flights.length);
 
-          form2.setValue(this.flights[0].destination[0].destination1);
-
-          /*this.http.get<Destinations[]>(this.BASE_URL + `/Flights/Destinations/GetAll`)
-            .subscribe(
-              data => {
-                console.log(data);
-                this.destination = data;
-                console.log(this.destination);
-                form2.setValue(this.destination[0].destination1);
-              },
-              error => {
-                console.log("Error :" + error.message);
-              },
-              () => {
-                console.log("Done");
-              }
-            );*/
-
+          this.form2.setValue(this.flights[0].destination[0].destination1);
+          }
         },
         error => {
           console.error(error.message);
@@ -594,45 +575,107 @@ export class UsersService {
       ).closed;
   }
 
-  SearchFlights(loc: string, des: string): boolean {
+  SearchFlights(loc: string, dest: string, dateLoc: Date, dateDest: Date, Errors?): boolean {
     // console.log("Id = " + id)
     console.log('In SearchFlights');
-    const locale = this.flights.find(s => s.locale === loc);
-    const dest = // this.destination.find(s=>s.destination1==des);
-      locale.destination.find(s => s.destination1 === des);
+    // const locale = this.flights.find(s => s.locale === loc);
+    // const dest =
+    //   locale.destination.find(s => s.destination1 === des);
 
-    return this.http.get<FlightDetails[]>(environment.base_url + `api/Flights/FlightDetails/GetFlightDetail/${dest.destId}`)
-      .subscribe(
-        data => {
-          console.log(data);
-          this.flightDetail = data;
-          console.log(this.flightDetail);
-          console.log(this.flightDetail[0].departure);
-          this.route.navigate(['/flight-detail']);
-        },
-        error => {
-          console.error(error.message);
-        },
-        () => {
-          console.log('Done');
-        }
-      ).closed;
+    // if (locale && dest) {
+      return this.http.get<FlightDetails[]>(environment.base_url +
+         `api/Flights/FlightDetails/GetFlightDetail/${dest}&${dateLoc}&${dateDest}`)
+        .subscribe(
+          data => {
+            console.log(data);
+            // this.flightDetail = data;
+            this.flightDetail.splice(0);
+            data.forEach(
+              element => {
+                this.flightDetail.push(element);
+              }
+            );
+            console.log(this.flightDetail);
+            console.log(this.flightDetail[0].departure);
+            // tslint:disable-next-line:prefer-const
+            let exact = false;
+            if (!this.route.isActive('/flight-detail', exact)) {
+              this.route.navigate(['/flight-detail']);
+            }
+
+            localStorage.setItem('info#2', loc + ':' + dest);
+          },
+          error => {
+            console.error(error.message);
+            const status = error.message + '';
+
+            if (status.includes('404')) {
+              Errors.errorMessage = 'Flight not yet available.';
+              Errors.error = true;
+              // tslint:disable-next-line:prefer-const
+              let exact;
+              if (this.route.isActive('/car-detail', exact)) {
+                this.route.navigate(['/car-rentals']);
+              }
+            } else {
+              this.load.errorMessage = error.error;
+              this.load.error = true;
+            }
+          },
+          () => {
+            console.log('Done');
+          }
+        ).closed;
+    // }  else {
+    //     console.log('Setting hint');
+
+    //   try {
+    //     Errors.errorMessage = 'Flight not yet available.';
+    //     Errors.error = true;
+    //   } catch (error) {
+    //     this.load.errorMessage = error.error;
+    //     this.load.error = true;
+    //   }
+
+    //   return false;
+    // }
   }
 
-  CarRentalDetails(search: string) {
-    return this.http.get<CarRentalDetails[]>(this.BASE_URL + `api/CarRentals/Cars/GetDetails/${search}`)
+  CarRentalDetails(search: string, load?) {
+    return this.http.get<CarRentalDetails[]>(this.BASE_URL +
+       `api/CarRentals/Cars/GetDetails/${search}`)
       .subscribe(
         data => {
           console.log(data);
-          this.carRentalDtls = data;
-
+          this.carRentalDtls.splice(0);
+          data.forEach(
+            element => {
+              this.carRentalDtls.push(element);
+            }
+          );
           console.log(this.carRentalDtls);
           this.route.navigate(['car-detail']);
 
+          localStorage.setItem('info#3', search);
+
         },
         error => {
           console.error(error.message);
-          // console.log("ID = "+ search);
+          const emsg = error.message + '';
+          console.log(emsg.includes('404'));
+          if (emsg.includes('404')) {
+            console.log('In hear');
+            load.errorMessage = 'Rental not available yet.';
+            load.error = true;
+            // tslint:disable-next-line:prefer-const
+            let exact;
+            if (this.route.isActive('/car-detail', exact)) {
+              this.route.navigate(['/car-rentals']);
+            }
+          } else {
+            this.load.errorMessage = error.error;
+            this.load.error = true;
+          }
         },
         () => {
           console.log('Done.');
@@ -640,7 +683,7 @@ export class UsersService {
       );
   }
 
-
+  /***User Payment Process***/
 
   PaymentSuccess(id: number): boolean {
     this.refreshCount = 0;
@@ -660,14 +703,16 @@ export class UsersService {
       ).closed;
   }
 
+  /***User Logs Out***/
+
   logOut(): boolean {
 
     return this.http.post(this.BASE_URL + `api/Token/LogOut`, User)
       .subscribe(
         data => {
           if (this.sub) {
-          this.sub.unsubscribe();
-          console.log('Refresh Gone');
+            this.sub.unsubscribe();
+            console.log('Refresh Gone');
           }
         },
         error => {
@@ -678,6 +723,7 @@ export class UsersService {
           localStorage.removeItem('currentUser');
           console.warn('Logged Out.');
           console.log('Log|Out Done.');
+          this.route.navigate(['/home']);
         }
       ).closed;
   }
@@ -699,10 +745,6 @@ export class UsersService {
     if (this.user.admin === true) {
       this.admin = true;
     }
-    //   this.myObservable = this.timer.subscribe(tick => {
-    //     this.http.get(this.BASE_URL + 'api/Token/Refresh');
-    //     console.log('Refreshing token');
-    // });
     console.log('setting user admin = ' + this.Admin);
   }
 
@@ -726,42 +768,30 @@ export class UsersService {
     this.accData = accData;
   }
 
-
-
   // *******Get*******//
 
+  /*Subcription In Getters; Was Testing*/
   get Me() {
     this.GetToken = 'Bearer ' + localStorage.getItem('currentUser');
     this.refreshCount = 0;
     // if(){}
-    return this.http.get(this.BASE_URL + 'api/Token/SignIn'); // ,
-    // {headers:new HttpHeaders().set("Authorization","Bearer "+localStorage.getItem("currentUser"))})
-    /*.pipe(
-      catchError(this.handleError)
-    );*/
-  }
-
-  RefreshMe(): boolean {
-    this.GetToken = 'Bearer ' + localStorage.getItem('currentUser');
-    return this.http.get(environment.base_url + 'api/Token/Refresh')
+    this.sub = Observable.interval(30000)
       .subscribe(
-        data => {
-          console.log('Successfully refreshed!!!');
+        tick => {
+          this.RefreshMe();
         },
         error => {
-          console.error(error.error);
-        },
-        () => {
-          console.log('Done');
+          console.log(error.error);
         }
-      ).closed;
+      );
+    return this.http.get(this.BASE_URL + 'api/Token/SignIn')
+      .pipe(
+        catchError(this.handleError)
+      );
   }
+  /*End Of Subscription*/
 
   get GetToken() {
-    /*if(localStorage.getItem("currentUser"))
-    return localStorage.getItem("currentUser");
-    else
-    return "null";*/
     return this.getToken;
   }
 
@@ -776,6 +806,8 @@ export class UsersService {
   get Accommodations() {
     return this.accommodations;
   }
+
+  /*Subcription In Getters; Was Testing*/
 
   get GetAccommodation() {
     console.log(this.accommodations.length);
@@ -806,6 +838,8 @@ export class UsersService {
         }
       );
   }
+
+  /*End Of Subscription*/
 
   get GetProperty() {
     this.refreshCount = 0;
@@ -859,15 +893,12 @@ export class UsersService {
     return this.accData;
   }
 
-  get FlightPics() {
-    return this.flightPics;
-  }
-
   get Payment() {
     return this.payment;
   }
 
   private handleError(error: HttpErrorResponse) {
+    this.sub.unsubscribe();
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
       console.error('An error occurred:', error.error.message);
