@@ -44,6 +44,7 @@ export class CarRentalComponent implements OnInit {
 
   constructor(private service: UsersService,
     private searchService: SearchService) {
+      service.check.error = false;
     if (localStorage.getItem('info#3')) {
       this.search.setValue(localStorage.getItem('info#3'));
     }
@@ -68,9 +69,29 @@ export class CarRentalComponent implements OnInit {
   }
 
   addEvent(type: string, event: MatDatepickerInputEvent<Date>) {
-    // this.events.push(`${type}: ${event.value}`);
-    this.dateTo = new Date(event.value.getFullYear(), event.value.getMonth(), event.value.getDate() + 2);
-    this.minDate2 = this.dateTo;
+
+    if (this.dateTo.valueOf() < event.value.valueOf()) {
+      this.dateTo = new Date(event.value.toDateString());
+      this.dateTo.setHours(48);
+
+      if (this.maxDate2.valueOf() < this.dateTo.valueOf()) {
+        this.dateTo = new Date(this.maxDate2.toDateString());
+      }
+      this.minDate2 = this.dateTo;
+    } else
+    if (this.dateTo.toDateString() === event.value.toDateString()) {
+      this.dateTo = new Date(event.value.toDateString());
+      this.dateTo.setHours(48);
+
+      if (this.maxDate2.valueOf() < this.dateTo.valueOf()) {
+        this.dateTo = new Date(this.maxDate2.valueOf());
+      }
+
+      this.minDate2 = this.dateTo;
+    } else {
+      this.minDate2 = new Date(event.value.toDateString());
+      this.minDate2.setHours(48);
+    }
   }
 
   // tslint:disable-next-line:member-ordering

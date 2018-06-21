@@ -44,19 +44,14 @@ export class AccommodationComponent implements OnInit {
     private datePipe: DatePipe,
     private _sanitizer: DomSanitizer
   ) {
+    service.check.error = false;
       serviceSearch.success[0].success = false;
     // this.panel = this.Num[0].number + this.Num[0].text;
     // console.log(this.panel.value);
     // console.log(this.Num[0].number + " YES!!!!!!!!!!");
     this.search = new FormControl('', [Validators.required, Validators.pattern(this.searchPattern)]);
     for (let index = 1; index < 30; index++) {
-      // this.Num=new Object()[index]=[{name:"sting"}];
-      /*if(index==0)
-
-      else*/
       this.Num.push({ text: ' rooms', number: (index + 1) });
-      // serviceSearch.Num.push({text:" rooms",number:(index+1)});
-      // console.log(this.Num[index].number);
     }
     serviceSearch.Num = this.Num;
     // console.log(JSON.stringify(serviceSearch.Num))
@@ -92,11 +87,54 @@ export class AccommodationComponent implements OnInit {
 
   addEvent(type: string, event: MatDatepickerInputEvent<Date>) {
     // this.events.push(`${type}: ${event.value}`);
-    const changeDate = new Date(event.value.getFullYear(), event.value.getMonth(), event.value.getDate());
-    changeDate.setHours(48);
-    this.dateTo = changeDate;
+    // const changeDate = new Date(event.value.getFullYear(), event.value.getMonth(), event.value.getDate());
+    // changeDate.setHours(48);
+    // this.dateTo = changeDate;
     // new Date(event.value.getFullYear(), event.value.getMonth(), event.value.getDate() + 2);
-    this.minDate2 = this.dateTo;
+    // this.minDate2 = this.dateTo;
+    if (this.dateTo.valueOf() < event.value.valueOf()) {
+      this.dateTo = new Date(event.value.toDateString());
+      this.dateTo.setHours(48);
+
+      if (this.maxDate2.valueOf() < this.dateTo.valueOf()) {
+        this.dateTo = new Date(this.maxDate2.toDateString());
+      }
+      this.minDate2 = this.dateTo;
+    } else
+    if (this.dateTo.toDateString() === event.value.toDateString()) {
+      this.dateTo = new Date(event.value.toDateString());
+      this.dateTo.setHours(48);
+
+      if (this.maxDate2.valueOf() < this.dateTo.valueOf()) {
+        this.dateTo = new Date(this.maxDate2.valueOf());
+      }
+
+      this.minDate2 = this.dateTo;
+    } else {
+      this.minDate2 = new Date(event.value.toDateString());
+      this.minDate2.setHours(48);
+    }
+    // if ((this.service.FdateTo.valueOf() < event.value.valueOf())) {
+    //   // if (this.service.FdateTo.getDay() === event.value.getDay()) {
+    //     this.service.FdateTo = new Date(event.value.toDateString());
+    //     this.service.FdateTo.setHours(48);
+    //     if (this.service.FmaxDate2.valueOf() < this.service.FdateTo.valueOf()) {
+    //       this.service.FdateTo = new Date(this.service.FmaxDate2.toDateString());
+    //     }
+    //     this.service.FminDate2 = this.service.FdateTo;
+    //   // }
+    // } else
+    // if (this.service.FdateTo.toDateString() === event.value.toDateString()) {
+    //   this.service.FdateTo = new Date(event.value.toDateString());
+    //   this.service.FdateTo.setHours(48);
+    //   if (this.service.FmaxDate2.valueOf() < this.service.FdateTo.valueOf()) {
+    //     this.service.FdateTo = new Date(this.service.FmaxDate2.toDateString());
+    //   }
+    //   this.service.FminDate2 = this.service.FdateTo;
+    // } else {
+    //   this.service.FminDate2 = new Date(event.value.toDateString());
+    //   this.service.FminDate2.setHours(48);
+    // }
   }
 
   Sanitize(image) {
@@ -117,7 +155,7 @@ export class AccommodationComponent implements OnInit {
       this.serviceSearch.SearchParam = this.search;
     }
     // if (this.accommodation) {
-      this.serviceSearch.Search(+value, this.dateForm, this.dateTo, this.panel.value, display);
+      this.serviceSearch.Search(this.dateForm, this.dateTo, this.panel.value, display);
     // }
   }
 
@@ -139,8 +177,7 @@ export class AccommodationComponent implements OnInit {
         console.log('Should redirect ' + display.accId.toString());
         this.error = false;
 
-        this.serviceSearch.Search(display.accId// .toString()
-        , this.dateForm, this.dateTo, this.panel.value, display);
+        this.serviceSearch.Search(this.dateForm, this.dateTo, this.panel.value, display);
       } else {
         // search.setErrors(Validators.pattern(''));
         search.markAsUntouched();

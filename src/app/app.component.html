@@ -4,8 +4,8 @@
     <span>
       <img width="100" alt="Angular Logo" src="../assets/images/BookingImage.jpg">
     </span>
-    <span class="fill-remaining-space"></span>
-    <span class="align-center"></span>
+    <!-- <span class="fill-remaining-space"></span>
+    <span class="align-center"></span> -->
     <span class="spacer"></span>
     
     <div *ngIf="!auth, else elseBlock" class="row">
@@ -31,6 +31,7 @@
 
   </mat-toolbar-row>
   <mat-toolbar-row *ngIf="error.error">
+      <span class="spacer"></span>
       <div align = 'end' class="row" style="color: red;">
           {{error.errorMessage}}
         </div>

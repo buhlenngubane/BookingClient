@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UsersService } from '../../service/user.service';
 import { SearchService } from '../../service/search.service';
 import { AirDetails } from '../../model/service-type';
+import { AirTaxiStorage } from '../../service/common-interface';
 
 @Component({
   selector: 'app-air-details',
@@ -11,20 +12,31 @@ import { AirDetails } from '../../model/service-type';
 export class AirDetailsComponent implements OnInit {
 
   result = this.searchService.airDetails;
-  // nav:boolean=true;
+
   constructor(private service: UsersService
-  , private searchService: SearchService) {
-      console.log(searchService.airDetails.length);
-      console.log(this.result.length);
-      if (searchService.airDetails.length === 0) {
-        localStorage.getItem('info#4') ?
-         searchService.AirTaxis(localStorage.getItem('info#4').split(':')[0],
-          localStorage.getItem('info#4').split(':')[1]) :
-           searchService.GoBack('/airTaxi');
-      } /*else {
-        searchService.GoBack('/air-taxi');
-      }*/
-   }
+    , private searchService: SearchService) {
+    if (searchService.airDetails.length === 0) {
+      if (localStorage.getItem('info#4')) {
+        const items = JSON.parse(localStorage.getItem('info#4')) as AirTaxiStorage;
+        searchService.AirTaxis(items.pickUp,
+          items.dropOff,
+          items.dateFrom,
+          /**Check if dateTo is null**/
+          items.returnDate !== null ?
+            new Date(items.returnDate) : null,
+          +items.passengers);
+        console.log(items.returnDate + ' passengers ' + items.passengers);
+        items.returnDate !== null ?
+          searchService.returnJourney = true :
+          searchService.returnJourney = false;
+      } else {
+        searchService.GoBack('/airTaxi');
+      }
+    }
+    // const items = JSON.parse(localStorage.getItem('info#4')) ;
+    // console.log(items);
+    // console.log(items.pickUp);
+  }
 
   ngOnInit() {
 
@@ -32,12 +44,12 @@ export class AirDetailsComponent implements OnInit {
 
   IfLoggedIn(airTaxi: AirDetails) {
     if (this.service.User) {
-    this.searchService.Total('airTaxi');
-    this.service.serviceType = 'airTaxi';
-    // this.searchService.Check();
-    console.log(airTaxi);
+      this.searchService.Total('airTaxi');
+      this.service.serviceType = 'airTaxi';
+      // this.searchService.Check();
+      console.log(airTaxi);
 
-    this.searchService.PaymentReceive('air-detail', {Detail: airTaxi});
+      this.searchService.PaymentReceive('air-detail', { Detail: airTaxi });
     }
 
   }

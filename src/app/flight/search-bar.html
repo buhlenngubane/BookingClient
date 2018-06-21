@@ -1,3 +1,4 @@
+<mat-slide-toggle [(ngModel)]="searchService.return" >Return Jorney</mat-slide-toggle>
 <mat-list>
 
   <mat-list-item>
@@ -20,7 +21,7 @@
       </mat-hint>
     </mat-form-field>
 
-    <a (click)="swap()" class="pointer">
+    <a (click)="swap()" class="commonWid">
       <mat-icon matSuffix>settings_ethernet</mat-icon>
     </a>
 
@@ -39,22 +40,26 @@
     </mat-form-field>
 
     <mat-form-field class="commonWid">
-      <input matInput [min]="minDate" [max]="maxDate" [matDatepicker]="picker1" placeholder="Choose a date" [(ngModel)]="dateFrom"
-        disabled>
+      <input matInput [min]="service.FminDate"
+       [max]="service.FmaxDate"
+        [matDatepicker]="picker1"
+         (dateChange)="addEvent('change', $event)"
+          placeholder="Choose a date"
+           [(ngModel)]="service.FdateFrom" disabled>
       <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
       <mat-datepicker #picker1 disabled="false"></mat-datepicker>
     </mat-form-field>
 
-    <mat-form-field class="commonWid">
-      <input matInput [min]="minDate2" [max]="maxDate2" 
-      [matDatepicker]="picker2" placeholder="Choose a date" 
-      [(ngModel)]="dateTo"
-        disabled>
+    <mat-form-field class="commonWid" *ngIf="searchService.return">
+      <input matInput [min]="service.FminDate2" [max]="service.FmaxDate2" 
+      [matDatepicker]="picker2" 
+      placeholder="Choose a date" 
+      [(ngModel)]="service.FdateTo" disabled>
       <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
       <mat-datepicker #picker2 disabled="false"></mat-datepicker>
     </mat-form-field>
-
-    <mat-form-field>
+    
+    <mat-form-field class="commonWid">
 
       <mat-select placeholder="FlightDetails" 
       [formControl]="panel" panelClass="{{panel.value}}">
@@ -65,12 +70,14 @@
 
     </mat-form-field>
 
-    <mat-form-field>
+    <mat-form-field class="commonWid">
 
       <input matInput type="number" placeholder="Number of travellers"
-      [formControl]="travellers"
+      [formControl]="travellers" 
       >
-
+      <mat-error *ngIf='travellers.invalid'>
+          {{loading.errorMessage3}}
+        </mat-error>
     </mat-form-field>
 
   </mat-list-item>
@@ -82,4 +89,3 @@
   </mat-list-item>
 
 </mat-list>
-{{firstSearch.invalid}} {{loading.errorMessage}}

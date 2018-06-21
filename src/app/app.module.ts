@@ -24,7 +24,8 @@ import {MatDialogModule,
   MatSlideToggleModule,
   MAT_DIALOG_DEFAULT_OPTIONS,
   MatStepperModule,
-  MatDividerModule
+  MatDividerModule,
+  MatTooltipModule
 } from '@angular/material';
 
 import {MatExpansionModule} from '@angular/material/expansion';
@@ -120,6 +121,7 @@ import { AboutUsComponent } from './about-us/about-us.component';
     GrowlModule,
     MatStepperModule,
     MatDividerModule,
+    MatTooltipModule,
     RouterModule.forRoot(routes, {onSameUrlNavigation: 'reload'}),
   ],
   exports: [RouterModule],

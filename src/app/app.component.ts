@@ -92,7 +92,7 @@ export class AppComponent {
 
     this.dialog.open(SignInComponent, this.dailogConfig).afterClosed().subscribe(
       result => {
-        this.service.userLogic('login');
+        // this.service.userLogic('login');
         this.auth = this.service.Authenticated;
         // this.loading=false;
         console.log('Subscribing to AfterClosed()' + this.auth);
@@ -126,7 +126,7 @@ export class AppComponent {
     this.dailogConfig.autoFocus = true;
     this.dialog.open(RegisterComponent, this.dailogConfig).afterClosed().subscribe(
       result => {
-        this.service.userLogic('register');
+        // this.service.userLogic('register');
         this.auth = this.service.Authenticated;
 
         if (this.auth) {

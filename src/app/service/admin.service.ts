@@ -45,7 +45,6 @@ export class AdminService {
   }
 
   GetAllAccommodations(accData: Accommodations[], loading): boolean {
-    this.service.refreshCount = 0;
     return this.http.get<Accommodations[]>(environment.base_url + `api/Accommodations/Properties/GetAllProperties`)
     .subscribe(
       data => {
@@ -73,7 +72,6 @@ export class AdminService {
   }
 
   GetAllFlights(flightData: Flights[], loading): boolean {
-    this.service.refreshCount = 0;
 
     return this.http.get<Flights[]>(environment.base_url + `api/Flights/FlightDetails/GetAllDetails`)
     .subscribe(
@@ -103,7 +101,6 @@ export class AdminService {
   }
 
   GetAllCarRentals(carData: CarRentalDetails[], loading): boolean {
-    this.service.refreshCount = 0;
 
     return this.http.get<CarRentalDetails[]>(environment.base_url + `api/CarRentals/Cars/GetAllCars`)
     .subscribe(
@@ -134,7 +131,6 @@ export class AdminService {
   }
 
   GetAllAirTaxis(airData: AirDetails[], loading): boolean {
-    this.service.refreshCount = 0;
 
     return this.http.get<AirDetails[]>(environment.base_url + `api/AirTaxis/AirDetails/GetAllDetails`)
     .subscribe(

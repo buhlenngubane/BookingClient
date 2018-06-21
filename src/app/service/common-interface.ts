@@ -20,6 +20,14 @@ export interface changeLayout {
     errorMessage: string;
 }
 
+export interface AirTaxiStorage {
+    pickUp: '';
+    dropOff: '';
+    dateFrom: Date;
+    returnDate: Date;
+    passengers: 1;
+}
+
 // export interface Flight {
 //     flightId: number;
 //     locale: string;

@@ -41,6 +41,7 @@ export class AccountDetailsComponent implements OnInit {
   constructor(fb: FormBuilder,
     private service: UsersService,
     private dialogRef: MatDialogRef<AccountDetailsComponent>) {
+      service.check.error = false;
     this.name = service.User.name;
     this.postChanges = fb.group(
       {

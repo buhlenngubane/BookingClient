@@ -14,8 +14,11 @@
     position: absolute;
     top: 1px;
     left: 1px;
-    padding-bottom: 40px;
+    height: 10%;
 }
 .container{
     height: fit-content;
+}
+.Wid {
+    height: 95%;
 }

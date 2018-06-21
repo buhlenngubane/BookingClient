@@ -1,14 +1,14 @@
-<mat-grid-list cols="3">
+<mat-grid-list cols="1" rowHeight='250'>
 
-  <mat-grid-tile [rowspan]="result.length">
+  <!-- <mat-grid-tile [rowspan]="result.length">
 
-  </mat-grid-tile>
+  </mat-grid-tile> -->
 
-  <mat-grid-tile [colspan]="2" *ngFor="let result of result">
+  <mat-grid-tile *ngFor="let result of result">
 
     <mat-toolbar class="topleft">
       <mat-toolbar-row [style.border-bottom]="'1px dashed #ddd'" class="Hght" layout-wrap>
-        <img src="data:image/jpeg;base64,{{result.ctype.picture}}" style="width: 50%;">
+        <!-- <img src="data:image/jpeg;base64,{{result.ctype.picture}}" style="width: 50%;">
         <span class="space"></span>
         <table>
           <tr>
@@ -18,15 +18,36 @@
             <td>Whats Up</td>
             <td>Year</td>
           </tr>
-        </table>
+        </table> -->
+        <img src="data:image/jpeg;base64,{{result.ctype.picture}}" style="width: 25%; vertical-align: top">
+        <div>
+            
+            {{result.ctype.name}}<br/>
+            {{result.ctype.numOfSeats}} seats<span class="space"></span>{{result.ctype.numOfDoors}} doors<br/>
+            {{result.ctype.numOfAirbags}} Airbags<span class="space"></span>{{result.ctype.transmission}}<br/>
+            <span style=" background-color: orange">{{result.ctype.type}}</span>
+        </div>
         <span class="spacer">
 
         </span>
         {{result.price}}
       </mat-toolbar-row>
-      <mat-toolbar-row class="Hght">
+      <mat-toolbar-row class="Hght" style="padding-top: 1%;">
           
-          <div>Hellosdfsdfasdfsadfsdfdfsdfsdfgdfgdfgfdgdfgdesfgdfsgsdhdfgdfgfghdfghfghdfgh</div>
+          <div style="border-right: 1px dashed #ddd;">
+            <img src="data:image/jpeg;base64,{{result.cmp.picture}}"
+             alt="{{result.cmp.name}}"
+              width="10%" style="vertical-align: middle">
+              {{result.cmp.companyName}}
+              <span class="space"></span>
+              <span class="space"></span>
+              {{result.cmp.fuelPolicy}}<br/>
+              Mileage:
+              <span class="space"></span>
+              <span class="space"></span>
+              <span align='end'>{{result.cmp.mileage}}</span>
+              
+            </div>
           <!-- <div class="b"> This div contains a very long word: thisisaveryveryveryveryveryverylongword. The long word will break and wrap to the next line.</div> -->
           <span class="spacer" ></span>
           <button mat-raised-button color="primary" (click)="IfLoggedIn(result)">

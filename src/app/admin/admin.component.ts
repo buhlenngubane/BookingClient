@@ -49,6 +49,7 @@ export class AdminComponent {
     private route: Router
   ) {
     // this.serviceType=service.ServiceType;
+    service.check.error = false;
     if (!service.User) {
       route.navigate(['/home']);
     }

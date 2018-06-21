@@ -93,7 +93,7 @@
         </mat-toolbar-row>
 
         <mat-toolbar-row >
-            <mat-slide-toggle [(ngModel)]="returnJ" >Return Jorney</mat-slide-toggle>
+            <mat-slide-toggle [(ngModel)]="searchService.returnJourney" >Return Jorney</mat-slide-toggle>
             <span class="spacer"></span>
             <mat-form-field class="commonWid" *ngIf="!change.nav">
                 <input matInput type="number" placeholder="Number Of Passengers" [formControl]="passengers">
@@ -112,7 +112,7 @@
               </mat-form-field>
         </mat-toolbar-row>
 
-        <mat-toolbar-row class="padTop" *ngIf="returnJ">
+        <mat-toolbar-row class="padTop" *ngIf="searchService.returnJourney">
             
                 <mat-form-field class="else">
                     <input matInput type="search" [textMask]="mask" [min]="minDate2" [max]="maxDate2" 
@@ -130,7 +130,7 @@
           </mat-form-field>
         </mat-toolbar-row>
 
-        <mat-toolbar-row class="padTop" *ngIf='change.nav && returnJ'>
+        <mat-toolbar-row class="padTop" *ngIf='change.nav && searchService.returnJourney'>
             <mat-form-field style='width: 100%;'>
                 <input matInput type="time" [formControl]="timeTo" placeholder="Choose time to"
                 class="without" step="300">

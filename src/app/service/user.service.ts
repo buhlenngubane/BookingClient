@@ -5,7 +5,7 @@ import 'rxjs/add/operator/map';
 import { Observable, Subscribable } from 'rxjs/Observable';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
-import { catchError, retry } from 'rxjs/operators';
+import { catchError, retry, tap, delayWhen } from 'rxjs/operators';
 import { environment } from '../../environments/environment.prod';
 import { MatDialogRef } from '@angular/material';
 import { SignInComponent } from '../sign-in/sign-in.component';
@@ -33,11 +33,15 @@ import 'rxjs/add/observable/timer';
 import 'rxjs/add/observable/interval';
 // tslint:disable-next-line:import-blacklist
 import { Subscription } from 'rxjs';
+import { DatePipe } from '@angular/common';
+import { delay } from 'q';
+import { timer } from 'rxjs/observable/timer';
+import { SearchService } from './search.service';
 
 @Injectable()
 export class UsersService {
   accommodations: Accommodations[] = [];
-  private flights: Flights[];
+
   serviceType: string;
   private user: User;
   private password: string;
@@ -54,19 +58,31 @@ export class UsersService {
   sub: Subscription;
   property: Properties;
   /**Flight**/
+  private flights: Flights[];
   private destination: Destinations[];
   flight: FlightDetails;
   private flightDetail: FlightDetails[] = [];
-  form = new FormControl('', [Validators.required
+  locale = new FormControl('', [Validators.required
     , Validators.pattern('[A-Za-z]{0,}[A-Za-z ,-]*')]);
-  form2 = new FormControl('', [Validators.required
+  dest = new FormControl('', [Validators.required
     , Validators.pattern('[A-Za-z]{0,}[A-Za-z ,-]*')]);
+  FdateFrom = new Date();
+  FdateTo = new Date();
+  FminDate = new Date();
+  FminDate2: Date;
+  FmaxDate2 = new Date(new Date().getFullYear() + 1, 7, 1);
+  FmaxDate = new Date(new Date().getFullYear() + 1, 6, 30);
+  flightPrice = [];
+
   /**CarRental**/
   carRental: CarRentalDetails;
   carRentalDtls: CarRentalDetails[] = [];
   /**AirTaxi**/
   airTaxi: AirDetails;
+  timeFrom: FormControl;
+  timeTo: FormControl;
 
+  /**Common logic**/
   year = new Date().getFullYear();
   month = (new Date().getMonth());
   day = new Date().getDate();
@@ -86,9 +102,9 @@ export class UsersService {
 
   load: Loading = { error: false, load: true, errorMessage: '' };
 
-  // timer = Observable.timer(10000, 1000);
-  refreshCount = 0;
+  pipe = new DatePipe('en-US');
   private _hubConnection: HubConnection;
+  msgs = [];
 
   constructor(
     private http: HttpClient,
@@ -96,45 +112,8 @@ export class UsersService {
   ) {
     // this.user=new User();
     this.error = false;
-    // this.admin=false;
-    // this.GetToken="";
-
-    // this.check=[] as changeLayout;
-
-    /******ServiceLogic*******/
-
-    if (this.month === 12 && this.day === 31) {
-      this.year = new Date().getFullYear() + 1;
-      console.log(this.day);
-    } else {
-      // this.year = new Date().getFullYear();
-      console.log(this.day + ' year ' + this.year);
-    }
-
-    if (this.month === (1 || 3 || 4 || 5 || 7 || 8 || 10 || 12) && new Date().getDate() === 31) {
-      if (this.month === 12) {
-        this.month = 1;
-        this.day = 2;
-      } else {
-        this.month++;
-        this.day = 2;
-      }
-    } else if (this.month === 2) {
-      if (new Date().getFullYear() % 4 === 0 && this.day === 29) {
-        this.month++;
-        this.day = 2;
-      } else if (this.day === 28) {
-        this.month++;
-        this.day = 2;
-      } else {
-        this.day += 2;
-      }
-    } else if (this.day === 30) {
-      this.month++;
-      this.day = 2;
-    } else {
-      this.day += 2;
-    }
+    this.FdateTo.setHours(48);
+    this.FminDate2 = this.FdateTo;
 
     this._hubConnection = new HubConnectionBuilder().
       withUrl(this.BASE_URL + 'async').
@@ -154,6 +133,10 @@ export class UsersService {
             .catch(err => console.log('Error while establishing connection :('));
         }
       );
+
+      this._hubConnection.on('BroadcastMessage', ( message: string) => {
+        this.msgs.push({ severity: 'warn', summary: message });
+      });
   }
 
   /***User Function Calls***/
@@ -294,7 +277,6 @@ export class UsersService {
 
     this.body = userUpdate;
     console.log(this.body);
-    this.refreshCount = 0;
     if (userUpdate.password === '') {
       // userUpdate.password=this.user.password;
       this.user.deserialize(userUpdate);
@@ -338,23 +320,23 @@ export class UsersService {
          }).closed;
   }
 
-  userLogic(type: string): void {
-    if (this.User != null) {
-      // auth = this.Authenticated;
+  // userLogic(type: string): void {
+  //   if (this.User != null) {
+  //     // auth = this.Authenticated;
 
-      if (this.Authenticated) {
-        console.log(this.Authenticated);
-        this.check.error = false;
-      } else {
-        // this.check.errorMessage = "Failed to authenticate. " + this.Data + ".";
-        // this.check.error = true;
-        console.log(this.check.error);
-      }
-    } else {
-      this.errorState = 'Failed to ' + type + '. ' + this.Data + '.';
+  //     if (this.Authenticated) {
+  //       console.log(this.Authenticated);
+  //       this.check.error = false;
+  //     } else {
+  //       // this.check.errorMessage = "Failed to authenticate. " + this.Data + ".";
+  //       // this.check.error = true;
+  //       console.log(this.check.error);
+  //     }
+  //   } else {
+  //     this.errorState = 'Failed to ' + type + '. ' + this.Data + '.';
 
-    }
-  }
+  //   }
+  // }
 
   /***Token Getting***/
 
@@ -370,7 +352,9 @@ export class UsersService {
         // console.log("currentUser = "+localStorage.getItem("currentUser"));
         this.Authenticated = true;
 
-        this.sub = Observable.interval(30000)
+        this.sub = Observable.interval(30000).retryWhen(error => error.pipe(
+          tap(val => val), delayWhen(val => timer(20000))
+        ))
           .subscribe(
             tick => {
               this.RefreshMe();
@@ -554,20 +538,30 @@ export class UsersService {
       .subscribe(
         data => {
           console.log(data);
+          console.log('What r u doing');
           this.flights = data;
 
           console.log(this.flights);
           console.log(this.flights[0].locale);
           if (!localStorage.getItem('info#2')) {
-          this.form.setValue(this.flights[0].locale);
-          console.log(this.flights.length);
+          this.locale.setValue(this.flights[0].locale);
+          console.log('What r u doing');
+          console.log(this.locale.value);
 
-          this.form2.setValue(this.flights[0].destination[0].destination1);
+          this.dest.setValue(this.flights[0].destination[0].destination1);
+          console.log(this.dest.value);
+          } else {
+            this.locale.setValue(localStorage.getItem('info#2').split('*')[0]);
+            this.dest.setValue(localStorage.getItem('info#2').split('*')[1]);
           }
         },
         error => {
           console.error(error.message);
-          console.log('Why?');
+          this.check.errorMessage = error.error;
+          if (error.message.includes('unknown url')) {
+            this.check.errorMessage = 'Error connecting with server';
+          }
+          this.check.error = true;
         },
         () => {
           console.log('Done');
@@ -575,48 +569,90 @@ export class UsersService {
       ).closed;
   }
 
-  SearchFlights(loc: string, dest: string, dateLoc: Date, dateDest: Date, Errors?): boolean {
+  SearchFlights(loc: string, dest: string, dateLoc: Date, dateDest?: Date, flightType?: string, num?: number, Errors?): boolean {
     // console.log("Id = " + id)
     console.log('In SearchFlights');
-    // const locale = this.flights.find(s => s.locale === loc);
-    // const dest =
-    //   locale.destination.find(s => s.destination1 === des);
+    console.log(dateDest);
+    this.locale.setValue(loc);
+    this.dest.setValue(dest);
+    const strLoc = this.pipe.transform(dateLoc, 'yyyy-MM-dd').toString();
+    const strDest = dateDest ? this.pipe.transform(dateDest, 'yyyy-MM-dd').toString() : null;
+    const url = dateDest ? `api/Flights/FlightDetails/GetFlightDetail/` +
+     `?locale=${loc}&destination=${dest}&` +
+     `departureDate=${strLoc}` +
+    `&returnDate=${strDest}` :
+    `api/Flights/FlightDetails/GetFlightDetail/` +
+    `?locale=${loc}&destination=${dest}&` +
+    `departureDate=${strLoc}`;
+    // this.searchService.flightType =
 
-    // if (locale && dest) {
+    console.log(dest);
       return this.http.get<FlightDetails[]>(environment.base_url +
-         `api/Flights/FlightDetails/GetFlightDetail/${dest}&${dateLoc}&${dateDest}`)
+        url
+        )
         .subscribe(
           data => {
             console.log(data);
             // this.flightDetail = data;
             this.flightDetail.splice(0);
+            // let index = 0;
+            this.flightPrice.splice(0);
             data.forEach(
               element => {
                 this.flightDetail.push(element);
+
+                /**Calculate total for each flight**/
+                switch (flightType) {
+                  case ('Premium Economy'): {
+                    this.flightPrice.push({
+                    price:
+                     (+element.price + environment.premium_economy) * num
+                    });
+                    break;
+                  }
+
+                  case ('Business'): {
+                    this.flightPrice.push({
+                    price:
+                     (+element.price + environment.business) * num
+                    });
+                    break;
+                  }
+
+                  case ('First Class'): {
+                    this.flightPrice.push({
+                    price:
+                     (+element.price + environment.first_class) * num
+                    });
+                    break;
+                  }
+
+                  default: this.flightPrice.push({
+                    price:
+                     (element.price) * num
+                    });
+                }
               }
             );
             console.log(this.flightDetail);
             console.log(this.flightDetail[0].departure);
             // tslint:disable-next-line:prefer-const
             let exact = false;
-            if (!this.route.isActive('/flight-detail', exact)) {
-              this.route.navigate(['/flight-detail']);
-            }
 
-            localStorage.setItem('info#2', loc + ':' + dest);
+            this.route.navigate(['/flight-detail']);
+            if (!dateDest) {
+            localStorage.setItem('info#2', loc + '*' + dest + '*' + strLoc + '*' + false + '*' + flightType + '*' + num);
+            } else {
+              localStorage.setItem('info#2', loc + '*' + dest + '*' + strLoc + '*' + strDest + '*' + flightType  + '*' + num);
+            }
           },
           error => {
             console.error(error.message);
             const status = error.message + '';
 
-            if (status.includes('404')) {
+            if (status.includes('404') && Errors) {
               Errors.errorMessage = 'Flight not yet available.';
               Errors.error = true;
-              // tslint:disable-next-line:prefer-const
-              let exact;
-              if (this.route.isActive('/car-detail', exact)) {
-                this.route.navigate(['/car-rentals']);
-              }
             } else {
               this.load.errorMessage = error.error;
               this.load.error = true;
@@ -626,19 +662,6 @@ export class UsersService {
             console.log('Done');
           }
         ).closed;
-    // }  else {
-    //     console.log('Setting hint');
-
-    //   try {
-    //     Errors.errorMessage = 'Flight not yet available.';
-    //     Errors.error = true;
-    //   } catch (error) {
-    //     this.load.errorMessage = error.error;
-    //     this.load.error = true;
-    //   }
-
-    //   return false;
-    // }
   }
 
   CarRentalDetails(search: string, load?) {
@@ -654,6 +677,7 @@ export class UsersService {
             }
           );
           console.log(this.carRentalDtls);
+
           this.route.navigate(['car-detail']);
 
           localStorage.setItem('info#3', search);
@@ -686,7 +710,6 @@ export class UsersService {
   /***User Payment Process***/
 
   PaymentSuccess(id: number): boolean {
-    this.refreshCount = 0;
     return this.http.post(this.BASE_URL + `api/AccBookings/Book`,
       id
     )
@@ -773,7 +796,6 @@ export class UsersService {
   /*Subcription In Getters; Was Testing*/
   get Me() {
     this.GetToken = 'Bearer ' + localStorage.getItem('currentUser');
-    this.refreshCount = 0;
     // if(){}
     this.sub = Observable.interval(30000)
       .subscribe(
@@ -815,7 +837,6 @@ export class UsersService {
     if (this.accommodations.length > 0) {
       return true;
     }
-    this.refreshCount = 0;
 
     return this.http.get<Accommodations[]>(this.BASE_URL + `api/Accommodations/GetAll`)
       .subscribe(
@@ -832,6 +853,11 @@ export class UsersService {
         },
         error => {
           console.log(error.message);
+          this.check.errorMessage = error.error;
+          if (error.message.includes('unknown url')) {
+            this.check.errorMessage = 'Error connecting with server';
+          }
+          this.check.error = true;
         },
         () => {
           console.log('Get done.');
@@ -842,17 +868,14 @@ export class UsersService {
   /*End Of Subscription*/
 
   get GetProperty() {
-    this.refreshCount = 0;
     return this.http.get(this.BASE_URL + `api/Properties/GetAll`);
   }
 
   get Destination() {
-    this.refreshCount = 0;
     return this.destination;
   }
 
   get GetFlightDetails() {
-    this.refreshCount = 0;
     return this.http.get(this.BASE_URL + `api/Flights/FlightDetails/GetDetail`);
   }
 

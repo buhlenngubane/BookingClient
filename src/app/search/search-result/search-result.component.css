@@ -1,5 +1,6 @@
 .container{
     position: relative;
+    /* border: 1px solid black; */
 }
 .topleft {
     position: absolute;
@@ -15,6 +16,7 @@ img.First{
 }
 .pointer {
     cursor: pointer;
+    padding-bottom: 10px;
 }
 .spacer {
     flex: 1 1 auto;
@@ -22,3 +24,33 @@ img.First{
 .search{
     background-color: antiquewhite;
 }
+.Hght{
+    height: auto;
+    padding-bottom: 30px;
+}
+.full-width{
+    width: 90%;
+}
+div.displayContents
+{
+    width: max-content;
+    height: auto;
+    position: absolute;
+    top: 10%;
+    left: 10%;
+}
+/* div.displayContents:hover
+{
+    background-color: blue 
+} */
+div.fit{
+    width: fit-content;
+    /* height: 500px; */
+    height: 100%;
+}
+.toolbar{
+    width: fit-content;
+}
+/* tr, td{
+    text-align: right;
+} */

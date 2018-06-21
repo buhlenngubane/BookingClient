@@ -40,6 +40,9 @@
             disabled>
           <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
           <mat-datepicker #picker1 disabled="false"></mat-datepicker>
+          <mat-hint *ngIf='!serviceSearch.availDate'>
+            Property at this date has no available rooms
+          </mat-hint>
         </mat-form-field>
 
         <span class="spacer">

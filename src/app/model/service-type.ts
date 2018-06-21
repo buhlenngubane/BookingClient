@@ -19,9 +19,12 @@ export class Properties {
         {
           'detailId': number;
           'propId': number;
+          'propertyAttr': string;
           'pricePerNight': number;
           'availableRooms': number;
-          'dateAvailable': Date;
+          'roomType': string;
+          'dateAvailableFrom': Date;
+          'dateAvailableTo': Date;
         }
       ];
 
@@ -53,9 +56,6 @@ export class Flights {
                         'cid': number,
                         'companyName': string,
                         'picture': string,
-                        'flightDetail': [
-                            null
-                        ]
                     }
                 }
             ]
@@ -101,9 +101,6 @@ export class FlightDetails {
             'flightId': number;
             'locale': string;
             'avFlights': number;
-            'destination': [
-                null
-            ];
         };
     };
 
@@ -257,6 +254,7 @@ export class FlBooking {
     'flightType': string;
     'travellers': number;
     'bookDate': Date;
+    'returnDate': Date;
     'payType': string;
     'payStatus': boolean;
     'total': number;

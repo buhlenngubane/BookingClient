@@ -5,7 +5,7 @@
   <!--<mat-grid-tile [colspan]="1">
 
     </mat-grid-tile>-->
-  <div *ngFor="let detail of myDetail">
+  <div *ngFor="let detail of myDetail; let i = index">
     <mat-grid-tile [colspan]="1">
       <!--<mat-toolbar>
         <mat-toolbar-row>-->
@@ -44,9 +44,10 @@
     </mat-grid-tile>
 
     <mat-grid-tile [colspan]="1" class="vl">
-      <mat-card-action align="end">
-        <button mat-raised-button color="primary" (click)="IfLoggedIn(detail)">Book Flight</button>
-      </mat-card-action>
+      <div align="end">
+        <p *ngIf='service.flightPrice[i].price'><b>Total: R {{service.flightPrice[i].price}}</b></p>
+        <p><button mat-raised-button color="primary" (click)="IfLoggedIn(detail)">Book Flight</button></p>
+      </div>
     </mat-grid-tile>
   </div>
 

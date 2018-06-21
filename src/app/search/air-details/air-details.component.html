@@ -8,7 +8,7 @@
     <mat-toolbar-row class="label" *ngIf="i==0">
         <h3>What kind of taxi would you like?</h3>
     </mat-toolbar-row>
-    <mat-toolbar-row *ngIf="i==0"></mat-toolbar-row>
+    <!-- <mat-toolbar-row *ngIf="i==0"></mat-toolbar-row> -->
     <mat-toolbar-row class="container">
             <div class="bottomleft">Top Right
               <br>
@@ -24,7 +24,7 @@
             </div>
             <span class="spacer"></span>
             <div>
-            <b [style.font-size]="30">{{result.price}}</b>
+            <b [style.font-size]="30">R {{searchService.aTotal[i]}}</b>
             <br>
             Included in Price:
             <br>
