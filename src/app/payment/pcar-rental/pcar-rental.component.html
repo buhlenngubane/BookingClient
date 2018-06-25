@@ -4,7 +4,7 @@
     </h1>
     <mat-list *ngIf="carRental">
       <mat-list-item *ngFor="let display of display; let i = index">
-          <img src="data:image/jpeg,base64;display.ctype.picture" alt="car chosen" *ngIf="i==1">
+          <img src="data:image/jpeg,base64;{{display.ctype.picture}}" alt="car chosen" *ngIf="i==1">
         <h3 matLine>{{display.name}}</h3>
         <div matLine>{{display.data}}</div>
         <mat-divider></mat-divider>
@@ -20,5 +20,5 @@
     Success <br/>
     Booked on: {{searchService.BookingObj.bookDate}}<br/>
     PayType: {{searchService.BookingObj.payType}}<br/>
-    Payment Received: {{searchService.BookingObj.total}}
+    Payment Received: R {{searchService.BookingObj.total}}
   </ng-template>
