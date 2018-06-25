@@ -1,30 +1,32 @@
 import { Injectable } from '@angular/core';
-import { Users } from './common-interface';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Accommodations, Flights, CarRentals, AirDetails, CarRentalDetails } from '../model/service-type';
 import { UsersService } from './user.service';
 // tslint:disable-next-line:import-blacklist
 import { Subscription } from 'rxjs';
+import { User } from '../model/user';
 
 @Injectable()
 export class AdminService {
 
-  users: Users[];
+  users: User[];
   constructor(private service: UsersService, private http: HttpClient) {
-    this.users = [] as Users[];
+    this.users = [] as User[];
    }
 
-  GetAllUsers(usersData: Users[], loading): boolean {
+  GetAllUsers(usersData: User[], loading): boolean {
     // this.users=user;
-    return this.http.get<Users[]>(environment.base_url + `api/Users/GetAll`)
+    return this.http.get<User[]>(environment.base_url + `api/Users/GetAll`)
     .subscribe(
       data => {
         console.log(data);
         usersData.splice(0);
         data.forEach(
           element => {
-            usersData.push(element);
+            const ele = element;
+            ele.password = '';
+            usersData.push(ele);
           }
         );
         console.log(usersData);
@@ -162,20 +164,20 @@ export class AdminService {
 
   /***Post***/
 
-  PostUser(user, loading) {
-    return this.http.delete(environment.base_url + `api/Users/Register`)
-    .subscribe(
-      data => {
-        console.log(data);
-      },
-      error => {
-        console.error(error);
-      },
-      () => {
-        console.log('Done');
-      }
-    );
-  }
+  // PostUser(user, loading) {
+  //   return this.http.delete(environment.base_url + `api/Users/Register`)
+  //   .subscribe(
+  //     data => {
+  //       console.log(data);
+  //     },
+  //     error => {
+  //       console.error(error);
+  //     },
+  //     () => {
+  //       console.log('Done');
+  //     }
+  //   );
+  // }
 
   PostAccomm(accommodation, loading) {
     console.log('Accommodation');

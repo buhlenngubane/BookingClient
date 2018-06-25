@@ -42,14 +42,15 @@ export class AirDetailsComponent implements OnInit {
 
   }
 
-  IfLoggedIn(airTaxi: AirDetails) {
+  IfLoggedIn(airTaxi: AirDetails, num: number) {
     if (this.service.User) {
-      this.searchService.Total('airTaxi');
       this.service.serviceType = 'airTaxi';
-      // this.searchService.Check();
       console.log(airTaxi);
-
       this.searchService.PaymentReceive('air-detail', { Detail: airTaxi });
+      this.searchService.Total('airTaxi', num);
+    } else {
+      this.service.check.errorMessage = 'Login or Register to book';
+      this.service.check.error = true;
     }
 
   }

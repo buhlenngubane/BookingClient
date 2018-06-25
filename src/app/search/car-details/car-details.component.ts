@@ -37,6 +37,9 @@ export class CarDetailsComponent implements OnInit {
     console.log(carRental);
 
     this.searchService.PaymentReceive('car-detail', {Detail: carRental});
+    } else {
+      this.service.check.errorMessage = 'Login or Register to book';
+      this.service.check.error = true;
     }
 
   }

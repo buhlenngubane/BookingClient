@@ -33,7 +33,7 @@
           placeholder="Change Password" type="password" 
           [(ngModel)]="password" [formControl]="postChanges.controls.Password">
           <mat-error *ngIf='postChanges.controls.Password.invalid'>
-            {{getError(postChanges.controls.Password)}}
+            {{getError(postChanges.controls.Password, 'Pass')}}
           </mat-error>
           <mat-hint align="end" class="form-control-feedback"
               *ngIf="postChanges.controls.Password.errors && 
@@ -43,27 +43,28 @@
                 postChanges.controls.Password.errors.minlength.actualLength}}
                 characters left.</mat-hint>
         </mat-form-field>
+        <!-- (postChanges.controls.ConfirmPassword.dirty || postChanges.controls.ConfirmPassword.touched) -->
 
-        <mat-form-field>
+        <!-- <mat-form-field>
           <input matInput placeholder="Confirm Password" type="password"
            [formControl]="postChanges.controls.ConfirmPassword"
           >
           <mat-error align="end" 
-          *ngIf="postChanges.controls.ConfirmPassword.errors 
-          && postChanges.controls.ConfirmPassword.errors.pattern && 
-          (postChanges.controls.ConfirmPassword.dirty || postChanges.controls.ConfirmPassword.touched)" 
+          *ngIf="postChanges.controls.Password.value!==postChanges.controls.ConfirmPassword.value
+          " 
          >
             {{getError(postChanges.controls.ConfirmPassword, 'ConfirmPassword')}}
+            Hello
           </mat-error>
           <mat-hint 
-          *ngIf="password==postChanges.controls.ConfirmPassword.value && 
+          *ngIf="password===postChanges.controls.ConfirmPassword.value && 
           (postChanges.controls.ConfirmPassword.dirty || postChanges.controls.ConfirmPassword.touched)" 
           class="success">
             Passwords match
           </mat-hint>
-        </mat-form-field>
-      </div>
-      <div class="row">
+        </mat-form-field> -->
+      <!-- </div> -->
+      <!-- <div class="row"> -->
         <mat-form-field>
           <input matInput type="tel" placeholder="Phone Number" 
           [(ngModel)]="phone" [formControl]="postChanges.controls.Phone">
@@ -134,7 +135,6 @@
                     </div>
                   </mat-grid-list>
                 </div>
-                {{loading.error}} {{focus[0]}}
               </ng-template>
             </mat-dialog-content>
           </mat-tab>
@@ -323,12 +323,12 @@
               Close Window
             </button>
           </mat-grid-tile>
-          <mat-grid-tile color="accent" *ngIf="msLoading.error && !msLoading.load; else Saved" class="fail">
+          <mat-grid-tile color="accent" *ngIf="msLoading.error && !msLoading.load;" class="fail">
             {{msLoading.errorMessage}}
           </mat-grid-tile>
-          <ng-template class="success" #Saved>
+          <!-- <mat-grid-tile class="success" *ngIf="!msLoading.error && !msLoading.load;">
             Saved Changes
-          </ng-template>
+          </mat-grid-tile> -->
           <mat-grid-tile>
               <mat-spinner *ngIf="msLoading.load" [diameter]="30"></mat-spinner>
           </mat-grid-tile>

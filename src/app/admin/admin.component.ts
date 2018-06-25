@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { UsersService } from '../service/user.service';
-import { Users } from '../service/common-interface';
 import { AdminService } from '../service/admin.service';
 import { Router } from '@angular/router';
 import { User } from '../model/user';
@@ -145,7 +144,7 @@ export class AdminPostComponent {
 //   }
 // ];
 
-  user = new User();
+  // user = new User();
 
   accEdit = false;
 
@@ -269,19 +268,19 @@ AirTaxi = {
   ]
 };
 
-strUser = JSON.stringify(this.user, undefined, '\t');
+// strUser = JSON.stringify(this.user, undefined, '\t');
  strAccomm = JSON.stringify(this.Accomm, undefined, '\t');
  strFlight = JSON.stringify(this.Flight, undefined, '\t');
  strCarRental = JSON.stringify(this.CarRental, undefined, '\t');
  strAirTaxi = JSON.stringify(this.AirTaxi, undefined, '\t');
 
  loop = [
-  {
-    change: false,
-    text:   'User',
-    obj:    this.user,
-    bind:   this.strUser
-   },
+  // {
+  //   change: false,
+  //   text:   'User',
+  //   obj:    this.user,
+  //   bind:   this.strUser
+  //  },
   {
   change: false,
   text:   'Accommodation',
@@ -326,11 +325,11 @@ loading = { load: false, error: false, errorMessage: '' };
 
   PostAll(data) {
     switch (data.text) {
-      case ('User'):
-      {
+      // case ('User'):
+      // {
 
-        break;
-      }
+      //   break;
+      // }
 
       case ('Accommodation'):
       {
@@ -558,6 +557,16 @@ loading = { load: false, error: false, errorMessage: '' };
 
   PutAll(data) {
     switch (data.text) {
+
+      case ('User'):
+      {
+        console.log(data.text);
+        console.log(data.bind);
+        this.admin.PutUser(data.bind, this.loading);
+        console.log(JSON.stringify(data.bind));
+        break;
+      }
+
       case ('Accommodation'):
       {
         console.log(data.text);
@@ -659,6 +668,7 @@ loading = { load: false, error: false, errorMessage: '' };
     switch (data.text) {
       case ('User'):
       {
+        this.admin.DeleteUser(data.bind, this.loading);
         break;
       }
 
@@ -666,7 +676,7 @@ loading = { load: false, error: false, errorMessage: '' };
       {
         console.log(data.text);
         console.log(data.bind);
-        this.admin.PostAccomm(data.bind, this.loading);
+        this.admin.DeleteAccomm(data.bind, this.loading);
         console.log(JSON.stringify(data.bind));
         break;
       }

@@ -5,14 +5,9 @@ export interface Users {
     email: string;
     password: string;
     phone: string;
+        admin: false;
 }
 
-export interface Accommodation {
-    accId: number;
-    country: string;
-    location: string;
-    picture: string;
-}
 // tslint:disable-next-line:class-name
 export interface changeLayout {
     load: boolean;
@@ -27,18 +22,6 @@ export interface AirTaxiStorage {
     returnDate: Date;
     passengers: 1;
 }
-
-// export interface Flight {
-//     flightId: number;
-//     locale: string;
-//     avFlights: number;
-// }
-
-// export interface FlightPic {
-//     cid: number;
-//     companyName: string;
-//     picture: string;
-// }
 
 export interface ChangeNav {
     nav: boolean;

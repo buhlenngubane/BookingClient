@@ -15,9 +15,6 @@ export class TokenInterceptor { // implements HttpInterceptor {
     const started = Date.now();
     let ok: string;
 
-    // Clone the request and replace the original headers with
-    // cloned headers, updated with the authorization.
-    // if(authToken!=""){
       console.log('Interceptor Executing!!!');
     const authReq = req.clone({
       setHeaders: {'Content-Type': 'application/json', Authorization: authToken}

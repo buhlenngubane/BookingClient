@@ -36,7 +36,9 @@ export class PflightComponent implements OnInit {
 
   constructor(private service: UsersService,
   private searchService: SearchService) {
-
+    if (!this.service.flight) {
+      searchService.GoBack('/flight');
+    }
   }
 
   ngOnInit() {

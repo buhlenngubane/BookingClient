@@ -36,6 +36,9 @@ export class PcarRentalComponent implements OnInit {
   state = this.searchService.success[2];
   constructor(private service: UsersService,
     private searchService: SearchService) {
+      if (!service.carRental) {
+        searchService.GoBack('/car-rental');
+      }
     }
 
   ngOnInit() {

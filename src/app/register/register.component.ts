@@ -19,13 +19,15 @@ export class RegisterComponent implements OnInit {
   password: string;
   phone: string;
   private namePattern =
-    '[a-zA-Z]';
+    '[a-zA-Z]*';
   private emailPattern =
     '[a-z0-9._%+-]+@[a-z0-9.-]+[.][a-z]{2,4}';
   private passwordPattern =
-    '(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{8,}';
+    /// '(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{8,}'
+    '(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{8,}'
+    ;
   private phoneNumber =
-    '^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$';
+    '[0-9]{10}';
 
   constructor(fb: FormBuilder,
     private service: UsersService,

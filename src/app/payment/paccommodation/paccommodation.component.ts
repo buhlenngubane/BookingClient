@@ -45,7 +45,9 @@ export class PaccommodationComponent {
     private service: UsersService,
     private searchService: SearchService
   ) {
-      this.property = service.Property;
+      if (service.Property) {
+        this.property = service.Property;
+      }
    }
 
 

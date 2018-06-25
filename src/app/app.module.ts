@@ -60,6 +60,7 @@ import { PaccommodationComponent } from './payment/paccommodation/paccommodation
 import { GrowlModule } from 'primeng/primeng';
 import { FooterComponent } from './footer.component';
 import { AboutUsComponent } from './about-us/about-us.component';
+import { NgxGalleryModule } from 'ngx-gallery';
 
 @NgModule({
   declarations: [
@@ -122,6 +123,7 @@ import { AboutUsComponent } from './about-us/about-us.component';
     MatStepperModule,
     MatDividerModule,
     MatTooltipModule,
+    NgxGalleryModule,
     RouterModule.forRoot(routes, {onSameUrlNavigation: 'reload'}),
   ],
   exports: [RouterModule],

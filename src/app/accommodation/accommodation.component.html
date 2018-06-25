@@ -98,25 +98,25 @@
     </a>
   </mat-grid-tile>
 
-  <mat-grid-tile [colspan]='2' >
+  <mat-grid-tile [colspan]='2' style="overflow: auto;">
+    <!-- <div [style.background-image]="Sanitize('data:image/jpeg;base64,' + acc.picture)"></div> -->
     <span class="space" *ngFor="let acc of accommodation | slice:2">
     <mat-card class="card" (click)="Search(acc.accId)">
       <a routerLink="">
-        <!-- <div *ngFor="let acc of accommodation; index as i"> -->
           <div class="poraloid"  layout-wrap>
-            <img mat-card-image src="data:image/jpeg;base64,{{acc.picture}}" alt="{{acc.location}}" srcset="" class="First">
-            <!-- <div [style.background-image]="Sanitize('data:image/jpeg;base64,' + acc.picture)"></div> -->
+            <img mat-card-image src="data:image/jpeg;base64,{{acc.picture}}"
+             alt="{{acc.location}}" srcset="" width="100px">
+            
             <mat-card-header >
-              <mat-card-title style="color: black">{{acc.country}}</mat-card-title>
+              <mat-card-title style="color: black">{{acc.location}}</mat-card-title>
     
             </mat-card-header>
     
             <mat-card-content style="color: black">
-              This is America
+              {{acc.country}}
             </mat-card-content>
           </div>
           
-        <!-- </div> -->
       </a>
       
     </mat-card>

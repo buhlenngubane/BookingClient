@@ -57,9 +57,10 @@ export class SearchResultComponent implements OnInit {
               location: localStorage.getItem('info#1').split(', ')[1]}, this.errorCheck);
 
            this.search.setValue(localStorage.getItem('info#1'));
-      } else {
-        searchService.GoBack('/home');
       }
+      // else {
+      //   searchService.GoBack('/home');
+      // }
 
       this.prop = searchService.Property;
       console.log('Going Home');
@@ -117,10 +118,6 @@ export class SearchResultComponent implements OnInit {
     }
   }
 
-  show() {console.log(JSON.stringify(this.searchService.Property));
-    // this.prop = this.searchService.Property;
-    console.log(JSON.stringify(this.prop) + this.prop.length); }
-
   Find(search: FormControl): void {
 
     if (
@@ -167,6 +164,9 @@ export class SearchResultComponent implements OnInit {
           DateTo: this.dateTo,
           str: this.panel.value
         });
+    } else {
+      this.service.check.errorMessage = 'Login or Register to book';
+      this.service.check.error = true;
     }
   }
 

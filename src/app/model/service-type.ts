@@ -69,7 +69,7 @@ export class Flights {
 }
 
 export class Destinations {
-    'destId': 0;
+    'destId': number;
     'flightId': number;
 
     'destination1': string;
@@ -283,6 +283,7 @@ export class CarBooking {
 export class AirBooking {
     'userId': number;
     'airDetailId': number;
+    'taxiName': string;
     'returnJourney': Date;
     'passengers': number;
     'bookDate': Date;

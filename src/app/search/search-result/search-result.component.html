@@ -1,116 +1,8 @@
-
-<!-- <body> -->
-
-    <div class="jumbotron text-center">
+<div style="background-color: slategray; text-align: center;height: 50px">
         <h1 *ngIf="prop">{{prop.length}} Properties Found</h1>
-      <p>Resize this responsive page to see the effect!</p> 
+      <p>Hover to see additional property attributes</p> 
     </div>
-      
-    <!-- <div class="container fit">
-      <div class="row">
-        <div class="col-sm-4" style="height: 500px;">
-          <p>
-            <mat-toolbar class="toolbar" style="position: absolute;
-            top: 16px;
-            left: 16px;
-            background-color: gold;">
-        
-              <mat-toolbar-row>
-                <label for="search">Destination :</label>
-              </mat-toolbar-row>
-        
-              <mat-toolbar-row class="example-container">
-                    <mat-form-field class="full-width">
-                      <input matInput type="search"
-                      name="search" 
-                      [formControl]="search" 
-                      placeholder="search"
-                      [matAutocomplete]="auto" 
-                      (keyup)="searchTerm$.next($event.target.value)"
-                      class="search">
-                      <mat-autocomplete #auto="matAutocomplete">
-                        <mat-option *ngFor="let result of result | slice:0:9" [value]="result.country+', '+result.location">
-                          {{ result.country }} {{result.location}}
-                        </mat-option>
-                      </mat-autocomplete>
-                      <mat-error *ngIf='search.invalid && search.pristine'>
-                        {{error.CheckerrorMessage}}
-                      </mat-error>
-                      <mat-hint align="end" *ngIf='errorCheck.error && search.untouched'>
-                        {{errorCheck.errorMessage}}
-                      </mat-hint>
-                    </mat-form-field>
-              </mat-toolbar-row>
-        
-              <mat-toolbar-row>
-                </mat-toolbar-row>
-        
-              <mat-toolbar-row>
-                <mat-form-field class="full-width">
-                  <input matInput [min]="minDate" 
-                  (dateChange)="addEvent('change', $event)" 
-                  [max]="maxDate" 
-                  [(ngModel)]="dateForm" 
-                  [matDatepicker]="picker1" placeholder="Choose a date" disabled>
-                  <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-                  <mat-datepicker #picker1 startView="month" disabled="false"></mat-datepicker>
-                  <mat-hint *ngIf='!searchService.availDate'>
-                      Property at this date<br/> has no available rooms
-                    </mat-hint>
-                </mat-form-field>
-              </mat-toolbar-row>
-        
-              <mat-toolbar-row>
-                </mat-toolbar-row>
-        
-              <mat-toolbar-row>
-                <mat-form-field class="full-width">
-                  <input matInput [min]="minDate2" [max]="maxDate2" 
-                  [matDatepicker]="picker2" placeholder="Choose a date" [(ngModel)]="dateTo" disabled>
-                  <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-                  <mat-datepicker #picker2 startView="month" disabled="false"></mat-datepicker>
-                </mat-form-field>
-            </mat-toolbar-row>
-        
-            <mat-toolbar-row>
-              </mat-toolbar-row>
-        
-              <mat-toolbar-row>
-                  <mat-form-field class="full-width">
-                    <mat-select placeholder="Number of rooms to book" 
-                    [formControl]="panel" panelClass="{{panel}}"
-                    class="input" >
-                      <mat-option value="{{num.number+num.text}}" *ngFor="let num of Num">{{num.number+num.text}}</mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                </mat-toolbar-row>
-        
-              <mat-toolbar-row>
-                <span class="fill-remaining-space"></span>
-                <span class="align-center"></span>
-                <span class="spacer"></span>
-                <a mat-raised-button routerLink="." class="anchor" color="primary" (click) = "Find(search)">Search</a>
-              </mat-toolbar-row>
-            </mat-toolbar>
-          </p>
-        </div>
-        <div class="col-sm-6">
-          <h3>Column 2</h3>
-           <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
-          <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris...</p> 
-        </div>
-        <div class="col-sm-2">
-          <h3>Column 3</h3>        
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
-          <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris...</p>
-        </div>
-      </div>
-    </div>
-    
-    </body> -->
 <mat-grid-list cols="4" rowHeight="350">
-
-  
 
   <mat-grid-tile [rowspan]="prop.length">
 
@@ -202,14 +94,8 @@
 
   </mat-grid-tile>
 
-
-
-    
    <mat-grid-tile [colspan]="3" *ngFor="let prop of prop; let i = index" style="height: 200px; padding-bottom: 50px; ">
-
       
-      
-            
     <mat-toolbar style="position: absolute;
     top: 16px;
     left: 16px; width: 95%;border: 1px solid black;background-color: white" 
@@ -221,7 +107,14 @@
           <div>
                     <p>{{prop.propName}}</p>
                     <p> {{prop.accDetail[0].roomType}} room</p>
-                    
+                    <p *ngIf='service.rooms.length > 0'>
+                      <span style="background-color: palegreen" *ngIf='service.rooms[i].available > 0; else Alert'>
+                          {{service.rooms[i].available}} rooms available
+                      </span>
+                      <ng-template style="background-color: red" #Alert>
+                          {{service.rooms[i].available}} rooms available
+                      </ng-template>
+                    </p>
             </div>
             <span class="spacer"></span>
             <div>
@@ -232,7 +125,7 @@
     </mat-toolbar-row>
     <mat-toolbar-row *ngIf="searchService.availDateFrom && searchService.availDateTo;">
       <span class="spacer"></span>
-      <button mat-raised-button>Book</button>
+      <button mat-raised-button color='primary' (click)='ifLoggedIn(prop)'>Book</button>
     </mat-toolbar-row>
 
     </mat-toolbar>

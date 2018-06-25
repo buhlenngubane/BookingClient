@@ -35,6 +35,9 @@ export class PairTaxiComponent implements OnInit {
   returnJourney = this.searchService.returnJourney ? this.searchService.returnJourney : this.searchService.returnJourney;
   constructor(private service: UsersService,
     private searchService: SearchService) {
+      if (!service.airTaxi) {
+        searchService.GoBack('/air-taxi');
+      }
     }
 
   ngOnInit() {

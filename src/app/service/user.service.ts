@@ -10,7 +10,7 @@ import { environment } from '../../environments/environment.prod';
 import { MatDialogRef } from '@angular/material';
 import { SignInComponent } from '../sign-in/sign-in.component';
 import { RegisterComponent } from '../register/register.component';
-import { changeLayout, Users} from './common-interface';
+import { changeLayout, Users } from './common-interface';
 // tslint:disable-next-line:max-line-length
 import {
   Accommodations,
@@ -34,9 +34,7 @@ import 'rxjs/add/observable/interval';
 // tslint:disable-next-line:import-blacklist
 import { Subscription } from 'rxjs';
 import { DatePipe } from '@angular/common';
-import { delay } from 'q';
 import { timer } from 'rxjs/observable/timer';
-import { SearchService } from './search.service';
 
 @Injectable()
 export class UsersService {
@@ -56,7 +54,11 @@ export class UsersService {
   myObservable;
   // timer = Observable.timer(10000, 1000);
   sub: Subscription;
+
+  /**Accommodation**/
   property: Properties;
+  roomsAvailable = true;
+  rooms: [{available: number}] = [{available: 1}];
   /**Flight**/
   private flights: Flights[];
   private destination: Destinations[];
@@ -94,11 +96,16 @@ export class UsersService {
   flightAbbrev: string;
   search: string;
 
+  /**Payment**/
+  paypalLoad = true;
+
   /**Booking**/
   accData: AccBooking[] = [];
   flightData: FlBooking[] = [];
   carRentalData: CarBooking[] = [];
   airTaxiData: AirBooking[] = [];
+
+  images = [];
 
   load: Loading = { error: false, load: true, errorMessage: '' };
 
@@ -136,7 +143,13 @@ export class UsersService {
 
       this._hubConnection.on('BroadcastMessage', ( message: string) => {
         this.msgs.push({ severity: 'warn', summary: message });
+        if (this.rooms.length > 0) {
+          this.rooms.forEach( element => {
+            element.available --;
+          });
+        }
       });
+      this._hubConnection.serverTimeoutInMilliseconds = 100000000;
   }
 
   /***User Function Calls***/
@@ -153,21 +166,10 @@ export class UsersService {
         // let cred = customer as Credetials;
         // console.log("Email = " + cred.email + cred.password);
         this.password = this.user.password;
-        this.user.password = '';
+        // this.user.password = '';
         this.SetToken(this.user.email, this.password)
           .subscribe(
             () => {
-
-              this.sub = Observable.interval(30000)
-                .subscribe(
-                  tick => {
-                    this.RefreshMe();
-                  }
-                  ,
-                  error => {
-                    console.log(error.error);
-                  }
-                );
             },
             error => {
               console.error(error + ' for token!!!');
@@ -185,9 +187,9 @@ export class UsersService {
         (error) => {
           console.error(error + ' for signIn!!!');
           console.error(error);
-          this.data = error.error;
+          this.check.errorMessage = error.error.toString();
 
-          if (this.data === 'Email exists') {
+          if (this.check.errorMessage === 'Email exists') {
             this.check.errorMessage = 'Email exists';
           } else {
             this.check.errorMessage = 'Error occured.';
@@ -221,7 +223,7 @@ export class UsersService {
         /*if(this.user.userId==1)
           this.admin=true;*/
         this.password = this.user.password;
-        this.User.password = '';
+        // this.User.password = '';
         console.log('Token launch');
         this.SetToken(Email, Password)
           .subscribe(
@@ -245,10 +247,10 @@ export class UsersService {
           );
       },
         (error) => {
-          console.error(error + ' for signIn!!!');
+          console.error(error.error + ' for signIn!!!');
           // this.data = error.error;
 
-          this.check.errorMessage = error.error;
+          this.check.errorMessage = error.error.toString();
 
           if (this.check.errorMessage.includes('unknown url')) {
             this.check.errorMessage = 'Cannot reach server';
@@ -273,24 +275,24 @@ export class UsersService {
         }).closed;
   }
 
-  userUpdate(userUpdate: Users, loading: changeLayout): boolean {
+  userUpdate(userUpdate: any, loading: changeLayout): boolean {
 
     this.body = userUpdate;
     console.log(this.body);
-    if (userUpdate.password === '') {
-      // userUpdate.password=this.user.password;
+    // if (userUpdate.password === '') {
+    //   // userUpdate.password=this.user.password;
+    //   this.user.deserialize(userUpdate);
+    //   // this.user.password = this.password;
+    // } else {
       this.user.deserialize(userUpdate);
-      this.user.password = this.password;
-    } else {
-      this.user.deserialize(userUpdate);
-    }
+    // }
 
     return this.http.put(this.BASE_URL + 'api/Users/UpdateUser',
       this.user)// , this.httpOptions)
       .map(response => {
         console.log(response);
-        this.password = this.user.password;
-        this.user.password = '';
+        // this.password = this.user.password;
+        // this.user.password = '';
         // this.user = new User().deserialize(response);
       })
       .subscribe(data => {
@@ -298,16 +300,18 @@ export class UsersService {
       },
         error => {
           this.data = error.message;
-          this.check.error = true;
-          loading.errorMessage = error.error;
+          // this.check.error = true;
+          this.check.errorMessage = error.error.toString();
           // console.error(this.httpOptions);
           console.error(this.data);
           if (this.check.errorMessage.includes('400')) {
             loading.errorMessage = 'Internal server error';
+            this.check.errorMessage = 'Internal server error';
           }
 
-          if (loading.errorMessage.includes('unknown url')) {
+          if (this.check.errorMessage.includes('unknown url')) {
             loading.errorMessage = 'Server unreachable.';
+            this.check.errorMessage = 'Server unreachable.';
           }
 
           loading.load = false;
@@ -352,12 +356,15 @@ export class UsersService {
         // console.log("currentUser = "+localStorage.getItem("currentUser"));
         this.Authenticated = true;
 
-        this.sub = Observable.interval(30000).retryWhen(error => error.pipe(
-          tap(val => val), delayWhen(val => timer(20000))
-        ))
+        this.sub = Observable.interval(30000)
+        // .retryWhen(error => error.pipe(
+        //   tap(val => val), delayWhen(val => timer(20000))
+        // ))
           .subscribe(
             tick => {
-              this.RefreshMe();
+              if (this.sub) {
+                this.RefreshMe();
+              }
             }
             ,
             error => {
@@ -374,10 +381,9 @@ export class UsersService {
 
   RefreshMe(): boolean {
     // this.GetToken = 'Bearer ' + localStorage.getItem('currentUser');
+    try {
     return this.http.get(environment.base_url + 'api/Token/Refresh')
       .map(data => {
-        localStorage.removeItem('currentUser');
-        console.log('Removed Token!!! New token: ' + this.myToken);
         this.myToken = data as Token;
         this.getToken = 'Bearer ' + this.myToken.token;
         localStorage.setItem('currentUser', this.myToken.token);
@@ -393,12 +399,18 @@ export class UsersService {
           console.log(error.error);
           localStorage.removeItem('currentUser');
           console.warn('Removed Token!!!');
-          this.sub.unsubscribe();
+          if (this.sub.unsubscribe()) {
+            // this.sub.unsubscribe();
+          }
         },
         () => {
           console.log('Done');
         }
       ).closed;
+    } catch (error) {
+      console.log('Error');
+      return false;
+    }
   }
 
   /***Get Account Details***/
@@ -425,7 +437,7 @@ export class UsersService {
             error => {
               console.log(error);
               console.log(Loading);
-              loading.errorMessage = error.error;
+              loading.errorMessage = error.error.toString();
               loading.error = true;
               loading.load = false;
               console.log(loading);
@@ -460,7 +472,8 @@ export class UsersService {
             },
             error => {
               console.log(error);
-              loading.errorMessage = error.error;
+              const err = error.error.toString();
+              loading.errorMessage = err;
               loading.error = true;
               loading.load = false;
             },
@@ -489,7 +502,8 @@ export class UsersService {
             },
             error => {
               console.log(error);
-              loading.errorMessage = error.error;
+              const err = error.error.toString();
+              loading.errorMessage = err;
               loading.error = true;
               loading.load = false;
             },
@@ -518,7 +532,8 @@ export class UsersService {
             },
             error => {
               console.log(error);
-              loading.errorMessage = error.error;
+              const err = error.error.toString();
+              loading.errorMessage = err;
               loading.error = true;
               loading.load = false;
             },
@@ -557,7 +572,7 @@ export class UsersService {
         },
         error => {
           console.error(error.message);
-          this.check.errorMessage = error.error;
+          this.check.errorMessage = error.error.toString();
           if (error.message.includes('unknown url')) {
             this.check.errorMessage = 'Error connecting with server';
           }
@@ -648,7 +663,8 @@ export class UsersService {
           },
           error => {
             console.error(error.message);
-            const status = error.message + '';
+            const err = error.error.toString();
+            const status = err;
 
             if (status.includes('404') && Errors) {
               Errors.errorMessage = 'Flight not yet available.';
@@ -685,7 +701,8 @@ export class UsersService {
         },
         error => {
           console.error(error.message);
-          const emsg = error.message + '';
+          const err = error.error.toString();
+          const emsg = err;
           console.log(emsg.includes('404'));
           if (emsg.includes('404')) {
             console.log('In hear');
@@ -800,7 +817,11 @@ export class UsersService {
     this.sub = Observable.interval(30000)
       .subscribe(
         tick => {
-          this.RefreshMe();
+          try {
+            this.RefreshMe();
+          } catch (error) {
+            console.log(error);
+          }
         },
         error => {
           console.log(error.error);
@@ -845,15 +866,20 @@ export class UsersService {
           console.log(data);
           for (let index = 0; index < data.length; index++) {
             this.accommodations[index] = data[index];
-            if (index === 14) {
-              break;
-            }
+            // if (index === 14) {
+            //   break;
+            // }
           }
+
+          this.accommodations.forEach(element => {
+            this.images.push('data:image/jpeg;base64,' + element.picture);
+          });
 
         },
         error => {
           console.log(error.message);
-          this.check.errorMessage = error.error;
+          const err = error.error.toString();
+          this.check.errorMessage = err;
           if (error.message.includes('unknown url')) {
             this.check.errorMessage = 'Error connecting with server';
           }

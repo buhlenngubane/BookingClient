@@ -13,7 +13,7 @@
               [(ngModel)]="name"
               [formControl]="_regForm.controls.Name" 
               required>
-              <mat-error>
+              <mat-error *ngIf='_regForm.controls.Name.invalid'>
                 {{getError(_regForm.controls.Name)}}
               </mat-error>
             </mat-form-field>
@@ -27,7 +27,7 @@
               [(ngModel)]="surname" 
               [formControl]="_regForm.controls.Surname" 
               required>
-              <mat-error>
+              <mat-error *ngIf='_regForm.controls.Surname.invalid'>
                   {{getError(_regForm.controls.Surname)}}
                 </mat-error>
             </mat-form-field>
@@ -44,11 +44,12 @@
               <mat-hint align="end">
                   example@ex.com
                 </mat-hint>
-            </mat-form-field>
-            <mat-error *ngIf="_regForm.controls.Email.invalid && 
+                <mat-error *ngIf="_regForm.controls.Email.invalid && 
             (_regForm.controls.Email.dirty || _regForm.controls.Email.touched)">
               {{getError(_regForm.controls.Email)}}
             </mat-error>
+            </mat-form-field>
+            
           </td>
         </tr>
         <tr>

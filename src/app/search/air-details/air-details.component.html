@@ -10,9 +10,10 @@
     </mat-toolbar-row>
     <!-- <mat-toolbar-row *ngIf="i==0"></mat-toolbar-row> -->
     <mat-toolbar-row class="container">
-            <div class="bottomleft">Top Right
+            <div class="bottomleft">
+              {{result.taxi.name}}
               <br>
-              WhatsUp
+              {{result.taxi.type}}
               <br>
               <mat-icon>person</mat-icon>{{result.taxi.numOfSeats}} Passengers
               <br>
@@ -31,7 +32,7 @@
             Taxes, Service <br>Charges and Gratuity
             <br>
             <button mat-raised-button style="background-color: forestgreen;" 
-            (click)="IfLoggedIn(result)">Book Taxi</button>
+            (click)="IfLoggedIn(result, i)">Book Taxi</button>
           </div>
     </mat-toolbar-row>
   </mat-toolbar>

@@ -20,6 +20,8 @@ div.polaroid {
     background-color: white;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     margin-bottom: 25px;
+    height: 50%;
+    border-radius: 8px;
   }
   
   div.contain {
@@ -27,8 +29,10 @@ div.polaroid {
     padding: 10px 20px;
   }
   .card{
-      width: 250px;
-      height: 150px;
+      /* width: 100%;
+      height: 50%; */
+      height: 50%;
+      border-radius: 8px;
   }
   .full-width {
     width: 100%;
@@ -39,6 +43,7 @@ div.polaroid {
 img.ImgGrid{
     height:180px;
     width:400px;
+    border-radius: 8px;
 }
   .example-container {
     display: flex;
@@ -52,9 +57,9 @@ img.ImgGrid{
       text-decoration-style: none;
       cursor: pointer;
   }
-  .space{
+  /* .space{
     padding:30px;
-}
+} */
 .spaceLayout {
     padding-bottom: 30px;
 }

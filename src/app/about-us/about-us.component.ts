@@ -18,15 +18,12 @@ export class AboutUsComponent implements OnInit {
   {
     text: 'Law Enforcement Guidelines',
     rows: 9
-  },
-  {
-    text: 'Offices WorldWide',
-    rows: 2
-  },
-  {
-    text: 'Contact Us',
-    rows: 2
   }
+  // ,
+  // {
+  //   text: 'Contact Us',
+  //   rows: 2
+  // }
 ];
 
 path = 'About Booking';

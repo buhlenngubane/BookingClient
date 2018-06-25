@@ -7,6 +7,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatDatepickerInputEvent } from '@angular/material';
+import { NgxGalleryAnimation } from 'ngx-gallery';
 
 @Component({
   selector: 'app-accommodation',
@@ -37,6 +38,8 @@ export class AccommodationComponent implements OnInit {
   value2: any;
   error = false;
   errorMessage = '';
+  galleryOptions: { width: string; height: string; thumbnailsColumns: number; imageAnimation: any; };
+  images: any;
 
   constructor(
     private service: UsersService,
@@ -63,10 +66,14 @@ export class AccommodationComponent implements OnInit {
 
 
     serviceSearch.search(this.searchTerm$, 1, this.result);
+    // this.accommodation.forEach(element => {
+    //   this.images.push('data:image/jpeg;base64,' + element.picture);
+    // });
   }
 
   ngOnInit() {
-    this.dateTo = new Date(/*this.year*/this.service.year, this.service.month, this.service.day);
+    this.dateTo = new Date();
+    this.dateTo.setHours(48);
 
     if (this.dateForm && this.dateTo) {
 
@@ -79,19 +86,20 @@ export class AccommodationComponent implements OnInit {
       this.serviceSearch.Diff = this.diff;
 
     }
-    this.minDate2 = this.dateTo;
+    this.minDate2 = new Date(this.dateTo.toDateString());
     console.log(this.datePipe.transform(this.dateForm, 'yyyy-MM-dd'));
+
+    this.galleryOptions = {
+          width: '600px',
+          height: '400px',
+          thumbnailsColumns: 4,
+          imageAnimation: NgxGalleryAnimation.Slide
+      };
     // this.dateForm.disable();
     // this.dateTo.disable();
   }
 
   addEvent(type: string, event: MatDatepickerInputEvent<Date>) {
-    // this.events.push(`${type}: ${event.value}`);
-    // const changeDate = new Date(event.value.getFullYear(), event.value.getMonth(), event.value.getDate());
-    // changeDate.setHours(48);
-    // this.dateTo = changeDate;
-    // new Date(event.value.getFullYear(), event.value.getMonth(), event.value.getDate() + 2);
-    // this.minDate2 = this.dateTo;
     if (this.dateTo.valueOf() < event.value.valueOf()) {
       this.dateTo = new Date(event.value.toDateString());
       this.dateTo.setHours(48);
@@ -114,36 +122,15 @@ export class AccommodationComponent implements OnInit {
       this.minDate2 = new Date(event.value.toDateString());
       this.minDate2.setHours(48);
     }
-    // if ((this.service.FdateTo.valueOf() < event.value.valueOf())) {
-    //   // if (this.service.FdateTo.getDay() === event.value.getDay()) {
-    //     this.service.FdateTo = new Date(event.value.toDateString());
-    //     this.service.FdateTo.setHours(48);
-    //     if (this.service.FmaxDate2.valueOf() < this.service.FdateTo.valueOf()) {
-    //       this.service.FdateTo = new Date(this.service.FmaxDate2.toDateString());
-    //     }
-    //     this.service.FminDate2 = this.service.FdateTo;
-    //   // }
-    // } else
-    // if (this.service.FdateTo.toDateString() === event.value.toDateString()) {
-    //   this.service.FdateTo = new Date(event.value.toDateString());
-    //   this.service.FdateTo.setHours(48);
-    //   if (this.service.FmaxDate2.valueOf() < this.service.FdateTo.valueOf()) {
-    //     this.service.FdateTo = new Date(this.service.FmaxDate2.toDateString());
-    //   }
-    //   this.service.FminDate2 = this.service.FdateTo;
-    // } else {
-    //   this.service.FminDate2 = new Date(event.value.toDateString());
-    //   this.service.FminDate2.setHours(48);
-    // }
   }
 
-  Sanitize(image) {
-    let str = '';
-    str = image;
-    console.log(str);
-    console.log(image);
-    return this._sanitizer.bypassSecurityTrustStyle(`url(${str})`);
-  }
+  // Sanitize(image) {
+  //   let str = '';
+  //   str = image;
+  //   console.log(str);
+  //   console.log(image);
+  //   return this._sanitizer.bypassSecurityTrustStyle(`url(${str})`);
+  // }
 
   Search(value: string): void {
     console.log('Value == ' + value);

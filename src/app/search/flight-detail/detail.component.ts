@@ -52,7 +52,8 @@ export class DetailComponent implements OnInit {
       console.log('Final flightType' + this.searchService.flightType);
       this.searchService.PaymentReceive('flight-detail', { Detail: flight });
     } else {
-      this.service.check.errorMessage = 'SignIn or Register to book';
+      this.service.check.errorMessage = 'Login or Register to book';
+      this.service.check.error = true;
     }
   }
 

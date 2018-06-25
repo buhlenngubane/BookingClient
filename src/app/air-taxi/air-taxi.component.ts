@@ -86,7 +86,7 @@ export class AirSearchBarComponent implements OnInit {
 
         this.returnDate = new Date(items.returnDate);
         this.returnDate.setHours(72);
-        this.minDate2 = new Date(this.returnDate.toDateString());
+        this.minDate2 = new Date(this.dateFrom.toDateString());
         console.log(items.returnDate);
       }
 

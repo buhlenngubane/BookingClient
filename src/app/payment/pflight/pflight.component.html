@@ -11,10 +11,13 @@
     </mat-list>
     <div>
   
-      <h2 *ngIf="paypalLoad">Paypal button is loading</h2>
+      <h2 *ngIf="service.paypalLoad">Paypal button is loading</h2>
       <div id="paypal-checkout-btn"></div>
     </div>
   </div>
   <ng-template #ElseBlock>
-    Success {{amount}}
+    Success <br/>
+    Booked on: {{searchService.BookingObj.bookDate}}<br/>
+    PayType: {{searchService.BookingObj.payType}}<br/>
+    Payment Received: {{searchService.BookingObj.total}}
   </ng-template>

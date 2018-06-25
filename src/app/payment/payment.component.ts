@@ -26,35 +26,14 @@ export class PaymentComponent {
     if (!service.User) {// {
       searchService.GoBack('/home');
     }
-
+    service.paypalLoad = true;
+    searchService.success.forEach(
+      element => {
+        element.success = false;
+      }
+    );
     console.log(service.serviceType);
 
-    switch (service.serviceType) {
-      case ('accommodation'):
-        if (!service.Property) {
-          // console.log('In Accommodation');
-          searchService.GoBack('/home');
-          break;
-        } else { break; }
-
-      case ('flight'):
-        if (!service.flight) {
-          searchService.GoBack('/flight');
-          break;
-        } else { break; }
-
-      case ('carRental'):
-        if (!service.carRental) {
-          searchService.GoBack('/carRental');
-          break;
-        }  else { break; }
-
-      case ('airTaxi'):
-        if (!service.airTaxi) {
-          searchService.GoBack('/airTaxi');
-          break;
-        } else { break; }
-    }
     // }
     // else
       // this.load=true;
@@ -96,7 +75,7 @@ export class PaymentComponent {
     if (!this.addScript) {
       this.addPaypalScript().then(() => {
         paypal.Button.render(this.paypalConfig, '#paypal-checkout-btn');
-        this.paypalLoad = false;
+        this.service.paypalLoad = false;
       });
     }
   }

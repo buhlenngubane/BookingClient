@@ -50,7 +50,7 @@ export class AccountDetailsComponent implements OnInit {
         'Password': new FormControl('',
           [Validators.pattern(this.passwordPattern)]),
         'ConfirmPassword': new FormControl('',
-          [Validators.pattern(this.password)]),
+          [ Validators.pattern('123')]),
         'Phone': new FormControl('',
           [Validators.pattern(this.phoneNumber)]),
         'Checked': new FormControl(false)
@@ -92,15 +92,22 @@ export class AccountDetailsComponent implements OnInit {
 
   getError(control: FormControl, str?: string) {
     try {
-      console.log('in return ' + // JSON.stringify(
-        control.getError('pattern').actualValue);
+      if (str === 'Pass') {
+        if (this.password !== '') {
+          console.log('Validate');
+        } else {
+          console.log('Don\'t validate');
+        }
+      }
       return control.hasError('required') ? 'You must enter a value' :
       control.hasError('minlength') ?
       control.errors.minlength.requiredLength - control.errors.minlength.actualLength + ' Charrecters required' :
-      str === 'ConfirmPassword' ? '' :
-      control.hasError('pattern') ? 'Passwords don\'t match' :
-      control.hasError('pattern') ?  'Not a valid pattern' :
-        '';
+      control.hasError('pattern') ? 'Not a valid pattern' :
+      str === 'ConfirmPassword' ?
+       //  'Not a valid pattern' :
+       // control.hasError('pattern') ?
+       'Passwords don\'t match' : console.log('Should validate!!');
+        // '';
     } catch (error) {
       console.log(error);
     }
@@ -114,8 +121,9 @@ export class AccountDetailsComponent implements OnInit {
       name: this.name ? this.name : this.service.User.name,
       surname: this.surname ? this.surname : this.service.User.surname,
       email: this.service.User.email,
-      password: this.password ? this.password : '',
-      phone: this.phone ? this.phone : this.service.User.phone
+      password: this.password ? this.password : this.service.User.password,
+      phone: this.phone ? this.phone : this.service.User.phone,
+      admin:  false
     }, this.msLoading);
 
     console.log('userUpdate() called!!');
@@ -133,7 +141,7 @@ export class AccountDetailsComponent implements OnInit {
           this.loading.error = false;
           this.loading.errorMessage = '';
           this.loading.load = true;
-          this.service.AccountDetails(this.accData, {error: true, load: false, errorMessage: ''} , 'accommodation')
+          this.service.AccountDetails(this.accData, this.loading , 'accommodation')
           ;
           this.focus[0] = true;
           this.focus[1] = false;
@@ -149,7 +157,7 @@ export class AccountDetailsComponent implements OnInit {
           this.focus[2] = false;
           this.focus[3] = false;
           this.accData = this.service.AccData;
-          this.loading = {load: false, error: false, errorMessage: 'What'};
+          this.loading = {load: false, error: false, errorMessage: ''};
           break; }
 
       case ('Flight'):
