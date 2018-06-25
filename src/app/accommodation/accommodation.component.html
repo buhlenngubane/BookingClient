@@ -99,7 +99,7 @@
   </mat-grid-tile>
 
   <mat-grid-tile [colspan]='2' style="overflow: auto;">
-    <!-- <div [style.background-image]="Sanitize('data:image/jpeg;base64,' + acc.picture)"></div> -->
+    <!-- <button mat-button style="position: absolute; top: 50%; left: 1px;border-radius: 100%;z-index:999;width: 3px"><mat-icon>chevron_left</mat-icon></button> -->
     <span class="space" *ngFor="let acc of accommodation | slice:2">
     <mat-card class="card" (click)="Search(acc.accId)">
       <a routerLink="">
@@ -121,6 +121,7 @@
       
     </mat-card>
    </span>
+   <!-- <button mat-button style="position: absolute; top: 50%; right: 1px;border-radius: 100%;z-index: 999;width: 3px"><mat-icon>chevron_right</mat-icon></button> -->
   </mat-grid-tile>
 
 </mat-grid-list>

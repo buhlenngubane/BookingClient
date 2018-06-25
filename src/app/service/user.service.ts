@@ -246,20 +246,22 @@ export class UsersService {
             }
           );
       },
-        (error) => {
+        error => {
           console.error(error.error + ' for signIn!!!');
           // this.data = error.error;
 
           this.check.errorMessage = error.error.toString();
 
-          if (this.check.errorMessage.includes('unknown url')) {
+          if (error.message.includes('unknown url')) {
             this.check.errorMessage = 'Cannot reach server';
-          }
+          } else
           if (this.check.errorMessage.includes('Email')) {
             this.check.errorMessage = 'Email not found';
-          }
+          } else
           if (this.check.errorMessage.includes('Password')) {
             this.check.errorMessage = 'Password not found';
+          } else {
+            this.check.errorMessage = 'Error occured.';
           }
 
           this.check.error = true;
@@ -754,13 +756,13 @@ export class UsersService {
             this.sub.unsubscribe();
             console.log('Refresh Gone');
           }
+          this.user = null;
+          localStorage.removeItem('currentUser');
         },
         error => {
           console.error('Not logged out! ' + error.message);
         },
         () => {
-          this.user = null;
-          localStorage.removeItem('currentUser');
           console.warn('Logged Out.');
           console.log('Log|Out Done.');
           this.route.navigate(['/home']);
