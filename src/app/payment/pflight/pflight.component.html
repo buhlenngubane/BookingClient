@@ -18,6 +18,11 @@
   <ng-template #ElseBlock>
     Success <br/>
     Booked on: {{searchService.BookingObj.bookDate}}<br/>
+    Names of people booked for: {{searchService.numOfTravellers}}<br/>
+  
+  <div *ngFor='let names of searchService.travellersNames; let i = index'>
+    <p>{{names}} {{searchService.travellersSurnames[i]}}</p>
+    </div>
     PayType: {{searchService.BookingObj.payType}}<br/>
     Payment Received: R {{searchService.BookingObj.total}}
   </ng-template>

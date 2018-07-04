@@ -20,9 +20,9 @@ export class SignInComponent implements OnInit {
   // user:User;
   // data:any;
   private emailPattern =
-    '^[a-z0-9._%+-]+@[a-z0-9.-]+[.][a-z]{2,4}$';
+    '^[a-zA-Z0-9._%+-]+@[a-z0-9.-]+[.][a-z]{2,4}$';
   private passwordPattern =
-    '(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{8,}';
+    '(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{7,}';
 
   constructor(fb: FormBuilder,
     private service: UsersService,

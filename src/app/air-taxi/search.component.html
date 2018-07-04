@@ -1,13 +1,13 @@
-<mat-toolbar width="300px" height="100px" class="toolbar">
+<mat-toolbar class="toolbar">
 
         <mat-toolbar-row>
-          <label *ngIf="!change.nav">Let’s find your ideal car</label>
+          <label *ngIf="!change.nav">Let’s find your ideal taxi</label>
           <label *ngIf="change.nav">Update search</label>
         </mat-toolbar-row>
 
         <mat-toolbar-row class="pad">
             <mat-form-field class="search">
-            <input matInput type="search" name="firstSearch" placeholder="Placeholder" 
+            <input matInput type="search" name="firstSearch" placeholder="From" 
             [formControl]="firstSearch" 
             [matAutocomplete]="auto" (keyup)="searchTerm$.next($event.target.value)" class="InputSearch">
             <mat-autocomplete #auto="matAutocomplete">
@@ -25,9 +25,9 @@
 
         </mat-toolbar-row>
 
-        <mat-toolbar-row>
+        <mat-toolbar-row class="pad">
           <mat-form-field class="search">
-            <input matInput type="search" name="secondSearch" placeholder="Placeholder" 
+            <input matInput type="search" name="secondSearch" placeholder="To" 
             [formControl]="secondSearch" 
             [matAutocomplete]="auto2"  (keyup)="searchTerm$2.next($event.target.value)"
             class="InputSearch"
@@ -74,7 +74,7 @@
           </ng-template>
 
           <span class="spacer"></span>
-
+          <!-- Checking if there is navigation change -->
           <div *ngIf="!change.nav">
 
           <mat-form-field class="else">
@@ -85,7 +85,7 @@
         </div>
         </mat-toolbar-row>
 
-        <mat-toolbar-row *ngIf="change.nav">
+        <mat-toolbar-row class="pad" *ngIf="change.nav">
             <mat-form-field class="else">
                 <input matInput type="time" [formControl]="timeFrom" placeholder="Choose time from"
                  class="without" step="300">
@@ -138,7 +138,7 @@
         </mat-toolbar-row>
 
         <mat-toolbar-row>
-          <a mat-raised-button (click)="Find()" class="anchor" color="primary">Search</a>
+          <a mat-raised-button (click)="Find()" style="width: 100%" color="primary">Search</a>
         </mat-toolbar-row>
 
 

@@ -4,15 +4,15 @@
     </div>
 <mat-grid-list cols="4" rowHeight="350">
 
-  <mat-grid-tile [rowspan]="prop.length">
+  <mat-grid-tile [rowspan]="searchService.rows">
 
     <mat-toolbar class="toolbar" style="position: absolute;
     top: 16px;
     left: 16px;
-    background-color: gold;">
+    background-color: gold; width: 100%">
 
       <mat-toolbar-row>
-        <label for="search">Destination or Property :</label>
+        <label for="search">Destination :</label>
       </mat-toolbar-row>
 
       <mat-toolbar-row class="example-container">
@@ -81,6 +81,9 @@
             class="input" >
               <mat-option value="{{num.number+num.text}}" *ngFor="let num of Num">{{num.number+num.text}}</mat-option>
             </mat-select>
+            <mat-error >
+              Not Enough Rooms<br/> For Selected Destination
+            </mat-error>
           </mat-form-field>
         </mat-toolbar-row>
 
@@ -101,10 +104,10 @@
     left: 16px; width: 95%;border: 1px solid black;background-color: white" 
     matTooltip="{{prop.accDetail[0].propertyAttr}}" [matTooltipShowDelay]="1000">
     <mat-toolbar-row class="Hght" layout-wrap>
-            <img style="padding-top: 3%" src="data:image/jpeg;base64,{{prop.picture}}" alt="{{prop.propName}}" 
+            <img style="padding-top: 3%; width: 30%" src="data:image/jpeg;base64,{{prop.picture}}" alt="{{prop.propName}}" 
             srcset="" align="left">
           <br/>
-          <div>
+          <div style="width:40%;">
                     <p>{{prop.propName}}</p>
                     <p> {{prop.accDetail[0].roomType}} room</p>
                     <p *ngIf='service.rooms.length > 0'>
@@ -134,4 +137,4 @@
 
   </mat-grid-tile> 
 </mat-grid-list>
-<p-growl [(value)]="service.msgs"></p-growl>
+<p-growl [(ngModel)]="service.msgs"></p-growl>

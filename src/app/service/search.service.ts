@@ -55,6 +55,7 @@ export class SearchService {
   accommodation: Accommodations[] = [];
   availDateFrom = false;
   availDateTo = false;
+  rows = 2;
 
   /***Fight***/
   searchFlight: Flights[] = [];
@@ -66,6 +67,12 @@ export class SearchService {
   flightType = 'Economy';
   numOfTravellers = 1;
   private fPrice = 1;
+  numCount: [{number: number}];
+  names: FormControl[];
+  names_valid = true;
+  submitted = false;
+  travellersNames: string[] = [];
+  travellersSurnames: string[] = [];
   /**End**/
 
   /***CarRental***/
@@ -403,8 +410,9 @@ export class SearchService {
 
   /***Additional Function For Services***/
 
-  Search(dateForm: Date, dateTo: Date, panel: string, accommodationOrsearch?, errorCheck?):
+  Search(dateForm: Date, dateTo: Date, panel: FormControl, accommodationOrsearch?, errorCheck?):
     boolean {
+      this.rows = 2;
     let country = '';
     let location = '';
     const accom = accommodationOrsearch as Accommodations;
@@ -435,14 +443,12 @@ export class SearchService {
             this.property.splice(0);
             this.overralPrice.splice(0);
             this.service.rooms.splice(0);
+            console.log(panel.value);
             data.forEach(
               element => {
-                this.property.push(new Properties(element));
-          //  if (!element.accDetail.find(s => s.dateAvailableFrom.toString().split('T')[0] === pip.transform(dateForm, 'yyyy-MM-dd'))) {
-                //           this.availDate = false;
-                //         } else {
-                //           this.availDate = true;
-                //         }
+                if (element.accDetail.find(s => s.availableRooms >= +panel.value.split(' ')[0])) {
+                  this.property.push(new Properties(element));
+                }
 
                 /**Check if date available**/
                 const Fromdate = element.accDetail[0].dateAvailableFrom.toString().split('T')[0];
@@ -465,29 +471,35 @@ export class SearchService {
                 if ((ToYMonth === returnYMonth) && (+Today >= +returnDay)) {
                   this.availDateTo = true;
                 } else { this.availDateTo = false; }
+                /*End*/
 
                 this.service.rooms.push({available: +element.accDetail[0].availableRooms});
                 // console.log(element.accDetail[0].dateAvailableTo + ' index is: ' + index);
                 this.overralPrice.push({
                   price:
                     element.accDetail[0].pricePerNight *
-                    +panel.split(' ')[0] * this.diff
+                    +panel.value.split(' ')[0] * this.diff
                 });
                 console.log(
                   this.diff
                 );
               }
             );
+            this.rows += data.length;
 
             console.log(JSON.stringify(this.Property));
 
             this.DateFrom = dateForm;
             this.DateTo = dateTo;
-            this.Panel = panel;
+            this.Panel = panel.value;
             this.Nights = this.diff;
 
             // if (this.property.length > 0) {
-            this.route.navigate(['/acc-detail']);
+            if (this.Property.length > 0) {
+              this.route.navigate(['/acc-detail']);
+            } else {
+              panel.setErrors({'roomsAvailable': true});
+            }
 
             /*
             * Trying FormControl Conversion
@@ -515,7 +527,7 @@ export class SearchService {
             console.error(error.message);
             // tslint:disable-next-line:prefer-const
             let exact;
-
+            try {
             if (error.message.includes('404') && search.status) {
               if (this.route.isActive('/acc-detail', exact)) {
                 this.route.navigate(['/home']);
@@ -530,6 +542,10 @@ export class SearchService {
                 this.route.navigate(['/home']);
               }
             }
+          } catch (Err) {this.service.check.errorMessage = 'Error occured';
+          if (this.route.isActive('/acc-detail', exact)) {
+            this.route.navigate(['/home']);
+          } }
           },
           () => {
             console.log('search done.');
@@ -599,6 +615,12 @@ export class SearchService {
         },
         error => {
           console.error(error.message);
+          try {
+            if (error.message.includes('unknown url')) {
+              this.service.check.errorMessage = 'Error connecting to server';
+            } else {this.service.check.errorMessage = 'Error occured'; }
+          } catch (Err) {this.service.check.errorMessage = 'Error occured'; }
+          this.service.check.error = true;
         },
         () => {
           console.log('Done.');
@@ -611,8 +633,8 @@ export class SearchService {
   PaymentReceive(myRoute: string, obj: any) {
     console.log('In payment!');
     if (this.service.User) {
+      console.log(myRoute);
       switch (myRoute) {
-
         case ('acc-detail'): {
           this.service.Property = obj.Property;
           this.DateFrom = obj.DateFrom;
@@ -627,11 +649,10 @@ export class SearchService {
 
         // tslint:disable-next-line:no-switch-case-fall-through
         case ('flight-detail'): {
-          this.fPrice = obj.Detail.price;
           this.service.flight = obj.Detail;
-          // this.fDateFrom = obj.DateFrom;
-          // //this.flightType = obj.Type;
-          // this.numOfTravellers = obj.Travellers;
+          if (this.service.flight) {
+            this.fPrice = obj.Detail.price;
+          }
           console.log(this.service.flight);
           console.log('FlightType ' + this.flightType);
           // this.flightType="Economy";
@@ -645,7 +666,7 @@ export class SearchService {
         case ('car-detail'): {
           this.service.carRental = obj.Detail;
           console.log('carrental = ' + this.service.carRental);
-          this.Total('carRental');
+          console.log(this.Total('carRental'));
           break;
         }
 
@@ -654,6 +675,7 @@ export class SearchService {
           this.service.airTaxi = obj.Detail;
           console.log('airTaxi = ' + this.service.airTaxi);
           this.Total('airTaxi');
+          break;
         }
       }
 
@@ -675,17 +697,21 @@ export class SearchService {
     console.log(serviceType);
     switch (serviceType) {
       case ('accommodation'):
+      try {
         if (this.service.Property && this.Panel) {
           // let number = rooms.split(" ");
           this.total = +this.service.Property.accDetail[0].pricePerNight * (this.Nights * (this.Rooms));
 
           console.log(this.total + ' service ' +
             this.service.Property.accDetail[0].pricePerNight + ' Nights ' + this.Nights + ' Panel number: ' +
-            this.Rooms + ' Panel text: ' + this.panel + ' panel strigfy: ' + this.panel);
+            this.Rooms + ' Panel text: ' + this.panel + ' panel stringfy: ' + this.panel);
+            break;
         }
+      } catch (err) {break; }
 
       // tslint:disable-next-line:no-switch-case-fall-through
       case ('flight'):
+      try {
         if (this.service.FlightDetail.length > 0) {
           console.log('Flight type : ' + this.flightType);
           switch (this.flightType) {
@@ -693,6 +719,7 @@ export class SearchService {
               if (index !== null) {
                 this.total = (+this.fPrice + environment.economy) * this.numOfTravellers;
               console.log(this.total + ' ' + environment.economy + ' ' + this.numOfTravellers);
+              break;
                }
             }
 
@@ -700,6 +727,7 @@ export class SearchService {
             case ('Premium Economy'): {
               if (index !== null) {
                 this.total = (+this.fPrice + environment.premium_economy) * this.numOfTravellers;
+                break;
               }
             }
 
@@ -707,6 +735,7 @@ export class SearchService {
             case ('Business'): {
               if (index !== null) {
                 this.total = (+this.fPrice + environment.business) * this.numOfTravellers;
+                break;
               }
             }
 
@@ -714,19 +743,26 @@ export class SearchService {
             case ('First Class'): {
               if (index !== null) {
                 this.total = (+this.fPrice + environment.first_class) * this.numOfTravellers;
+                break;
               }
             }
           }
         }
+      } catch (err) {break; }
 
       // tslint:disable-next-line:no-switch-case-fall-through
       case ('carRental'):
         {
           try {
           if (this.service.carRental) {
-            this.total = +this.service.carRental.price;
+            console.log('Minused values are equal to :' +
+            (+this.service.carRental.price * Math.round((this.cDateReturn.valueOf() -
+             this.cDateFrom.valueOf()) / 1000 / 60 / 60 / 24)));
+            this.total = +this.service.carRental.price * Math.round((this.cDateReturn.valueOf() -
+            this.cDateFrom.valueOf()) / 1000 / 60 / 60 / 24);
+            break;
           }
-        } catch (err) {}
+        } catch (err) {break; }
         }
 
       // tslint:disable-next-line:no-switch-case-fall-through
@@ -736,11 +772,12 @@ export class SearchService {
           try {
           if (this.returnJourney) {
             this.total = +this.service.airTaxi.price * this.numOfPassengers * 2;
+            break;
           } else {
             this.total = +this.service.airTaxi.price * this.numOfPassengers;
+            break;
           }
-        } catch (err) {}
-          console.log('AirTaxi: ' + this.total);
+        } catch (err) {break; }
         }
     }
     return this.total;
@@ -782,7 +819,24 @@ export class SearchService {
       }
       case ('flight-detail'):
         {
+          let names = '';
+          let index = 0;
+          let surnames = '';
+          this.travellersNames.length > 0 ? this.travellersNames.forEach(
+            element => {
+              surnames += this.travellersSurnames[index];
+              if (index++ > 0) {
+                names += ',';
+                surnames += ',';
+                console.log('Concatinationg');
+              }
+              names += element;
+              console.log('Inserting element = ' + element);
+            }
+          ) : names = null;
 
+          if (names === null) {surnames = null; }
+          console.log(names + '   ' + surnames);
           this.bookingObj = new FlBooking({
             userId: this.service.User.userId,
             detailId: this.service.flight.detailId,
@@ -790,6 +844,8 @@ export class SearchService {
             bookDate: this.fDateFrom,
             returnDate: this.fDateTo,
             travellers: this.numOfTravellers,
+            travellersNames: names,
+            travellersSurnames: surnames,
             payStatus: true,
             payType: 'PayPal',
             total: this.Total()

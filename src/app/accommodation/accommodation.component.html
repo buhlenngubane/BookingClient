@@ -1,9 +1,9 @@
 <mat-grid-list cols="2" rowHeight="210">
   <mat-grid-tile [rowspan]="2">
-    <mat-toolbar style="background-color: gold" class="toolbar">
+    <mat-toolbar style="background-color: goldenrod;" class="toolbar">
 
       <mat-toolbar-row>
-        <label for="search">Destination or Property :</label>
+        <label for="search">Destination :</label>
         
       </mat-toolbar-row>
 
@@ -40,9 +40,9 @@
             disabled>
           <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
           <mat-datepicker #picker1 disabled="false"></mat-datepicker>
-          <mat-hint *ngIf='!serviceSearch.availDate'>
-            Property at this date has no available rooms
-          </mat-hint>
+          <!-- <mat-hint *ngIf='!serviceSearch.availDate'>
+            Properties at this date<br/> have no available rooms
+          </mat-hint> -->
         </mat-form-field>
 
         <span class="spacer">
@@ -68,8 +68,10 @@
           panelClass="{{panel.value}}" class="input">
             <!--<mat-option value="{{panel.number+panel.text}}">{{panel.number+panel.text}}</mat-option>-->
             <mat-option value="{{num.number+num.text}}" *ngFor="let num of Num ">{{num.number+num.text}}</mat-option>
-            
           </mat-select>
+          <mat-error>
+            Not Enough Rooms<br/> For Selected Destination
+          </mat-error>
         </mat-form-field>
       </mat-toolbar-row>
 
@@ -100,7 +102,7 @@
 
   <mat-grid-tile [colspan]='2' style="overflow: auto;">
     <!-- <button mat-button style="position: absolute; top: 50%; left: 1px;border-radius: 100%;z-index:999;width: 3px"><mat-icon>chevron_left</mat-icon></button> -->
-    <span class="space" *ngFor="let acc of accommodation | slice:2">
+    <span class="spanCard" *ngFor="let acc of accommodation | slice:2:6">
     <mat-card class="card" (click)="Search(acc.accId)">
       <a routerLink="">
           <div class="poraloid"  layout-wrap>

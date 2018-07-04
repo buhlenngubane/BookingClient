@@ -34,7 +34,6 @@ img{
   .wid
   {
       width: 50%;
-      padding-right: 20px;
   }
 .field {
     width: 100%;
@@ -44,7 +43,6 @@ img{
 }
 .full-width {
     width: 100%;
-    padding-right: 10px;
   }
   .search{
     background-color: antiquewhite;

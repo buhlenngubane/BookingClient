@@ -15,7 +15,7 @@ import { AccBooking, CarBooking, FlBooking, AirBooking } from '../model/service-
 export class AccountDetailsComponent implements OnInit {
 
   step: number;
-  Submited: boolean;
+  Submited = false;
   postChanges: FormGroup;
   name: string;
   surname: string;
@@ -116,6 +116,7 @@ export class AccountDetailsComponent implements OnInit {
   confirmed() {
     console.log('userUpdate()');
     this.msLoading = { load: true };
+    // Creating new user
     this.service.userUpdate({
       userId: this.service.User.userId,
       name: this.name ? this.name : this.service.User.name,
@@ -132,6 +133,8 @@ export class AccountDetailsComponent implements OnInit {
     this.step++;
     this.postChanges.reset();
   }
+
+  // checking if tab changed
 
   tabChanged = (tabChangeEvent: MatTabChangeEvent): void => {
     switch (tabChangeEvent.tab.textLabel) {

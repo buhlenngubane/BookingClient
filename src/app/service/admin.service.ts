@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { Accommodations, Flights, CarRentals, AirDetails, CarRentalDetails } from '../model/service-type';
+import { Accommodations, Flights, CarRentals, AirDetails, CarRentalDetails, Properties } from '../model/service-type';
 import { UsersService } from './user.service';
 // tslint:disable-next-line:import-blacklist
 import { Subscription } from 'rxjs';
@@ -46,17 +46,22 @@ export class AdminService {
     ).closed;
   }
 
-  GetAllAccommodations(accData: Accommodations[], loading): boolean {
-    return this.http.get<Accommodations[]>(environment.base_url + `api/Accommodations/Properties/GetAllProperties`)
+  GetAllAccommodations(accData: object[], id: number, loading): boolean {
+    return this.http.get<Properties[]>(environment.base_url + `api/AccDetails/GetAccDetail/${id}`)
     .subscribe(
       data => {
         console.log(data);
-        // accData.splice(0);
+        accData.splice(0);
+        try {
         data.forEach(
           element => {
             accData.push(element);
           }
         );
+      } catch (Err) {
+        console.log('Error : ' + Err);
+        accData.push({'error': 'No accommodation found for id ' + id});
+      }
       },
       error => {
         console.log(error);
@@ -73,19 +78,25 @@ export class AdminService {
     ).closed;
   }
 
-  GetAllFlights(flightData: Flights[], loading): boolean {
+  GetAllFlights(flightData: object[], id: number, loading): boolean {
 
-    return this.http.get<Flights[]>(environment.base_url + `api/Flights/FlightDetails/GetAllDetails`)
+    return this.http.get<Flights[]>(environment.base_url + `api/Flights/FlightDetails/GetAllDetails/${id}`)
     .subscribe(
       data => {
         console.log(data);
-
+        flightData.splice(0);
+        try {
         data.forEach(
           element => {
             flightData.push(element);
           }
         );
+        flightData = data;
         console.log(flightData);
+        } catch (Err) {
+          console.log('Error : ' + Err);
+          flightData.push({'error': 'No flight found for id ' + id});
+        }
       },
       error => {
         console.log(error);
@@ -102,18 +113,26 @@ export class AdminService {
     ).closed;
   }
 
-  GetAllCarRentals(carData: CarRentalDetails[], loading): boolean {
+  GetAllCarRentals(carData: object[], id: number, loading): boolean {
 
-    return this.http.get<CarRentalDetails[]>(environment.base_url + `api/CarRentals/Cars/GetAllCars`)
+    return this.http.get<CarRentalDetails[]>(environment.base_url + `api/CarRentals/Cars/GetAllCars/${id}`)
     .subscribe(
       data => {
         console.log(data);
+        carData.splice(0);
+        try {
 
         data.forEach(
           element => {
             carData.push(element);
           }
         );
+      } catch (Err) {
+        console.log('Error : ' + Err);
+        carData.push({'error': 'No carRental found for id ' + id});
+        // carData.push('No data found for id ' + id);
+      }
+        // carData = data;
 
         console.log(carData);
       },
@@ -132,23 +151,29 @@ export class AdminService {
     ).closed;
   }
 
-  GetAllAirTaxis(airData: AirDetails[], loading): boolean {
+  GetAllAirTaxis(airData: object[], id: number, loading): boolean {
 
-    return this.http.get<AirDetails[]>(environment.base_url + `api/AirTaxis/AirDetails/GetAllDetails`)
+    return this.http.get<AirDetails[]>(environment.base_url + `api/AirTaxis/AirDetails/GetDetails/${id}`)
     .subscribe(
       data => {
         console.log(data);
-
+        airData.splice(0);
+        try {
         data.forEach(
           element => {
             airData.push(element);
           }
         );
+      } catch (Err) {
+        console.log('Error : ' + Err);
+        airData.push({'error': 'No airTaxi found for id ' + id});
+      }
+        // airData = data;
       },
       error => {
         console.log(error);
 
-        loading.errorMessage = error.error;
+        loading.errorMessage = error.message;
         loading.error = true;
         loading.load = false;
       },
@@ -164,23 +189,9 @@ export class AdminService {
 
   /***Post***/
 
-  // PostUser(user, loading) {
-  //   return this.http.delete(environment.base_url + `api/Users/Register`)
-  //   .subscribe(
-  //     data => {
-  //       console.log(data);
-  //     },
-  //     error => {
-  //       console.error(error);
-  //     },
-  //     () => {
-  //       console.log('Done');
-  //     }
-  //   );
-  // }
-
   PostAccomm(accommodation, loading) {
     console.log('Accommodation');
+    loading.load = true;
     return this.http.post(environment.base_url + `api/Accommodations/PostAccommodation`, accommodation)
     .subscribe(
       data => {
@@ -191,7 +202,7 @@ export class AdminService {
       error => {
         console.log(error.error);
 
-        loading.errorMessage = error.error;
+        loading.errorMessage = JSON.stringify(error.error);
         loading.error = true;
         loading.load = false;
       },
@@ -207,6 +218,7 @@ export class AdminService {
 
   PostFlight(flight, loading) {
     console.log('Post Flight');
+    loading.load = true;
     return this.http.post(environment.base_url + `api/Flights/PostFlight`, flight)
     .subscribe(
       data => {
@@ -217,7 +229,7 @@ export class AdminService {
       error => {
         console.log(error.error);
 
-        loading.errorMessage = error.error;
+        loading.errorMessage = JSON.stringify(error.error);
         loading.error = true;
         loading.load = false;
       },
@@ -232,6 +244,7 @@ export class AdminService {
   }
 
   PostCarRental(carRental, loading) {
+    loading.load = true;
     return this.http.post(environment.base_url + `api/CarRentals/PostCarRental`, carRental)
     .subscribe(
       data => {
@@ -242,7 +255,7 @@ export class AdminService {
       error => {
         console.log(error.error);
 
-        loading.errorMessage = error.error;
+        loading.errorMessage = JSON.stringify(error.error);
         loading.error = true;
         loading.load = false;
       },
@@ -257,6 +270,7 @@ export class AdminService {
   }
 
   PostAirTaxi(airTaxi, loading) {
+    loading.load = true;
     return this.http.post(environment.base_url + `api/AirTaxis/AirTaxiPickUps/PostAirTaxiPickUp`, airTaxi)
     .subscribe(
       data => {
@@ -267,7 +281,7 @@ export class AdminService {
       error => {
         console.log(error.error);
 
-        loading.errorMessage = error.error;
+        loading.errorMessage = JSON.stringify(error.error);
         loading.error = true;
         loading.load = false;
       },
@@ -283,22 +297,34 @@ export class AdminService {
 
   /*Put*/
 
-  PutUser(user, loading) {
-    return this.http.delete(environment.base_url + `api/Users/UpdateUser`, user)
-    .subscribe(
-      data => {
-        console.log(data);
-      },
-      error => {
-        console.error(error);
-      },
-      () => {
-        console.log('Done');
-      }
-    );
-  }
+  // PutUser(user, loading) {
+  //   loading.load = true;
+  //   return this.http.delete(environment.base_url + `api/Users/UpdateUser`, user)
+  //   .subscribe(
+  //     data => {
+  //       console.log(data);
+  //       user = data;
+  //       console.log(user);
+  //     },
+  //     error => {
+  //       console.log(error.error);
+
+  //       loading.errorMessage = JSON.stringify(error.error);
+  //       loading.error = true;
+  //       loading.load = false;
+  //     },
+  //     () => {
+  //       console.log('Done');
+
+  //       loading.errorMessage = '';
+  //       loading.error = false;
+  //       loading.load = false;
+  //     }
+  //   );
+  // }
 
   PutAccomm(accommodation, loading) {
+    loading.load = true;
     return this.http.put(environment.base_url + `api/Accommodations/PutAccommodation`, accommodation)
     .subscribe(
       data => {
@@ -309,7 +335,7 @@ export class AdminService {
       error => {
         console.log(error.error);
 
-        loading.errorMessage = error.error;
+        loading.errorMessage = JSON.stringify(error.error);
         loading.error = true;
         loading.load = false;
       },
@@ -324,6 +350,7 @@ export class AdminService {
   }
 
   PutFlight(flight, loading) {
+    loading.load = true;
     return this.http.put(environment.base_url + `api/Flights/PutFlight`, flight)
     .subscribe(
       data => {
@@ -334,7 +361,7 @@ export class AdminService {
       error => {
         console.log(error.error);
 
-        loading.errorMessage = error.error;
+        loading.errorMessage = JSON.stringify(error.error);
         loading.error = true;
         loading.load = false;
       },
@@ -349,6 +376,7 @@ export class AdminService {
   }
 
   PutCarRental(carRental, loading) {
+    loading.load = true;
     return this.http.put(environment.base_url + `api/CarRentals/PutCarRental`, carRental)
     .subscribe(
       data => {
@@ -359,7 +387,7 @@ export class AdminService {
       error => {
         console.log(error.error);
 
-        loading.errorMessage = error.error;
+        loading.errorMessage = JSON.stringify(error.error);
         loading.error = true;
         loading.load = false;
       },
@@ -374,7 +402,8 @@ export class AdminService {
   }
 
   PutAirTaxi(airTaxi, loading) {
-    return this.http.put(environment.base_url + `api/AirTaxis/AirTaxiPickUps/PutAirTaxiPickUp`, airTaxi)
+    loading.load = true;
+    return this.http.put(environment.base_url + `api/AirTaxis/AirTaxiPickUps/PutAirTaxiPickUp/${7}`, airTaxi)
     .subscribe(
       data => {
         console.log(data);
@@ -384,7 +413,7 @@ export class AdminService {
       error => {
         console.log(error.error);
 
-        loading.errorMessage = error.error;
+        loading.errorMessage = JSON.stringify(error.error);
         loading.error = true;
         loading.load = false;
       },
@@ -400,23 +429,9 @@ export class AdminService {
 
   /*Delete*/
 
-  DeleteUser(user, loading) {
-    return this.http.delete(environment.base_url + `api/Users/DeleteUser`)
-    .subscribe(
-      data => {
-        console.log(data);
-      },
-      error => {
-        console.error(error);
-      },
-      () => {
-        console.log('Done');
-      }
-    );
-  }
-
-  DeleteAccomm(accommodation, loading) {
-    return this.http.delete(environment.base_url + `api/Accommodations/DeleteAccommodation`)
+  DeleteUser(id: number, loading) {
+    loading.load = true;
+    return this.http.delete(environment.base_url + `api/Users/DeleteUser/${id}`)
     .subscribe(
       data => {
         console.log(data);
@@ -424,7 +439,7 @@ export class AdminService {
       error => {
         console.log(error.error);
 
-        loading.errorMessage = error.error;
+        loading.errorMessage = JSON.stringify(error.error);
         loading.error = true;
         loading.load = false;
       },
@@ -438,8 +453,9 @@ export class AdminService {
     );
   }
 
-  DeleteFlight(flight, loading) {
-    return this.http.delete(environment.base_url + `api/Flights/DeleteFlight`)
+  DeleteAccomm( id: number, loading) {
+    loading.load = true;
+    return this.http.delete(environment.base_url + `api/Accommodations/DeleteAccommodation/${id}`)
     .subscribe(
       data => {
         console.log(data);
@@ -447,7 +463,7 @@ export class AdminService {
       error => {
         console.log(error.error);
 
-        loading.errorMessage = error.error;
+        loading.errorMessage = JSON.stringify(error.error);
         loading.error = true;
         loading.load = false;
       },
@@ -461,8 +477,9 @@ export class AdminService {
     );
   }
 
-  DeleteCarRental(carRental, loading) {
-    return this.http.delete(environment.base_url + `api/CarRentals/DeleteCarRental`)
+  DeleteFlight( id: number, loading) {
+    loading.load = true;
+    return this.http.delete(environment.base_url + `api/Flights/DeleteFlight/${id}`)
     .subscribe(
       data => {
         console.log(data);
@@ -470,7 +487,7 @@ export class AdminService {
       error => {
         console.log(error.error);
 
-        loading.errorMessage = error.error;
+        loading.errorMessage = JSON.stringify(error.error);
         loading.error = true;
         loading.load = false;
       },
@@ -484,8 +501,9 @@ export class AdminService {
     );
   }
 
-  DeleteAirTaxi(airTaxi, loading) {
-    return this.http.delete(environment.base_url + `api/AirTaxis/AirTaxiPickUps/DeleteAirTaxiPickUp`)
+  DeleteCarRental( id: number, loading) {
+    loading.load = true;
+    return this.http.delete(environment.base_url + `api/CarRentals/DeleteCarRental/${id}`)
     .subscribe(
       data => {
         console.log(data);
@@ -493,7 +511,31 @@ export class AdminService {
       error => {
         console.log(error.error);
 
-        loading.errorMessage = error.error;
+        loading.errorMessage = JSON.stringify(error.error);
+        loading.error = true;
+        loading.load = false;
+      },
+      () => {
+        console.log('Done');
+
+        loading.errorMessage = '';
+        loading.error = false;
+        loading.load = false;
+      }
+    );
+  }
+
+  DeleteAirTaxi( id: number, loading) {
+    loading.load = true;
+    return this.http.delete(environment.base_url + `api/AirTaxis/AirTaxiPickUps/DeleteAirTaxiPickUp/${id}`)
+    .subscribe(
+      data => {
+        console.log(data);
+      },
+      error => {
+        console.log(error.error);
+
+        loading.errorMessage = JSON.stringify(error.error);
         loading.error = true;
         loading.load = false;
       },

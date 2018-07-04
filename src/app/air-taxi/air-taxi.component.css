@@ -28,6 +28,7 @@ a{
   }
 .toolbar{
     width: 100%;
+    /* height: 100%; */
     background-color: goldenrod;
 }
 .else
@@ -39,7 +40,11 @@ a{
   } */
 .pad {
     padding-bottom: 30px;
+    width: 100%;
 }
 .padTop {
     padding-top: 35px;
+}
+.search {
+    width: 100%;
 }

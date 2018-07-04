@@ -7,21 +7,33 @@
             </mat-panel-title>
             <mat-panel-description>
                     {{data.text}}
+                    <span *ngIf='!loading.error && active === data.text' style="color: lightgreen"> Success</span> 
+                    <span *ngIf='loading.error && active === data.text' style="color: red"> Post Error</span>
             </mat-panel-description>
           </mat-expansion-panel-header>
       
           <mat-card style="background-color: black; color: azure">
                 <mat-card-content *ngIf="!data.change; else TextArea">
-                          <pre>{{data.obj|json}}</pre>
+                          <pre >{{data.bind|json}}</pre>
                     </mat-card-content>
                 <ng-template #TextArea>
                         <mat-card-content style="background-color: azure; color: black">
+                          <mat-grid-list cols='3' rowHeight='95'>
+                            <mat-grid-tile *ngFor='let section of data.obj; let i = index'>
+                                <form [formGroup]="firstFormGroup">
                                 <mat-form-field class="wid">
-                                    <textarea matInput name="acc" id="" rows="30" [(ngModel)] = "data.bind">
+                                    
+                                  <input matInput type="text" name="acc"
+                                   id="" [(ngModel)] = "data.bind.section" placeholder="{{section}}"
+                                   formControlName = '{{data.text}}{{i}}'/>
                                             
-                                    </textarea>
                                 </mat-form-field>
+                                </form>
+                              </mat-grid-tile>
+                            </mat-grid-list>
                             </mat-card-content>
+
+                          
                 </ng-template>
           </mat-card>
           <mat-action-row>
@@ -29,9 +41,26 @@
                   Post
                 </button>
                 <button mat-raised-button color="primary" (click)="PostAll(data)" *ngIf="data.change">
-                    Submit
+                  <mat-spinner *ngIf="loading.load; else Submit" [diameter]="30"></mat-spinner>
+                  <ng-template #Submit>Submit</ng-template>
                 </button>
               </mat-action-row>
         </mat-expansion-panel>
         
       </mat-accordion>
+      <form name="form">
+          <label for="image">Load Image: </label><br/>
+        <input type="file" name="files" multiple accept="image/*, .zip" (change)="onFileChange($event)" maxsize="5000" required base-sixty-four-input>
+        <br/>
+        
+      </form>
+
+      
+
+      <div style="overflow: auto" *ngIf='files'>
+          {{files.filename}}<br/>
+          {{files.filetype}}<br/>
+          {{files.base64}}
+        </div>
+      
+      <h1 align='center' *ngIf='loading.error'>{{loading.errorMessage}}</h1>

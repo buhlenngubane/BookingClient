@@ -43,7 +43,7 @@ import { AccountDetailsComponent } from './account-details/account-details.compo
 import { httpInterceptorProviders } from './service/interceptor-barell/index';
 import { routes } from './app.routes';
 import { AdminComponent, AdminPostComponent, AdminPutComponent, AdminDeleteComponent } from './admin/admin.component';
-import { PaymentComponent, PayLayoutComponent } from './payment/payment.component';
+import { PaymentComponent } from './payment/payment.component';
 import { AdminService } from './service/admin.service';
 import { SearchService } from './service/search.service';
 import { SearchResultComponent } from './search/search-result/search-result.component';
@@ -61,6 +61,7 @@ import { GrowlModule } from 'primeng/primeng';
 import { FooterComponent } from './footer.component';
 import { AboutUsComponent } from './about-us/about-us.component';
 import { NgxGalleryModule } from 'ngx-gallery';
+import { SplitPipe } from './service/pipe/split';
 
 @NgModule({
   declarations: [
@@ -85,12 +86,12 @@ import { NgxGalleryModule } from 'ngx-gallery';
     PairTaxiComponent,
     PflightComponent,
     PaccommodationComponent,
-    PayLayoutComponent,
     AdminPostComponent,
     AdminPutComponent,
     AdminDeleteComponent,
     FooterComponent,
-    AboutUsComponent
+    AboutUsComponent,
+    SplitPipe
   ],
   imports: [
     BrowserModule,

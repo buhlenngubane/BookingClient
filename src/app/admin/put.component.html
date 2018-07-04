@@ -5,7 +5,9 @@
                     Put
             </mat-panel-title>
             <mat-panel-description>
-                    {{data.text}}
+                    {{data.text}} 
+                    <span *ngIf='!loading.error && active === data.text' style="color: rgb(135, 241, 135)"> Success</span>
+                    <span *ngIf='loading.error && active === data.text' style="color: red"> Put Error</span>
             </mat-panel-description>
           </mat-expansion-panel-header>
       
@@ -28,9 +30,22 @@
                   Put
                 </button>
                 <button mat-raised-button color="primary" (click)="PutAll(data)" *ngIf="data.change">
-                    Submit
+                  <mat-spinner *ngIf="loading.load; else Submit" [diameter]="30"></mat-spinner>
+                  <ng-template #Submit>Submit</ng-template>
                 </button>
               </mat-action-row>
         </mat-expansion-panel>
         
       </mat-accordion>
+      <form name="form">
+          <label for="image">Load Image: </label><br/>
+        <input type="file" name="files" accept="image/*, .zip" (change)="onFileChange($event)" maxsize="5000" required base-sixty-four-input>
+        <br/>
+      </form>
+      <div style="overflow: auto" *ngIf='files'>
+        {{files.filename}}<br/>
+        {{files.filetype}}<br/>
+        {{files.base64}}
+      </div>
+      
+      <h1 align='center' *ngIf='loading.error'>{{loading.errorMessage}}</h1>

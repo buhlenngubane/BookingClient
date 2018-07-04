@@ -45,10 +45,14 @@
 
     <mat-grid-tile [colspan]="1" class="vl">
       <div align="end">
-        <p *ngIf='service.flightPrice[i].price'><b>Total: R {{service.flightPrice[i].price}}</b></p>
+        <p *ngIf='service.flightPrice[i].price'><b>Total: R {{service.flightPrice[i].price}} for {{service.flightPrice[i].travellers}}</b></p>
         <p><button mat-raised-button color="primary" (click)="IfLoggedIn(detail)">Book Flight</button></p>
       </div>
     </mat-grid-tile>
   </div>
+
+  <mat-grid-tile [colspan]="7" *ngIf='myDetail.length === 0' style="background-color: darkgrey">
+    <h1>No flights available</h1>
+  </mat-grid-tile>
 
 </mat-grid-list>

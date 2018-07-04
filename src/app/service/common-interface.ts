@@ -15,6 +15,14 @@ export interface changeLayout {
     errorMessage: string;
 }
 
+export interface CarRentalStorage {
+    search: string;
+    dateFrom: Date;
+    dateTo: Date;
+    timeFrom: string;
+    timeTo: string;
+}
+
 export interface AirTaxiStorage {
     pickUp: '';
     dropOff: '';

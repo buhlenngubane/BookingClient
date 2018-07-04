@@ -4,7 +4,6 @@
     </h1>
     <mat-list *ngIf="airTaxi">
       <mat-list-item *ngFor="let display of display">
-        <img src="data:image/jpeg,base64;display.ctype.picture" alt="car chosen" *ngIf="i==0">
         <div *ngIf="i!=3; else ElseBlock">
         <h3 matLine>{{display.name}}</h3>
         <div matLine>{{display.data}}</div>
@@ -25,5 +24,5 @@
     Success <br/>
     Booked on: {{searchService.BookingObj.bookDate}}<br/>
     PayType: {{searchService.BookingObj.payType}}<br/>
-    Payment Received: {{searchService.BookingObj.total}}
+    Payment Received: R {{searchService.BookingObj.total}}
   </ng-template>

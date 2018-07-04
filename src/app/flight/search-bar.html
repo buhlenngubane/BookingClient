@@ -5,7 +5,7 @@
 
     <mat-form-field class="commonWid">
       <!--<mat-label>Outline form field</mat-label>-->
-      <input matInput type="search" name="firstSearch" placeholder="Placeholder" [formControl]="firstSearch" [matAutocomplete]="auto"
+      <input matInput type="search" name="firstSearch" placeholder="Destination" [formControl]="firstSearch" [matAutocomplete]="auto"
         (keyup)="searchTerm$.next($event.target.value)">
 
       <mat-autocomplete #auto="matAutocomplete">
@@ -21,13 +21,13 @@
       </mat-hint>
     </mat-form-field>
 
-    <a (click)="swap()" class="commonWid">
+    <a (click)="swap()" class="commonWid" style="cursor: pointer;">
       <mat-icon matSuffix>settings_ethernet</mat-icon>
     </a>
 
     <mat-form-field class="commonWid">
 
-      <input matInput type="search" name="secondSearch" placeholder="Placeholder" [formControl]="secondSearch" [matAutocomplete]="auto2"
+      <input matInput type="search" name="secondSearch" placeholder="Return" [formControl]="secondSearch" [matAutocomplete]="auto2"
         (keyup)="searchTerm$2.next($event.target.value)">
       <mat-autocomplete #auto2="matAutocomplete">
         <mat-option *ngFor="let result of result2 | slice:0:9" [value]="result.destination1">
@@ -44,7 +44,7 @@
        [max]="service.FmaxDate"
         [matDatepicker]="picker1"
          (dateChange)="addEvent('change', $event)"
-          placeholder="Choose a date"
+          placeholder="Date To"
            [(ngModel)]="service.FdateFrom" disabled>
       <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
       <mat-datepicker #picker1 disabled="false"></mat-datepicker>
@@ -53,7 +53,7 @@
     <mat-form-field class="commonWid" *ngIf="searchService.return">
       <input matInput [min]="service.FminDate2" [max]="service.FmaxDate2" 
       [matDatepicker]="picker2" 
-      placeholder="Choose a date" 
+      placeholder="Return Date" 
       [(ngModel)]="service.FdateTo" disabled>
       <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
       <mat-datepicker #picker2 disabled="false"></mat-datepicker>
@@ -67,7 +67,7 @@
           {{data}}
         </mat-option>
       </mat-select>
-
+      
     </mat-form-field>
 
     <mat-form-field class="commonWid">
@@ -75,12 +75,19 @@
       <input matInput type="number" placeholder="Number of travellers"
       [formControl]="travellers" 
       >
-      <mat-error *ngIf='travellers.invalid'>
+      <mat-error>
+        Travellers must<br/> be between 1 - 30
+      </mat-error>
+      <!-- <mat-error *ngIf='travellers.invalid'>
           {{loading.errorMessage3}}
-        </mat-error>
+        </mat-error> -->
     </mat-form-field>
 
   </mat-list-item>
+
+  <!-- <mat-list-item >
+    
+  </mat-list-item> -->
 
   <mat-list-item>
     <button mat-raised-button color="primary" (click)="LoadDetails()">
@@ -89,3 +96,4 @@
   </mat-list-item>
 
 </mat-list>
+

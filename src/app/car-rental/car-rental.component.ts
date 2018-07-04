@@ -6,6 +6,7 @@ import { SearchService } from '../service/search.service';
 import { Cars, Destinations } from '../model/service-type';
 import { Time } from '@angular/common';
 import { MatDatepickerInputEvent } from '@angular/material';
+import { CarRentalStorage } from '../service/common-interface';
 
 @Component({
   selector: 'app-car-rental',
@@ -18,53 +19,51 @@ export class CarRentalComponent implements OnInit {
   private dateForm = new Date(); // new Date());
   private dateTo = new Date();
   private minDate = this.dateForm;
-  private minDate2 = this.dateTo;
+  private minDate2: Date;
   private maxDate2 = new Date(this.dateForm.getFullYear() + 1, 7, 1);
   private maxDate = new Date(this.dateForm.getFullYear() + 1, 7, 1);
   private timeFrom: FormControl; // :Time={hours:this.dateForm.getHours(),minutes:this.dateForm.getMinutes()};
   private timeTo: FormControl;
   private minTime1 = this.timeFrom;
   private maxTime2 = this.maxDate.getTime();
-  private searchPattern = '[A-Za-z ]*[(]?[A-Za-z]*[)]?[A-Za-z ,]*';
+  private searchPattern = '[A-Za-z ]*[(]?[A-Za-z]*[)]?[A-Za-z ,-]*';
   search = new FormControl(''  , [Validators.required, Validators.pattern(this.searchPattern)]
 );
   searchTerm$ = new Subject<string>();
   error = false;
   errorMessage = '';
   loading = { error: false, errorMessage: '' };
-  str;
-  // panel=new FormControl("1 room");
-  // hour1=new FormControl("10");
-  // minute1=new FormControl("00");
-  // hour2=new FormControl("10");
-  // minute2=new FormControl("00");
-  // timeIntervalH = [];
-  // timeIntervalM = [{number:"00"},{number:"15"},{number:"30"},{number:"45"}]
   result: Destinations[] = [];
 
   constructor(private service: UsersService,
     private searchService: SearchService) {
       service.check.error = false;
-    if (localStorage.getItem('info#3')) {
-      this.search.setValue(localStorage.getItem('info#3'));
-    }
-      /*Trying to add 1 hour to current time*/
-    this.str = (this.dateForm.getHours() + 1);
     searchService.search(this.searchTerm$, 4, this.result);
 
   }
 
   ngOnInit() {
     this.dateTo.setHours(48);
-
-    if (this.str < 10) {
-      this.timeFrom = new FormControl('0' + this.str + ':00');
-      this.str === 9 ? this.timeTo = new FormControl('0' + (this.str + 1) + ':00') :
-        this.timeTo = new FormControl('0' + (this.str + 1) + ':00');
-        console.log('print this : ' + (this.str + 1) + ':00');
-    } else {
-      this.timeFrom = new FormControl(this.str + ':00');
-      this.timeTo = new FormControl(this.str + 1 + ':00');
+    this.minDate2 = new Date(this.dateTo.toDateString());
+    this.timeFrom = new FormControl('10:00');
+    this.timeTo = new FormControl('11:00');
+    try {
+    const item = JSON.parse(localStorage.getItem('info#3')) as CarRentalStorage;
+    if (localStorage.getItem('info#3')) {
+      this.search.setValue(item.search);
+      // checking if date on localstorage has already passed
+      if (new Date(item.dateFrom).valueOf() > (new Date().valueOf() + 1000)) {
+        console.log(new Date(item.dateFrom));
+        this.dateForm = new Date(item.dateFrom);
+        console.log(new Date(item.dateTo));
+        this.dateTo = new Date(item.dateTo);
+        console.log();
+        this.timeFrom.setValue(item.timeFrom);
+        this.timeTo.setValue(item.timeTo);
+      }
+    }
+    } catch (Err) {
+      console.log(Err);
     }
   }
 
@@ -72,7 +71,7 @@ export class CarRentalComponent implements OnInit {
 
     if (this.dateTo.valueOf() < event.value.valueOf()) {
       this.dateTo = new Date(event.value.toDateString());
-      this.dateTo.setHours(48);
+      this.dateTo.setHours(24);
 
       if (this.maxDate2.valueOf() < this.dateTo.valueOf()) {
         this.dateTo = new Date(this.maxDate2.toDateString());
@@ -81,7 +80,7 @@ export class CarRentalComponent implements OnInit {
     } else
     if (this.dateTo.toDateString() === event.value.toDateString()) {
       this.dateTo = new Date(event.value.toDateString());
-      this.dateTo.setHours(48);
+      this.dateTo.setHours(24);
 
       if (this.maxDate2.valueOf() < this.dateTo.valueOf()) {
         this.dateTo = new Date(this.maxDate2.valueOf());
@@ -90,7 +89,7 @@ export class CarRentalComponent implements OnInit {
       this.minDate2 = this.dateTo;
     } else {
       this.minDate2 = new Date(event.value.toDateString());
-      this.minDate2.setHours(48);
+      this.minDate2.setHours(24);
     }
   }
 
@@ -127,7 +126,8 @@ export class CarRentalComponent implements OnInit {
       console.log(this.carRentalDtls.length);
 
       // this.carRentalDtls.length === 0 ? this.loading.error = true :
-        this.service.CarRentalDetails(this.search.value, this.loading);
+        this.service.CarRentalDetails(this.search.value,
+           this.dateForm, this.dateTo, this.timeFrom.value, this.timeTo.value, this.loading);
     } else if (this.search.untouched) {
       console.log('Untouched?');
       this.loading.error = false;

@@ -27,14 +27,14 @@
               [(ngModel)]="password" type="password" 
               name="password" [formControl]="_loginForm.controls.Password"
                 ngModel minlength="8" required>
-              <mat-hint align="end" class="form-control-feedback"
+              <mat-hint class="form-control-feedback"
               *ngIf="_loginForm.controls.Password.errors && 
      (_loginForm.controls.Password.dirty || _loginForm.controls.Password.touched) && 
      _loginForm.controls.Password.errors.minlength"
               >{{_loginForm.controls.Password.errors.minlength.requiredLength - 
                 _loginForm.controls.Password.errors.minlength.actualLength}}
                 characters left.</mat-hint>
-                <mat-error *ngIf="_loginForm.controls.Password.invalid &&
+                <mat-error align="end" *ngIf="_loginForm.controls.Password.invalid &&
                 (_loginForm.controls.Password.dirty || _loginForm.controls.Password.touched)">
                   <!-- Password pattern not met. -->
                   {{getError(_loginForm.controls.Password)}}

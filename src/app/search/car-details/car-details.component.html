@@ -4,7 +4,7 @@
 
   </mat-grid-tile> -->
 
-  <mat-grid-tile *ngFor="let result of result">
+  <mat-grid-tile *ngFor="let result of result; let i = index">
 
     <mat-toolbar class="topleft">
       <mat-toolbar-row [style.border-bottom]="'1px dashed #ddd'" class="Hght" layout-wrap>
@@ -19,7 +19,7 @@
             <td>Year</td>
           </tr>
         </table> -->
-        <img src="data:image/jpeg;base64,{{result.ctype.picture}}" style="width: 25%; vertical-align: top">
+        <img src="data:image/jpeg;base64,{{result.ctype.picture}}" style="width: 20%; vertical-align: top">
         <div>
             
             {{result.ctype.name}}<br/>
@@ -30,7 +30,10 @@
         <span class="spacer">
 
         </span>
-        {{result.price}}
+        <div align = 'end' style="width:40%">
+            Total: R {{service.price[i]}}<br/>
+            R {{result.price}} per day
+          </div>
       </mat-toolbar-row>
       <mat-toolbar-row class="Hght" style="padding-top: 1%;">
           

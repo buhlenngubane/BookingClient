@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpResponse, HttpClient } from '@angular/common/http';
 import { UsersService } from './user.service';
 import { finalize, tap } from 'rxjs/operators';
-import { environment } from '../../environments/environment';
 
 @Injectable()
 export class TokenInterceptor { // implements HttpInterceptor {
@@ -14,11 +13,18 @@ export class TokenInterceptor { // implements HttpInterceptor {
     const authToken = this.auth.GetToken;
     const started = Date.now();
     let ok: string;
+    // const auth = authToken !== ''?
 
       console.log('Interceptor Executing!!!');
-    const authReq = req.clone({
+      let authReq = req.clone({
+        setHeaders: {'Content-Type': 'application/json'}
+      });
+      if (localStorage.getItem('currentUser')) {
+        console.log('TokenNotEmpty');
+      authReq = req.clone({
       setHeaders: {'Content-Type': 'application/json', Authorization: authToken}
     });
+  }
 
     return next.handle(authReq)
     .pipe(

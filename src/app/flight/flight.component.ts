@@ -3,11 +3,11 @@ import { UsersService } from '../service/user.service';
 import { Subject } from 'rxjs/Subject';
 import { SearchService } from '../service/search.service';
 import { Router } from '@angular/router';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, Validators, FormBuilder } from '@angular/forms';
 import { MatSnackBar, MatDatepickerInputEvent } from '@angular/material';
 import { when } from 'q';
 import { Flights } from '../model/service-type';
-import { DISABLED } from '@angular/forms/src/model';
+import { DISABLED, FormGroup } from '@angular/forms/src/model';
 // tslint:disable-next-line:comment-format
 //import { Flight } from '../model/service-type';
 
@@ -39,12 +39,12 @@ export class FlightComponent implements OnInit {
   templateUrl: './search-bar.html',
   styleUrls: ['./flight.component.css']
 })
-export class SearchBarComponent {
+export class SearchBarComponent implements OnInit {
 
   result: Flights[] = [];
   result2: Flights[] = [];
   id: number;
-  private data: string[] = ['Economy', 'Premium Economy', 'Business', 'FirstClass'];
+  private data: string[] = ['Economy', 'Premium Economy', 'Business', 'First Class'];
   searchTerm$ = new Subject<string>();
   searchTerm$2 = new Subject<string>();
 
@@ -54,14 +54,8 @@ export class SearchBarComponent {
   panel = new FormControl(this.data[0]);
   travellers = new FormControl('1', [Validators.min(1), Validators.max(30)]);
   Type: string = this.data[0];
-
-  // dateFrom = new Date(); // new Date());
-  // dateTo = new Date();
-  // minDate = this.dateFrom;
-  // minDate2: Date;
-  // maxDate2 = new Date(this.dateFrom.getFullYear() + 1, 7, 1);
-  // maxDate = new Date(this.dateFrom.getFullYear() + 1, 6, 30);
-  // return = false;
+  numCount: [{number: number}];
+  names: FormControl[];
 
   loading = {
     errorMessage: '', error: false, errorMessage2: '', error2: false,
@@ -69,13 +63,15 @@ export class SearchBarComponent {
   };
 
   constructor(private service: UsersService,
-    private searchService: SearchService) {
+    private searchService: SearchService, private _formBuilder: FormBuilder) {
     // if(searchService.Clocation || searchService.dest)
     console.log('GetFlight');
+    service.check.error = false;
     // this.dateTo.setHours(48);
     if (service.FlightDetail.length === 0) {
-      if (localStorage.getItem('info#2')) {
-
+      if (localStorage.getItem('info#2') ) {
+        // checking if date on localstorage has already passed
+        if (new Date(localStorage.getItem('info#2').split('*')[2]).valueOf() > (new Date().valueOf() + 1000)) {
         service.FdateFrom = new Date(localStorage.getItem('info#2').split('*')[2]);
 
         if (localStorage.getItem('info#2').split('*')[3] === 'false') {
@@ -100,6 +96,7 @@ export class SearchBarComponent {
         this.travellers.setValue(localStorage.getItem('info#2').split('*')[5]);
         console.log('Travellers: ' + this.travellers.value);
       }
+    }
     } else if (localStorage.getItem('info#2')) {
         this.panel.setValue(localStorage.getItem('info#2').split('*')[4]);
         console.log('Panel value ' + this.panel.value);
@@ -110,6 +107,9 @@ export class SearchBarComponent {
     }
     searchService.search(this.searchTerm$, 2, this.result);
     searchService.search(this.searchTerm$2, 3, this.result2, this.firstSearch);
+  }
+
+  ngOnInit(): void {
   }
 
   swap(): void {
@@ -163,6 +163,9 @@ export class SearchBarComponent {
       this.searchService.fDateTo = this.service.FdateTo;
       console.log('Must be ' + this.panel.value);
       this.searchService.flightType = this.panel.value;
+
+      this.firstSearch.markAsTouched();
+      this.secondSearch.markAsTouched();
 
       console.log('But is ' + this.searchService.flightType);
       this.searchService.numOfTravellers = this.travellers.value;

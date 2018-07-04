@@ -31,7 +31,7 @@ div.polaroid {
   .card{
       /* width: 100%;
       height: 50%; */
-      height: 50%;
+      height: 100%;
       border-radius: 8px;
   }
   .full-width {
@@ -62,4 +62,9 @@ img.ImgGrid{
 } */
 .spaceLayout {
     padding-bottom: 30px;
+}
+.spanCard{
+    padding: 30px;
+    /* height: 90%; */
+    border-radius: 8px;
 }

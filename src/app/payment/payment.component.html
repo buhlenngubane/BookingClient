@@ -1,4 +1,51 @@
+<div *ngIf='!submit && serviceType === "flight"; else Else'>
+    <h2 matLine>Fill in names of travellers before you can continue with payment</h2>
+    <mat-horizontal-stepper matLine [linear]="isLinear" #stepper>
+      <mat-step [stepControl]="firstFormGroup" *ngFor='let c of count|slice:0:to; let i = index'>
+        <form [formGroup]="firstFormGroup">
+          <ng-template matStepLabel>
+              <span *ngIf='this.firstFormGroup.controls[i].invalid && !this.firstFormGroup.controls[i].untouched' style="color:red">Fill out traveller name</span>
+            <span *ngIf='this.firstFormGroup.controls[i].valid || this.firstFormGroup.controls[i].untouched'>Fill out traveller name</span></ng-template>
+          <mat-form-field>
+            <input matInput placeholder="First name,Last name" formControlName="{{i}}" [(ngModel)]='names[i].name'>
+            <mat-error>
+              {{getError(i)}}
+            </mat-error>
+          </mat-form-field>
+          <div>
+            <button mat-button matStepperPrevious (click) = 'Decre(i)' *ngIf='from > 0'>Back</button>
+            <button mat-button matStepperNext (click)='Incre(i)' *ngIf='to < numOfTravellers; else Submit' >Next</button>
+            <ng-template #Submit>
+                <button mat-button color='primary' (click)='Names(i)'>Submit</button>
+            </ng-template>
+        </div>
+        </form>
+      </mat-step>
+      <!-- <mat-step [stepControl]="secondFormGroup">
+        <form [formGroup]="secondFormGroup">
+          <ng-template matStepLabel>Fill out your address</ng-template>
+          <mat-form-field>
+            <input matInput placeholder="Address" formControlName="secondCtrl" required>
+          </mat-form-field>
+          <div>
+            <button mat-button matStepperPrevious>Back</button>
+            <button mat-button matStepperNext>Next</button>
+          </div>
+        </form>
+      </mat-step>
+      <mat-step>
+        <ng-template matStepLabel>Done</ng-template>
+        You are now done.
+        <div>
+          <button mat-button matStepperPrevious>Back</button>
+          <button mat-button (click)="stepper.reset()">Reset</button>
+        </div>
+      </mat-step> -->
+    </mat-horizontal-stepper>
+  </div>
+<ng-template #Else>
 <app-paccommodation *ngIf="serviceType=='accommodation'"></app-paccommodation>
 <app-pflight *ngIf="serviceType == 'flight'"></app-pflight>
 <app-pcar-rental *ngIf="serviceType == 'carRental'"></app-pcar-rental>
 <app-pair-taxi *ngIf="serviceType == 'airTaxi'"></app-pair-taxi>
+</ng-template>

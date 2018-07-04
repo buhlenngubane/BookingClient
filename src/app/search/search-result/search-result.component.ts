@@ -32,6 +32,8 @@ export class SearchResultComponent implements OnInit {
   private maxDate = new Date(2020, 0, 1);
   private maxDate2 = new Date(2020, 0, 3);
   private overral_price = [];
+  private avRooms = true;
+  private rows = 2;
 
   // private error = false;
   // private errorMessage = '';
@@ -43,6 +45,7 @@ export class SearchResultComponent implements OnInit {
     public snackBar: MatSnackBar,
     private route: Router
   ) {
+    console.log('Log something');
     for (let index = 1; index < 30; index++) {
       this.Num.push({ text: ' rooms', number: (index + 1) });
     }
@@ -52,7 +55,7 @@ export class SearchResultComponent implements OnInit {
         this.searchService.Search(
           this.dateForm,
           this.dateTo,
-            this.panel.value,
+            this.panel,
             {country: localStorage.getItem('info#1').split(', ')[0],
               location: localStorage.getItem('info#1').split(', ')[1]}, this.errorCheck);
 
@@ -69,12 +72,14 @@ export class SearchResultComponent implements OnInit {
       this.prop = searchService.Property;
     }
     searchService.search(this.searchTerm$, 1, this.result);
-
-    if (this.prop) {
+    console.log('NumOfProp ' + this.prop.length);
+    if (this.prop.length > 0) {
+      this.rows += this.prop.length;
       this.overral_price.splice(0);
       this.prop.forEach(
         element => {
           this.overral_price.push(element.accDetail[0].pricePerNight * +this.panel.value);
+          console.log(this.rows);
         }
       );
       console.log(this.overral_price[0]);
@@ -133,8 +138,9 @@ export class SearchResultComponent implements OnInit {
       // if (display) {
         // console.log('Should redirect ' + display.accId.toString());
         this.errorCheck.error = false;
-        this.searchService.Search(this.dateForm, this.dateTo, this.panel.value,
+        this.searchService.Search(this.dateForm, this.dateTo, this.panel,
            search, this.errorCheck);
+           this.avRooms = true;
       // } else {
       // }
     // }
@@ -157,13 +163,17 @@ export class SearchResultComponent implements OnInit {
     this.service.serviceType = 'accommodation';
     console.log(property);
     if (this.service.User) {
-      this.searchService.PaymentReceive('acc-detail',
+      // if (property.accDetail.find(s => s.availableRooms >= +this.panel.value)) {
+        this.searchService.PaymentReceive('acc-detail',
         {
           Property: property,
           DateFrom: this.dateForm,
           DateTo: this.dateTo,
           str: this.panel.value
         });
+      // } else {
+      //   this.avRooms = false;
+      // }
     } else {
       this.service.check.errorMessage = 'Login or Register to book';
       this.service.check.error = true;

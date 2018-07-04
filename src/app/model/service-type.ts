@@ -15,6 +15,12 @@ export class Properties {
     'accId': number;
     'propName': string;
     'picture': string;
+    'acc': {
+        'accId': number;
+        'country': string;
+        'location': string;
+        'picture': string;
+      };
     'accDetail': [
         {
           'detailId': number;
@@ -42,7 +48,7 @@ export class Flights {
         {
             'destId': number,
             'flightId': number,
-            'destination1': string,
+            'dest': string,
             'flightDetail': [
                 {
                     'detailId': number,
@@ -72,7 +78,7 @@ export class Destinations {
     'destId': number;
     'flightId': number;
 
-    'destination1': string;
+    'dest': string;
 
     constructor(data?: any) {
         Object.assign(this, data);
@@ -96,7 +102,7 @@ export class FlightDetails {
     'dest': {
         'destId': number;
         'flightId': number;
-        'destination1': string;
+        'dest': string;
         'flight': {
             'flightId': number;
             'locale': string;
@@ -235,12 +241,35 @@ export class AirDetails {
 export class AccBooking {
 
     'userId': number;
-    'propId': number;
+    'detailId': number;
     'numOfNights': number;
     'bookDate': Date;
     'payType': string;
     'payStatus': boolean;
     'total': number;
+    'detail':
+        {
+          'detailId': number;
+          'propId': number;
+          'propertyAttr': string;
+          'pricePerNight': number;
+          'availableRooms': number;
+          'roomType': string;
+          'dateAvailableFrom': Date;
+          'dateAvailableTo': Date;
+          'prop': {
+            'propId': number;
+            'accId': number;
+            'propName': string;
+            'picture': string;
+            'acc': {
+              'accId': number;
+              'country': string;
+              'location': string;
+              'picture': string;
+            }
+        }
+        };
 
     constructor(data?: any) {
         Object.assign(this, data);
@@ -253,11 +282,32 @@ export class FlBooking {
     'detailId': number;
     'flightType': string;
     'travellers': number;
+    'travellersNames': string;
+    'travellersSurnames': string;
     'bookDate': Date;
     'returnDate': Date;
     'payType': string;
     'payStatus': boolean;
     'total': number;
+    'detail': {
+        'detailId': number;
+        'destId': number;
+        'cid': number;
+        'departure': string;
+        'returnTrip': string;
+        'path': string;
+        'price': string;
+        'dest': {
+            'destId': number,
+            'flightId': number,
+            'dest': string,
+            'flight': {
+              'flightId': number,
+              'locale': string,
+              'avFlights': number
+            }
+        }
+    };
 
     constructor(data?: any) {
         Object.assign(this, data);
@@ -273,6 +323,22 @@ export class CarBooking {
     'payType': string;
     'payStatus': boolean;
     'total': number;
+    'car': {
+        'carId': number;
+        'cmpId': number;
+        'ctypeId': number;
+        'price': number;
+        'ctype': {
+            'ctypeId': number;
+            'name': string;
+            'type': string;
+            'numOfSeats': number;
+            'numOfDoors': number;
+            'numOfAirbags': number;
+            'transmission': string;
+            'picture': string;
+        }
+    };
 
     constructor(data?: any) {
         Object.assign(this, data);
@@ -290,6 +356,21 @@ export class AirBooking {
     'payType': string;
     'payStatus': boolean;
     'total': number;
+    'airDetail': {
+        'airDetailId': number;
+        'dropOffId': number;
+        'taxiId': number;
+        'driverPolicy': string;
+        'price': number;
+        'taxi': {
+            'taxiId': number;
+            'name': string;
+            'type': string;
+            'numOfSeats': number;
+            'numOfBaggage': number;
+            'driverPolicy': string;
+        }
+    };
 
     constructor(data?: any) {
         Object.assign(this, data);

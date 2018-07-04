@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { User } from '../model/user';
 import 'rxjs/add/operator/map';
 // import 'rxjs';
-import { Observable, Subscribable } from 'rxjs/Observable';
+import { Observable } from 'rxjs/Observable';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
-import { catchError, retry, tap, delayWhen } from 'rxjs/operators';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment.prod';
 import { MatDialogRef } from '@angular/material';
 import { SignInComponent } from '../sign-in/sign-in.component';
@@ -34,7 +34,6 @@ import 'rxjs/add/observable/interval';
 // tslint:disable-next-line:import-blacklist
 import { Subscription } from 'rxjs';
 import { DatePipe } from '@angular/common';
-import { timer } from 'rxjs/observable/timer';
 
 @Injectable()
 export class UsersService {
@@ -48,7 +47,6 @@ export class UsersService {
   private body: object;
   private authenticated: boolean;
   private BASE_URL = environment.base_url;
-  private data: string;
   private getToken = '';
   private payment: number;
   myObservable;
@@ -58,7 +56,8 @@ export class UsersService {
   /**Accommodation**/
   property: Properties;
   roomsAvailable = true;
-  rooms: [{available: number}] = [{available: 1}];
+  rooms: [{ available: number }] = [{ available: 1 }];
+
   /**Flight**/
   private flights: Flights[];
   private destination: Destinations[];
@@ -79,6 +78,9 @@ export class UsersService {
   /**CarRental**/
   carRental: CarRentalDetails;
   carRentalDtls: CarRentalDetails[] = [];
+  price = [];
+  priceDateFrom;
+  priceDateTo;
   /**AirTaxi**/
   airTaxi: AirDetails;
   timeFrom: FormControl;
@@ -108,6 +110,7 @@ export class UsersService {
   images = [];
 
   load: Loading = { error: false, load: true, errorMessage: '' };
+  loggedOut = true;
 
   pipe = new DatePipe('en-US');
   private _hubConnection: HubConnection;
@@ -141,15 +144,15 @@ export class UsersService {
         }
       );
 
-      this._hubConnection.on('BroadcastMessage', ( message: string) => {
-        this.msgs.push({ severity: 'warn', summary: message });
-        if (this.rooms.length > 0) {
-          this.rooms.forEach( element => {
-            element.available --;
-          });
-        }
-      });
-      this._hubConnection.serverTimeoutInMilliseconds = 100000000;
+    this._hubConnection.on('BroadcastMessage', (message: string) => {
+      this.msgs.push({ severity: 'warn', summary: message });
+      if (this.rooms.length > 0) {
+        this.rooms.forEach(element => {
+          element.available--;
+        });
+      }
+    });
+    this._hubConnection.serverTimeoutInMilliseconds = 100000000;
   }
 
   /***User Function Calls***/
@@ -157,16 +160,12 @@ export class UsersService {
   userRegister(customer: object, regRef: MatDialogRef<RegisterComponent>): boolean {
     // this.body = customer;
     this.User = new User(customer);
-    console.log(this.user);
+    // console.log(this.user);
 
     return this.http.post<User>(this.BASE_URL + 'api/Users/Register',
       this.User)// , this.httpOptions)
       .map((response) => {
         console.log(response);
-        // let cred = customer as Credetials;
-        // console.log("Email = " + cred.email + cred.password);
-        this.password = this.user.password;
-        // this.user.password = '';
         this.SetToken(this.user.email, this.password)
           .subscribe(
             () => {
@@ -175,10 +174,12 @@ export class UsersService {
               console.error(error + ' for token!!!');
               this.body = error;
               regRef.disableClose = false;
+              this.loggedOut = true;
             }, () => {
               console.log('Done auth');
               regRef.disableClose = false;
               if (regRef.componentInstance) { regRef.close(); }
+              this.Authenticated = true;
             }
 
           );
@@ -187,6 +188,7 @@ export class UsersService {
         (error) => {
           console.error(error + ' for signIn!!!');
           console.error(error);
+          try {
           this.check.errorMessage = error.error.toString();
 
           if (this.check.errorMessage === 'Email exists') {
@@ -194,6 +196,7 @@ export class UsersService {
           } else {
             this.check.errorMessage = 'Error occured.';
           }
+        } catch (Err) {this.check.errorMessage = 'Error occured'; }
           this.check.error = true;
 
           if (regRef.componentInstance) {
@@ -217,7 +220,7 @@ export class UsersService {
     return this.http.get<User>(this.BASE_URL + `api/Users/GetUser/${Email}&${Password}`)
       // this.Body, this.httpOptions)
       .subscribe((response) => {
-        console.log(JSON.stringify(response));
+        // console.log(JSON.stringify(response));
 
         this.User = new User(response);
         /*if(this.user.userId==1)
@@ -228,7 +231,7 @@ export class UsersService {
         this.SetToken(Email, Password)
           .subscribe(
             data => {
-              console.log(data);
+              // console.log(data);
             },
             error => {
               console.error(error + ' for token!!!');
@@ -236,6 +239,7 @@ export class UsersService {
               this.check.error = true;
               signInRef.disableClose = false;
               signInRef.close();
+              this.loggedOut = true;
               // this.body = error;
             }, () => {
               console.log('Done auth');
@@ -243,26 +247,28 @@ export class UsersService {
                 signInRef.disableClose = false;
                 signInRef.close();
               }
+              this.Authenticated = true;
             }
           );
       },
         error => {
           console.error(error.error + ' for signIn!!!');
           // this.data = error.error;
+          try {
+            this.check.errorMessage = error.error.toString();
 
-          this.check.errorMessage = error.error.toString();
-
-          if (error.message.includes('unknown url')) {
-            this.check.errorMessage = 'Cannot reach server';
-          } else
-          if (this.check.errorMessage.includes('Email')) {
-            this.check.errorMessage = 'Email not found';
-          } else
-          if (this.check.errorMessage.includes('Password')) {
-            this.check.errorMessage = 'Password not found';
-          } else {
-            this.check.errorMessage = 'Error occured.';
-          }
+            if (error.message.includes('unknown url')) {
+              this.check.errorMessage = 'Cannot reach server';
+            } else
+              if (this.check.errorMessage.includes('Email')) {
+                this.check.errorMessage = 'Email not found';
+              } else
+                if (this.check.errorMessage.includes('Password')) {
+                  this.check.errorMessage = 'Password not found';
+                } else {
+                  this.check.errorMessage = 'Error occured.';
+                }
+          } catch (Err) { this.check.errorMessage = 'Error occured'; }
 
           this.check.error = true;
           if (signInRef.componentInstance) {
@@ -278,43 +284,32 @@ export class UsersService {
   }
 
   userUpdate(userUpdate: any, loading: changeLayout): boolean {
-
-    this.body = userUpdate;
-    console.log(this.body);
-    // if (userUpdate.password === '') {
-    //   // userUpdate.password=this.user.password;
-    //   this.user.deserialize(userUpdate);
-    //   // this.user.password = this.password;
-    // } else {
-      this.user.deserialize(userUpdate);
-    // }
+    this.user.deserialize(userUpdate);
 
     return this.http.put(this.BASE_URL + 'api/Users/UpdateUser',
       this.user)// , this.httpOptions)
       .map(response => {
         console.log(response);
-        // this.password = this.user.password;
-        // this.user.password = '';
-        // this.user = new User().deserialize(response);
       })
       .subscribe(data => {
         console.log(data);
       },
         error => {
-          this.data = error.message;
-          // this.check.error = true;
-          this.check.errorMessage = error.error.toString();
-          // console.error(this.httpOptions);
-          console.error(this.data);
-          if (this.check.errorMessage.includes('400')) {
-            loading.errorMessage = 'Internal server error';
-            this.check.errorMessage = 'Internal server error';
-          }
+          this.check.error = true;
+          try {
+            this.check.errorMessage = error.error.toString();
+            console.error(error.error);
+            // console.error(this.httpOptions);
+            if (this.check.errorMessage.includes('400')) {
+              loading.errorMessage = 'Internal server error';
+              this.check.errorMessage = 'Internal server error';
+            }
 
-          if (this.check.errorMessage.includes('unknown url')) {
-            loading.errorMessage = 'Server unreachable.';
-            this.check.errorMessage = 'Server unreachable.';
-          }
+            if (this.check.errorMessage.includes('unknown url')) {
+              loading.errorMessage = 'Server unreachable.';
+              this.check.errorMessage = 'Server unreachable.';
+            }
+          } catch (Err) { this.check.errorMessage = 'Error occured'; }
 
           loading.load = false;
           loading.error = true;
@@ -323,26 +318,8 @@ export class UsersService {
         () => {
           console.log('Update Done uncheck interface');
           loading.load = false;
-         }).closed;
+        }).closed;
   }
-
-  // userLogic(type: string): void {
-  //   if (this.User != null) {
-  //     // auth = this.Authenticated;
-
-  //     if (this.Authenticated) {
-  //       console.log(this.Authenticated);
-  //       this.check.error = false;
-  //     } else {
-  //       // this.check.errorMessage = "Failed to authenticate. " + this.Data + ".";
-  //       // this.check.error = true;
-  //       console.log(this.check.error);
-  //     }
-  //   } else {
-  //     this.errorState = 'Failed to ' + type + '. ' + this.Data + '.';
-
-  //   }
-  // }
 
   /***Token Getting***/
 
@@ -350,27 +327,23 @@ export class UsersService {
     console.log('Email = ' + email + ' Password = ' + password);
     return this.http.get(this.BASE_URL + `api/Token/CreateToken/${email}&${password}`)
       .map((response) => {
-        // this.body = response;
         this.myToken = response as Token;
         console.log(this.myToken.token);
         this.getToken = 'Bearer ' + this.myToken.token;
         localStorage.setItem('currentUser', this.myToken.token);
-        // console.log("currentUser = "+localStorage.getItem("currentUser"));
-        this.Authenticated = true;
 
+        this.loggedOut = false;
         this.sub = Observable.interval(30000)
-        // .retryWhen(error => error.pipe(
-        //   tap(val => val), delayWhen(val => timer(20000))
-        // ))
           .subscribe(
             tick => {
-              if (this.sub) {
+              if (this.sub && !this.loggedOut) {
                 this.RefreshMe();
               }
             }
             ,
             error => {
               console.log(error.error);
+              // location.reload();
             }
           );
 
@@ -382,33 +355,40 @@ export class UsersService {
   }
 
   RefreshMe(): boolean {
-    // this.GetToken = 'Bearer ' + localStorage.getItem('currentUser');
     try {
-    return this.http.get(environment.base_url + 'api/Token/Refresh')
-      .map(data => {
-        this.myToken = data as Token;
-        this.getToken = 'Bearer ' + this.myToken.token;
-        localStorage.setItem('currentUser', this.myToken.token);
-      })
-      .pipe(
-        catchError(this.handleError)
-      )
-      .subscribe(
-        () => {
-          console.log('Successfully refreshed!!!');
-        },
-        error => {
-          console.log(error.error);
-          localStorage.removeItem('currentUser');
-          console.warn('Removed Token!!!');
-          if (this.sub.unsubscribe()) {
-            // this.sub.unsubscribe();
+      return this.http.get(environment.base_url + 'api/Token/Refresh')
+        .map(data => {
+          this.myToken = data as Token;
+          this.getToken = 'Bearer ' + this.myToken.token;
+          localStorage.setItem('currentUser', this.myToken.token);
+        })
+        .pipe(
+          catchError(this.handleError)
+        )
+        .subscribe(
+          () => {
+            console.log('Successfully refreshed!!!');
+          },
+          error => {
+            console.log(error.error);
+            localStorage.removeItem('currentUser');
+            this.route.navigate(['/home']);
+            // tslint:disable-next-line:prefer-const
+            let exact = false;
+            if (this.route.isActive('/home',  exact)) {
+              location.reload();
+            }
+            console.warn('Removed Token!!!');
+            try {
+              this.sub.unsubscribe();
+            } catch (Err) {
+              console.log(Err);
+            }
+          },
+          () => {
+            console.log('Done');
           }
-        },
-        () => {
-          console.log('Done');
-        }
-      ).closed;
+        ).closed;
     } catch (error) {
       console.log('Error');
       return false;
@@ -421,7 +401,7 @@ export class UsersService {
     switch (serType) {
       case ('accommodation'):
         return this.http.get<AccBooking[]>(this.BASE_URL +
-           `api/Accommodations/AccBookings/GetBookings/${this.User.userId}`)
+          `api/Accommodations/AccBookings/GetBookings/${this.User.userId}`)
           .subscribe(
             data => {
               console.log(data);
@@ -439,7 +419,9 @@ export class UsersService {
             error => {
               console.log(error);
               console.log(Loading);
+              try {
               loading.errorMessage = error.error.toString();
+              } catch (Err) {loading.errorMessage = 'Error occured'; }
               loading.error = true;
               loading.load = false;
               console.log(loading);
@@ -453,13 +435,10 @@ export class UsersService {
 
       case ('flight'):
         return this.http.get<FlBooking[]>(this.BASE_URL +
-           `api/Flights/FlBookings/GetFlBooking/${this.User.userId}`)
+          `api/Flights/FlBookings/GetFlBooking/${this.User.userId}`)
           .subscribe(
             data => {
               console.log(data);
-              // this.accData = data;
-              // this.flightData = data;
-              // service = data;
               service.splice(0);
               this.flightData.splice(0);
               data.forEach(
@@ -468,14 +447,13 @@ export class UsersService {
                   this.flightData.push(element);
                 }
               );
-              // accData = this.accData;
-              /// console.log(service);
-              // console.log(this.accData[0].bookDate);
             },
             error => {
               console.log(error);
+              try {
               const err = error.error.toString();
               loading.errorMessage = err;
+            } catch (Err) {loading.errorMessage = 'Error occured'; }
               loading.error = true;
               loading.load = false;
             },
@@ -488,7 +466,7 @@ export class UsersService {
 
       case ('carRental'):
         return this.http.get<CarBooking[]>(this.BASE_URL +
-           `api/CarRentals/CarBookings/GetCarBooking/${this.User.userId}`)
+          `api/CarRentals/CarBookings/GetCarBooking/${this.User.userId}`)
           .subscribe(
             data => {
               console.log(data);
@@ -518,7 +496,7 @@ export class UsersService {
 
       case ('airTaxi'):
         return this.http.get<AirBooking[]>(this.BASE_URL +
-           `api/AirTaxis/AirBookings/GetAirBooking/${this.User.userId}`)
+          `api/AirTaxis/AirBookings/GetAirBooking/${this.User.userId}`)
           .subscribe(
             data => {
               console.log(data);
@@ -561,12 +539,12 @@ export class UsersService {
           console.log(this.flights);
           console.log(this.flights[0].locale);
           if (!localStorage.getItem('info#2')) {
-          this.locale.setValue(this.flights[0].locale);
-          console.log('What r u doing');
-          console.log(this.locale.value);
+            this.locale.setValue(this.flights[0].locale);
+            // console.log('What r u doing');
+            console.log(this.locale.value);
 
-          this.dest.setValue(this.flights[0].destination[0].destination1);
-          console.log(this.dest.value);
+            this.dest.setValue(this.flights[0].destination[0].dest);
+            console.log(this.dest.value);
           } else {
             this.locale.setValue(localStorage.getItem('info#2').split('*')[0]);
             this.dest.setValue(localStorage.getItem('info#2').split('*')[1]);
@@ -574,10 +552,12 @@ export class UsersService {
         },
         error => {
           console.error(error.message);
-          this.check.errorMessage = error.error.toString();
-          if (error.message.includes('unknown url')) {
-            this.check.errorMessage = 'Error connecting with server';
-          }
+          try {
+            this.check.errorMessage = error.error.toString();
+            if (error.message.includes('unknown url')) {
+              this.check.errorMessage = 'Error connecting with server';
+            }
+          } catch (Err) { this.check.errorMessage = 'Error occured'; }
           this.check.error = true;
         },
         () => {
@@ -594,119 +574,146 @@ export class UsersService {
     this.dest.setValue(dest);
     const strLoc = this.pipe.transform(dateLoc, 'yyyy-MM-dd').toString();
     const strDest = dateDest ? this.pipe.transform(dateDest, 'yyyy-MM-dd').toString() : null;
+    // Creating a url query so to return Location and optionally Destination
     const url = dateDest ? `api/Flights/FlightDetails/GetFlightDetail/` +
-     `?locale=${loc}&destination=${dest}&` +
-     `departureDate=${strLoc}` +
-    `&returnDate=${strDest}` :
-    `api/Flights/FlightDetails/GetFlightDetail/` +
-    `?locale=${loc}&destination=${dest}&` +
-    `departureDate=${strLoc}`;
-    // this.searchService.flightType =
+      `?locale=${loc}&destination=${dest}&` +
+      `departureDate=${strLoc}` +
+      `&returnDate=${strDest}` :
+      `api/Flights/FlightDetails/GetFlightDetail/` +
+      `?locale=${loc}&destination=${dest}&` +
+      `departureDate=${strLoc}`;
 
     console.log(dest);
-      return this.http.get<FlightDetails[]>(environment.base_url +
-        url
-        )
-        .subscribe(
-          data => {
-            console.log(data);
-            // this.flightDetail = data;
-            this.flightDetail.splice(0);
-            // let index = 0;
-            this.flightPrice.splice(0);
+    return this.http.get<FlightDetails[]>(environment.base_url +
+      url
+    )
+      .subscribe(
+        data => {
+          console.log(data);
+          // this.flightDetail = data;
+          this.flightDetail.splice(0);
+          // let index = 0;
+          this.flightPrice.splice(0);
+          if (num >= 1 && num <= 30) {
             data.forEach(
               element => {
+
                 this.flightDetail.push(element);
 
                 /**Calculate total for each flight**/
                 switch (flightType) {
                   case ('Premium Economy'): {
                     this.flightPrice.push({
-                    price:
-                     (+element.price + environment.premium_economy) * num
+                      price:
+                        (+element.price + environment.premium_economy) * num,
+                      travellers: num
                     });
                     break;
                   }
 
                   case ('Business'): {
                     this.flightPrice.push({
-                    price:
-                     (+element.price + environment.business) * num
+                      price:
+                        (+element.price + environment.business) * num,
+                        travellers: num
                     });
                     break;
                   }
 
                   case ('First Class'): {
                     this.flightPrice.push({
-                    price:
-                     (+element.price + environment.first_class) * num
+                      price:
+                        (+element.price + environment.first_class) * num,
+                        travellers: num
                     });
+                    console.log(environment.first_class + ' Price ' + +element.price + ' Num ' + num);
+                    console.log((+element.price + environment.first_class) * num);
                     break;
                   }
 
                   default: this.flightPrice.push({
                     price:
-                     (element.price) * num
-                    });
+                      (element.price) * num,
+                      travellers: num
+                  });
                 }
               }
             );
-            console.log(this.flightDetail);
-            console.log(this.flightDetail[0].departure);
-            // tslint:disable-next-line:prefer-const
-            let exact = false;
-
-            this.route.navigate(['/flight-detail']);
-            if (!dateDest) {
-            localStorage.setItem('info#2', loc + '*' + dest + '*' + strLoc + '*' + false + '*' + flightType + '*' + num);
-            } else {
-              localStorage.setItem('info#2', loc + '*' + dest + '*' + strLoc + '*' + strDest + '*' + flightType  + '*' + num);
-            }
-          },
-          error => {
-            console.error(error.message);
-            const err = error.error.toString();
-            const status = err;
-
-            if (status.includes('404') && Errors) {
-              Errors.errorMessage = 'Flight not yet available.';
-              Errors.error = true;
-            } else {
-              this.load.errorMessage = error.error;
-              this.load.error = true;
-            }
-          },
-          () => {
-            console.log('Done');
           }
-        ).closed;
+          console.log(this.flightDetail);
+          // tslint:disable-next-line:prefer-const
+          let exact = false;
+
+          this.route.navigate(['/flight-detail']);
+          if (!dateDest) {
+            localStorage.setItem('info#2', loc + '*' + dest + '*' + strLoc + '*' + false + '*' + flightType + '*' + num);
+          } else {
+            localStorage.setItem('info#2', loc + '*' + dest + '*' + strLoc + '*' + strDest + '*' + flightType + '*' + num);
+          }
+        },
+        error => {
+          console.error(error.message);
+          const err = error.message.toString();
+          const status = err;
+
+          this.flightDetail.splice(0);
+
+          if (status.includes('404') && Errors) {
+            Errors.errorMessage = 'Flight not yet available.';
+            Errors.error = true;
+            this.locale.markAsUntouched();
+            // this.locale.setValue('Heelo');
+          } else {
+            this.load.errorMessage = error.error;
+            this.load.error = true;
+          }
+        },
+        () => {
+          console.log('Done');
+        }
+      ).closed;
   }
 
-  CarRentalDetails(search: string, load?) {
+  CarRentalDetails(search: string, dateFrom: Date, dateTo: Date, timeFrom: string, timeTo: string, load?) {
     return this.http.get<CarRentalDetails[]>(this.BASE_URL +
-       `api/CarRentals/Cars/GetDetails/${search}`)
+      `api/CarRentals/Cars/GetDetails/${search}`)
       .subscribe(
         data => {
           console.log(data);
+          this.priceDateFrom = dateFrom;
+          this.priceDateTo = dateTo;
+          console.log(new Date(this.priceDateFrom).valueOf());
+          console.log(new Date(this.priceDateTo).valueOf());
+          const pr = Math.round((new Date(this.priceDateTo).valueOf() - new Date(this.priceDateFrom).valueOf()) / 1000 / 60 / 60 / 24);
+          console.log(pr);
           this.carRentalDtls.splice(0);
+          this.price.splice(0);
           data.forEach(
             element => {
               this.carRentalDtls.push(element);
+              if (pr > 0) {
+                this.price.push(+element.price * +pr);
+              } else {
+                this.price.push(element.price);
+                console.log(element.price);
+              }
             }
           );
           console.log(this.carRentalDtls);
 
           this.route.navigate(['car-detail']);
 
-          localStorage.setItem('info#3', search);
-
+          localStorage.setItem('info#3', JSON.stringify({
+            search: search,
+            dateFrom: dateFrom, dateTo: dateTo, timeFrom: timeFrom, timeTo: timeTo
+          }));
         },
         error => {
           console.error(error.message);
-          const err = error.error.toString();
+          const err = error.error;
           const emsg = err;
-          console.log(emsg.includes('404'));
-          if (emsg.includes('404')) {
+          // console.log(emsg.includes('404'));
+          if (error.message.includes('404')) {
             console.log('In hear');
             load.errorMessage = 'Rental not available yet.';
             load.error = true;
@@ -748,24 +755,39 @@ export class UsersService {
   /***User Logs Out***/
 
   logOut(): boolean {
-
     return this.http.post(this.BASE_URL + `api/Token/LogOut`, User)
       .subscribe(
         data => {
           if (this.sub) {
-            this.sub.unsubscribe();
+            try {
+              this.sub.unsubscribe();
+            } catch (Err) {
+              console.log(Err);
+            }
             console.log('Refresh Gone');
           }
           this.user = null;
-          localStorage.removeItem('currentUser');
+          if (this.sub.closed) {
+            localStorage.removeItem('currentUser');
+          } else {
+            console.log('Error logging out');
+            localStorage.removeItem('currentUser');
+          }
+          this.loggedOut = true;
         },
         error => {
           console.error('Not logged out! ' + error.message);
+          this.loggedOut = false;
         },
         () => {
           console.warn('Logged Out.');
-          console.log('Log|Out Done.');
           this.route.navigate(['/home']);
+          // if (localStorage.getItem('currentUser')) {
+          //   localStorage.removeItem('currentUser');
+          // }
+          // tslint:disable-next-line:prefer-const
+          let exact = false;
+          if (this.route.isActive('/home', exact)) {}
         }
       ).closed;
   }
@@ -780,14 +802,11 @@ export class UsersService {
   }
 
   set User(loggedIn) {
-    // this.user=new User();
 
     this.user = loggedIn;
-    // this.Admin=new Object();
     if (this.user.admin === true) {
       this.admin = true;
     }
-    console.log('setting user admin = ' + this.Admin);
   }
 
   set ServiceType(serviceType) {
@@ -919,10 +938,6 @@ export class UsersService {
     return this.carRentalDtls;
   }
 
-  get Data() {
-    return this.data;
-  }
-
   get Authenticated() {
 
     return this.authenticated;
@@ -949,7 +964,9 @@ export class UsersService {
   }
 
   private handleError(error: HttpErrorResponse) {
-    this.sub.unsubscribe();
+    if (this.sub) {
+      this.sub.unsubscribe();
+    }
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
       console.error('An error occurred:', error.error.message);

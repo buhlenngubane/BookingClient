@@ -3,15 +3,22 @@
       <!-- <mat-expansion-panel> -->
     <mat-expansion-panel-header>
       <mat-panel-title>
-        Get(Showing first 10)
+        Get
       </mat-panel-title>
       <mat-panel-description>
-        All {{repeat.serviceType}}<span *ngIf="active === repeat.serviceType">, Collapse Me</span>
+        <span *ngIf='repeat.serviceType === Users'>All</span> {{repeat.serviceType}}<span *ngIf="active === repeat.serviceType">, Collapse Me</span>
       </mat-panel-description>
     </mat-expansion-panel-header>
     <mat-card style="background-color: black; color: azure">
-    <mat-card-content>
-        <pre>{{repeat.data|slice:0:9|json}}</pre>
+    <mat-card-content style="overflow: auto">
+        <pre *ngIf='repeat.serviceType === "Users"; else ID'>{{repeat.data|slice:0:10|json}}</pre>
+        <ng-template #ID>
+          <mat-form-field style="background-color: cornsilk" >
+            <input matInput type="number" [(ngModel)]='id' placeholder="{{repeat.serviceType}} detail id" style="color: black"/>
+          </mat-form-field>
+          <pre *ngIf='repeat.serviceType != "Users"'>{{repeat.data|json}}</pre>
+        </ng-template>
+        
     </mat-card-content>
     <!-- <div><pre>{{repeat_statement[2].data|slice:0:10|json}}</pre></div> -->
   </mat-card>
@@ -21,5 +28,4 @@
       </button>
     </mat-action-row>
   </mat-expansion-panel>
-
 </mat-accordion>

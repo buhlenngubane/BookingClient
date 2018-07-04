@@ -52,17 +52,18 @@ export class AirSearchBarComponent implements OnInit {
   private timeFrom = this.service.timeFrom;
   private timeTo = this.service.timeTo;
   returnJ;
-  private minTime = new Date().getHours() + ':00';
-  private maxTime = new Date().getHours() + 1 + ':00';
 
+  // object to check if error occur
   loading = { errorMessage: '', error: false, errorMessage2: '', error2: false, errorMessage3: '' };
 
   constructor(private service: UsersService,
     private searchService: SearchService) {
+      service.check.error = false;
     this.dateFrom.setHours(24);
 
     this.returnDate.setHours(72);
     this.minDate2 = new Date(this.returnDate.toDateString());
+    this.minDate2.setHours(24);
     searchService.numOfPassengers = this.passengers.value;
     /*Trying to add 1 hour to current time*/
     this.str = (this.dateFrom.getHours() + 1);
@@ -73,6 +74,8 @@ export class AirSearchBarComponent implements OnInit {
       const items = JSON.parse(localStorage.getItem('info#4')) as AirTaxiStorage;
       this.firstSearch.setValue(items.pickUp);
       this.secondSearch.setValue(items.dropOff);
+      // checking if date on localstorage has already passed
+      if (new Date(items.dateFrom).valueOf() > (new Date().valueOf() + 1000)) {
       this.dateFrom = new Date(items.dateFrom);
       this.dateFrom.setHours(24);
       if (items.returnDate === null) {
@@ -81,20 +84,24 @@ export class AirSearchBarComponent implements OnInit {
         this.returnDate = new Date(this.dateFrom.toDateString());
         this.returnDate.setHours(72);
         this.minDate2 = new Date(this.dateFrom.toDateString());
+        this.minDate2.setHours(24);
       } else {
         searchService.returnJourney = true;
 
         this.returnDate = new Date(items.returnDate);
         this.returnDate.setHours(72);
         this.minDate2 = new Date(this.dateFrom.toDateString());
+        this.minDate2.setHours(24);
         console.log(items.returnDate);
       }
+    }
 
       this.passengers.setValue(items.passengers);
       console.log(items.passengers);
+    } else {
+      this.minDate2 = new Date(this.returnDate.toDateString());
     }
     searchService.numOfPassengers = this.passengers.value;
-    console.log(new Date().getHours() + ':' + new Date().getMinutes());
   }
 
   ngOnInit(): void {
@@ -102,7 +109,7 @@ export class AirSearchBarComponent implements OnInit {
       if (this.str < 10) {
         this.timeFrom = new FormControl('0' + this.str + ':00');
         this.service.timeFrom = this.timeFrom;
-        this.str === 9 ? this.timeTo = new FormControl('0' + (this.str + 1) + ':00') :
+        this.str === 9 ? this.timeTo = new FormControl((this.str + 1) + ':00') :
           this.timeTo = new FormControl('0' + (this.str + 1) + ':00');
         this.service.timeTo = this.timeTo;
         console.log('print this : ' + (this.str + 1) + ':00' + ' time ' + !this.service.timeFrom);
@@ -124,7 +131,7 @@ export class AirSearchBarComponent implements OnInit {
       if (this.maxDate2.valueOf() < this.returnDate.valueOf()) {
         this.returnDate = new Date(this.maxDate2.toDateString());
       }
-      this.minDate2 = this.returnDate;
+      this.minDate2 = new Date(this.returnDate.toDateString());
     } else
       if (this.returnDate.toDateString() === event.value.toDateString()) {
         this.returnDate = new Date(event.value.toDateString());
@@ -134,7 +141,7 @@ export class AirSearchBarComponent implements OnInit {
           this.returnDate = new Date(this.maxDate2.valueOf());
         }
 
-        this.minDate2 = this.returnDate;
+        this.minDate2 = new Date(this.returnDate.toDateString());
       } else {
         this.minDate2 = new Date(event.value.toDateString());
         this.minDate2.setHours(48);

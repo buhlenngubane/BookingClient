@@ -21,10 +21,10 @@ export class RegisterComponent implements OnInit {
   private namePattern =
     '[a-zA-Z]*';
   private emailPattern =
-    '[a-z0-9._%+-]+@[a-z0-9.-]+[.][a-z]{2,4}';
+    '[a-zA-Z0-9._%+-]+@[a-z0-9.-]+[.][a-z]{2,4}';
   private passwordPattern =
     /// '(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{8,}'
-    '(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{8,}'
+    '(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{7,}'
     ;
   private phoneNumber =
     '[0-9]{10}';

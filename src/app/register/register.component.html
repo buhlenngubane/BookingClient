@@ -41,10 +41,10 @@
               placeholder="Email" 
               [(ngModel)]="email" 
               [formControl]="_regForm.controls.Email" required>
-              <mat-hint align="end">
+              <mat-hint >
                   example@ex.com
                 </mat-hint>
-                <mat-error *ngIf="_regForm.controls.Email.invalid && 
+                <mat-error align="end" *ngIf="_regForm.controls.Email.invalid && 
             (_regForm.controls.Email.dirty || _regForm.controls.Email.touched)">
               {{getError(_regForm.controls.Email)}}
             </mat-error>
@@ -61,14 +61,14 @@
               [formControl]="_regForm.controls.Password" 
               minlength="8" 
               required>
-              <mat-hint align="end" class="form-control-feedback"
+              <mat-hint class="form-control-feedback"
               *ngIf="_regForm.controls.Password.errors && 
      (_regForm.controls.Password.dirty || _regForm.controls.Password.touched)
       && _regForm.controls.Password.errors.minlength"
               >{{_regForm.controls.Password.errors.minlength.requiredLength - 
                 _regForm.controls.Password.errors.minlength.actualLength}}
                 characters left.</mat-hint>
-                <mat-error *ngIf="_regForm.controls.Password.invalid && 
+                <mat-error align="end" *ngIf="_regForm.controls.Password.invalid && 
                 (_regForm.controls.Password.dirty || _regForm.controls.Password.touched)">
                   {{getError(_regForm.controls.Password)}}
                 </mat-error>
@@ -84,14 +84,14 @@
               [formControl]="_regForm.controls.Phone" 
               minlength="10"
               required>
-              <mat-hint align="end" *ngIf="_regForm.controls.Phone.errors 
+              <mat-hint *ngIf="_regForm.controls.Phone.errors 
               && _regForm.controls.Phone.errors.minlength && 
      (_regForm.controls.Phone.dirty || _regForm.controls.Phone.touched)">
                   {{_regForm.controls.Phone.errors.minlength.requiredLength - 
                     _regForm.controls.Phone.errors.minlength.actualLength}}
                   characters left.
               </mat-hint>
-              <mat-error *ngIf="_regForm.controls.Phone.invalid 
+              <mat-error align="end" *ngIf="_regForm.controls.Phone.invalid 
               && 
      (_regForm.controls.Phone.dirty || _regForm.controls.Phone.touched)">
                 {{getError(_regForm.controls.Phone)}}

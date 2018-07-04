@@ -1,6 +1,6 @@
 
 <mat-card-header style="text-align: center">
-    <mat-card-title mat-dialog-title>Acoount Details</mat-card-title>
+    <mat-card-title mat-dialog-title>Account Details</mat-card-title>
 
 </mat-card-header>
 <mat-card-content>
@@ -32,10 +32,10 @@
           <input matInput hintLabel="(e.g.A@123Book)" 
           placeholder="Change Password" type="password" 
           [(ngModel)]="password" [formControl]="postChanges.controls.Password">
-          <mat-error *ngIf='postChanges.controls.Password.invalid'>
+          <mat-error align="end" *ngIf='postChanges.controls.Password.invalid'>
             {{getError(postChanges.controls.Password, 'Pass')}}
           </mat-error>
-          <mat-hint align="end" class="form-control-feedback"
+          <mat-hint class="form-control-feedback"
               *ngIf="postChanges.controls.Password.errors && 
      (postChanges.controls.Password.dirty || postChanges.controls.Password.touched) && 
      postChanges.controls.Password.errors.minlength"
@@ -68,6 +68,9 @@
         <mat-form-field>
           <input matInput type="tel" placeholder="Phone Number" 
           [(ngModel)]="phone" [formControl]="postChanges.controls.Phone">
+          <mat-error align="end" *ngIf='postChanges.controls.Phone.invalid'>
+            {{getError(postChanges.controls.Phone, 'Phone')}}
+          </mat-error>
         </mat-form-field>
 
         <mat-action-row>
@@ -92,43 +95,43 @@
                   {{loading.errorMessage}}
                 </div>
                 <div *ngIf="!loading.error && focus[0]">
-                  <mat-grid-list cols="6" rowHeight="100">
+                  <mat-grid-list cols="6" rowHeight="100" style="overflow: auto">
                     <mat-grid-tile class="border">
-                      <p mat-line>Property</p>
+                      <p>Property</p>
                     </mat-grid-tile>
                     <mat-grid-tile class="border">
-                      <p mat-line>NumOfNights</p>
+                      <p>NumOfNights</p>
                     </mat-grid-tile>
                     <mat-grid-tile class="border">
-                      <p mat-line>BookDate</p>
+                      <p>BookDate</p>
                     </mat-grid-tile>
                     <mat-grid-tile class="border">
-                      <p mat-line>PayType</p>
+                      <p>PayType</p>
                     </mat-grid-tile>
                     <mat-grid-tile class="border">
-                      <p mat-line>PayStatus</p>
+                      <p>PayStatus</p>
                     </mat-grid-tile>
                     <mat-grid-tile>
-                      <p mat-line>Total Paid</p>
+                      <p>Total Paid</p>
                     </mat-grid-tile>
                     <div *ngFor="let Accommodation of accData">
                           <mat-grid-tile>
-                            <p mat-line>{{Accommodation.propId}}</p>
+                            <p>{{Accommodation.detail.prop.propName}}</p>
                           </mat-grid-tile>
                           <mat-grid-tile>
-                            <p mat-line>{{Accommodation.numOfNights}}</p>
+                            <p>{{Accommodation.numOfNights}}</p>
                           </mat-grid-tile>
                           <mat-grid-tile>
-                            <p mat-line>{{Accommodation.bookDate}}</p>
+                            <p>{{Accommodation.bookDate}}</p>
                           </mat-grid-tile>
                           <mat-grid-tile>
-                            <p mat-line>{{Accommodation.payType}}</p>
+                            <p>{{Accommodation.payType}}</p>
                           </mat-grid-tile>
                           <mat-grid-tile>
-                            <p mat-line>{{Accommodation.payStatus}}</p>
+                            <p>{{Accommodation.payStatus}}</p>
                           </mat-grid-tile>
                           <mat-grid-tile>
-                            <p mat-line>{{Accommodation.total}}</p>
+                            <p>R {{Accommodation.total}}</p>
                           </mat-grid-tile>
                           <mat-divider></mat-divider>
                           
@@ -146,49 +149,55 @@
                     {{loading.errorMessage}}
                   </div>
                   <div *ngIf="!loading.error && focus[1]">
-                    <mat-grid-list cols="7" rowHeight="100">
+                    <mat-grid-list cols="8" rowHeight="150" style="overflow: auto">
                       <mat-grid-tile class="border">
-                        <p mat-line>Flight Detail</p>
+                        <p>Flight From</p>
                       </mat-grid-tile>
                       <mat-grid-tile class="border">
-                        <p mat-line>FlightType</p>
+                        <p>Flight To</p>
                       </mat-grid-tile>
                       <mat-grid-tile class="border">
-                        <p mat-line>Travellers</p>
+                        <p>FlightType</p>
                       </mat-grid-tile>
                       <mat-grid-tile class="border">
-                          <p mat-line>Book Date</p>
+                        <p>Travellers</p>
+                      </mat-grid-tile>
+                      <mat-grid-tile class="border">
+                          <p>Book Date</p>
                         </mat-grid-tile>
                       <mat-grid-tile class="border">
-                        <p mat-line>PayType</p>
+                        <p>PayType</p>
                       </mat-grid-tile>
                       <mat-grid-tile class="border">
-                        <p mat-line>PayStatus</p>
+                        <p>PayStatus</p>
                       </mat-grid-tile>
                       <mat-grid-tile>
-                        <p mat-line>Total Paid</p>
+                        <p>Total Paid</p>
                       </mat-grid-tile>
                       <div *ngFor="let Flight of flightData">
                             <mat-grid-tile>
-                              <p mat-line>{{Flight.detailId}}</p>
+                              <p>{{Flight.detail.dest.flight.locale}}</p>
                             </mat-grid-tile>
                             <mat-grid-tile>
-                              <p mat-line>{{Flight.flightType}}</p>
+                              <p>{{Flight.detail.dest.dest}}</p>
                             </mat-grid-tile>
                             <mat-grid-tile>
-                              <p mat-line>{{Flight.travellers}}</p>
+                              <p>{{Flight.flightType}}</p>
                             </mat-grid-tile>
                             <mat-grid-tile>
-                                <p mat-line>{{Flight.bookDate}}</p>
+                              <p>{{Flight.travellers}}</p>
+                            </mat-grid-tile>
+                            <mat-grid-tile>
+                                <p>{{Flight.bookDate}}</p>
                               </mat-grid-tile>
                             <mat-grid-tile>
-                              <p mat-line>{{Flight.payType}}</p>
+                              <p>{{Flight.payType}}</p>
                             </mat-grid-tile>
                             <mat-grid-tile>
-                              <p mat-line>{{Flight.payStatus}}</p>
+                              <p>{{Flight.payStatus}}</p>
                             </mat-grid-tile>
                             <mat-grid-tile>
-                              <p mat-line>{{Flight.total}}</p>
+                              <p>R {{Flight.total}}</p>
                             </mat-grid-tile>
                             <mat-divider></mat-divider>
                       </div>
@@ -205,43 +214,43 @@
                     {{loading.errorMessage}}
                   </div>
                   <div *ngIf="!loading.error && focus[2]">
-                    <mat-grid-list cols="7" rowHeight="100">
+                    <mat-grid-list cols="6" rowHeight="100" style="overflow: auto">
                       <mat-grid-tile class="border">
-                        <p mat-line>Car</p>
+                        <p>Car</p>
                       </mat-grid-tile>
                       <mat-grid-tile class="border">
-                        <p mat-line>Book Date</p>
+                        <p>Book Date</p>
                       </mat-grid-tile>
                       <mat-grid-tile class="border">
-                        <p mat-line>Return Date</p>
+                        <p>Return Date</p>
                       </mat-grid-tile>
                       <mat-grid-tile class="border">
-                        <p mat-line>PayType</p>
+                        <p>PayType</p>
                       </mat-grid-tile>
                       <mat-grid-tile class="border">
-                        <p mat-line>PayStatus</p>
+                        <p>PayStatus</p>
                       </mat-grid-tile>
                       <mat-grid-tile>
-                        <p mat-line>Total Paid</p>
+                        <p>Total Paid</p>
                       </mat-grid-tile>
                       <div *ngFor="let Car of carRentalData">
                             <mat-grid-tile>
-                              <p mat-line>{{Car.carId}}</p>
+                              <p>{{Car.car.ctype.name}}</p>
                             </mat-grid-tile>
                             <mat-grid-tile>
-                                <p mat-line>{{Car.bookDate}}</p>
+                                <p>{{Car.bookDate}}</p>
                               </mat-grid-tile>
                               <mat-grid-tile>
-                                  <p mat-line>{{Car.returnDate}}</p>
+                                  <p>{{Car.returnDate}}</p>
                                 </mat-grid-tile>
                             <mat-grid-tile>
-                              <p mat-line>{{Car.payType}}</p>
+                              <p>{{Car.payType}}</p>
                             </mat-grid-tile>
                             <mat-grid-tile>
-                              <p mat-line>{{Car.payStatus}}</p>
+                              <p>{{Car.payStatus}}</p>
                             </mat-grid-tile>
                             <mat-grid-tile>
-                              <p mat-line>{{Car.total}}</p>
+                              <p>R {{Car.total}}</p>
                             </mat-grid-tile>
                             <mat-divider></mat-divider>
                       </div>
@@ -258,49 +267,49 @@
                     {{loading.errorMessage}}
                   </div>
                   <div *ngIf="!loading.error && focus[3]">
-                    <mat-grid-list cols="7" rowHeight="100">
+                    <mat-grid-list cols="7" rowHeight="100" style="overflow: auto">
                       <mat-grid-tile class="border">
-                        <p mat-line>Air Taxi</p>
+                        <p>Air Taxi</p>
                       </mat-grid-tile>
                       <mat-grid-tile class="border">
-                          <p mat-line>Book Date</p>
+                          <p>Book Date</p>
                         </mat-grid-tile>
                         <mat-grid-tile class="border">
-                          <p mat-line>Return Journey</p>
+                          <p>Return Journey</p>
                         </mat-grid-tile>
                         <mat-grid-tile class="border">
-                          <p mat-line>Passengers</p>
+                          <p>Passengers</p>
                         </mat-grid-tile>
                       <mat-grid-tile class="border">
-                        <p mat-line>PayType</p>
+                        <p>PayType</p>
                       </mat-grid-tile>
                       <mat-grid-tile class="border">
-                        <p mat-line>PayStatus</p>
+                        <p>PayStatus</p>
                       </mat-grid-tile>
                       <mat-grid-tile>
-                        <p mat-line>Total Paid</p>
+                        <p>Total Paid</p>
                       </mat-grid-tile>
                       <div *ngFor="let Taxi of airTaxiData">
                             <mat-grid-tile>
-                              <p mat-line>{{Taxi.airDetailId}}</p>
+                              <p>{{Taxi.airDetail.taxi.name}}</p>
                             </mat-grid-tile>
                             <mat-grid-tile>
-                              <p mat-line>{{Taxi.bookDate}}</p>
+                              <p>{{Taxi.bookDate}}</p>
                             </mat-grid-tile>
                             <mat-grid-tile>
-                              <p mat-line>{{Taxi.returnJourney}}</p>
+                              <p>{{Taxi.returnJourney}}</p>
                             </mat-grid-tile>
                             <mat-grid-tile>
-                                <p mat-line>{{Taxi.passengers}}</p>
+                                <p>{{Taxi.passengers}}</p>
                               </mat-grid-tile>
                             <mat-grid-tile>
-                              <p mat-line>{{Taxi.payType}}</p>
+                              <p>{{Taxi.payType}}</p>
                             </mat-grid-tile>
                             <mat-grid-tile>
-                              <p mat-line>{{Taxi.payStatus}}</p>
+                              <p>{{Taxi.payStatus}}</p>
                             </mat-grid-tile>
                             <mat-grid-tile>
-                              <p mat-line>{{Taxi.total}}</p>
+                              <p>R {{Taxi.total}}</p>
                             </mat-grid-tile>
                             <mat-divider></mat-divider>
                       </div>
@@ -326,9 +335,9 @@
           <mat-grid-tile color="accent" *ngIf="msLoading.error && !msLoading.load;" class="fail">
             {{msLoading.errorMessage}}
           </mat-grid-tile>
-          <!-- <mat-grid-tile class="success" *ngIf="!msLoading.error && !msLoading.load;">
+          <mat-grid-tile class="success" *ngIf="!msLoading.error && !msLoading.load && Submited;">
             Saved Changes
-          </mat-grid-tile> -->
+          </mat-grid-tile>
           <mat-grid-tile>
               <mat-spinner *ngIf="msLoading.load" [diameter]="30"></mat-spinner>
           </mat-grid-tile>

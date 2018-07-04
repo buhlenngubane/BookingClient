@@ -36,7 +36,7 @@ export class AppComponent {
     private service: UsersService,
     public route: Router
   ) {
-    // localStorage.clear();
+    // Checking if user was logged in
     if (!localStorage.getItem('currentUser')) {
     console.log('There is no current user.');
     } else {
@@ -46,30 +46,22 @@ export class AppComponent {
           const user = new User(data);
           console.log(user.name);
           service.User = user;
-          // this.user.name=data.toString();
           console.log(service.User);
           this.auth = true;
           this.Name = user.name;
           if (service.Admin) {
             console.log('true');
           this.admin = true;
-          // this.route=new Router();
           this.route.navigate(['/admin']);
           }
 
-          // this.Authenticated=true;
         },
       error => {
         console.log('Hello');
         console.error(error);
         this.error.error = false;
-        this.offline = error.error;
-        /*this.errorState="Server Error.";
-        this.error=true;*/
-        // if (this.offline.includes('401')) {
           localStorage.removeItem('currentUser');
           console.warn('Removed Token!!!');
-          // this.route.navigateByUrl("/home");
           this.route.navigate(['/home']);
         // }
         this.admin = false;
@@ -79,7 +71,6 @@ export class AppComponent {
         console.log('Got Token!!!');
         this.error.load = false;
       }).closed;
-      // this.dailogConfig.autoFocus=true;
     }
   }
 
@@ -99,10 +90,6 @@ export class AppComponent {
 
         if (this.auth) {
           this.Name = this.service.User.name;
-          // if(this.service.Admin){
-           // console.log("U r admin true");
-          // this.admin=this.service.User.admin;
-          // this.route=new Router();
           if (this.service.User.admin) {
             this.admin = true;
             this.route.navigate(['/admin']);
@@ -111,9 +98,6 @@ export class AppComponent {
         }
 
         console.log('Passed authentication!!!!!!!!!!!!!!!');
-
-        // this.error=this.service.error;
-        // this.errorState=this.service.errorState;
         this.error.load = false;
       });
   }
@@ -126,15 +110,11 @@ export class AppComponent {
     this.dailogConfig.autoFocus = true;
     this.dialog.open(RegisterComponent, this.dailogConfig).afterClosed().subscribe(
       result => {
-        // this.service.userLogic('register');
         this.auth = this.service.Authenticated;
 
         if (this.auth) {
           this.Name = this.service.User.name;
         }
-
-        // this.error=this.service.error;
-        // this.errorState=this.service.errorState;
         this.error.load = false;
       });
   }
@@ -144,12 +124,6 @@ export class AppComponent {
     this.dailogConfig.autoFocus = false;
     this.dialog.open(AccountDetailsComponent, this.dailogConfig);
   }
-
-  /*Error(error:boolean, message:string)
-  {
-    this.errorState=message;
-    this.error=error;
-  }*/
 
   public closeSession() {
     this.service.logOut();

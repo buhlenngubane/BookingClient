@@ -88,13 +88,6 @@ export class AccommodationComponent implements OnInit {
     }
     this.minDate2 = new Date(this.dateTo.toDateString());
     console.log(this.datePipe.transform(this.dateForm, 'yyyy-MM-dd'));
-
-    this.galleryOptions = {
-          width: '600px',
-          height: '400px',
-          thumbnailsColumns: 4,
-          imageAnimation: NgxGalleryAnimation.Slide
-      };
     // this.dateForm.disable();
     // this.dateTo.disable();
   }
@@ -142,7 +135,7 @@ export class AccommodationComponent implements OnInit {
       this.serviceSearch.SearchParam = this.search;
     }
     // if (this.accommodation) {
-      this.serviceSearch.Search(this.dateForm, this.dateTo, this.panel.value, display);
+      this.serviceSearch.Search(this.dateForm, this.dateTo, this.panel, display);
     // }
   }
 
@@ -164,7 +157,7 @@ export class AccommodationComponent implements OnInit {
         console.log('Should redirect ' + display.accId.toString());
         this.error = false;
 
-        this.serviceSearch.Search(this.dateForm, this.dateTo, this.panel.value, display);
+        this.serviceSearch.Search(this.dateForm, this.dateTo, this.panel, display);
       } else {
         // search.setErrors(Validators.pattern(''));
         search.markAsUntouched();
