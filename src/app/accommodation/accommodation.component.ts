@@ -38,8 +38,6 @@ export class AccommodationComponent implements OnInit {
   value2: any;
   error = false;
   errorMessage = '';
-  galleryOptions: { width: string; height: string; thumbnailsColumns: number; imageAnimation: any; };
-  images: any;
 
   constructor(
     private service: UsersService,
@@ -114,6 +112,21 @@ export class AccommodationComponent implements OnInit {
     } else {
       this.minDate2 = new Date(event.value.toDateString());
       this.minDate2.setHours(48);
+    }
+  }
+
+  From() {
+    if (this.service.from > 1) {
+      this.service.from--;
+    this.service.to--;
+    }
+  }
+
+  To() {
+    if (this.service.to < this.service.accommodations.length) {
+    this.service.from++;
+    this.service.to++;
+    console.log(this.service.to + ' ' + this.service.accommodations.length);
     }
   }
 

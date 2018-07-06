@@ -47,7 +47,7 @@
           (dateChange)="addEvent('change', $event)" 
           [max]="maxDate" 
           [(ngModel)]="dateForm" 
-          [matDatepicker]="picker1" placeholder="Choose a date" disabled>
+          [matDatepicker]="picker1" placeholder="Choose a date" name="date" disabled>
           <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
           <mat-datepicker #picker1 startView="month" disabled="false"></mat-datepicker>
           <mat-hint *ngIf='!searchService.availDateFrom'>
@@ -62,7 +62,7 @@
       <mat-toolbar-row>
         <mat-form-field class="full-width">
           <input matInput [min]="minDate2" [max]="maxDate2" 
-          [matDatepicker]="picker2" placeholder="Choose a date" [(ngModel)]="dateTo" disabled>
+          [matDatepicker]="picker2" placeholder="Choose a date" [(ngModel)]="dateTo" name="date2" disabled>
           <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
           <mat-datepicker #picker2 startView="month" disabled="false"></mat-datepicker>
           <mat-hint *ngIf='!searchService.availDateTo && searchService.availDateFrom;'>
@@ -75,10 +75,11 @@
       </mat-toolbar-row>
 
       <mat-toolbar-row>
+        
           <mat-form-field class="full-width">
             <mat-select placeholder="Number of rooms to book" 
             [formControl]="panel" panelClass="{{panel}}"
-            class="input" >
+            class="input" name ="panel">
               <mat-option value="{{num.number+num.text}}" *ngFor="let num of Num">{{num.number+num.text}}</mat-option>
             </mat-select>
             <mat-error >

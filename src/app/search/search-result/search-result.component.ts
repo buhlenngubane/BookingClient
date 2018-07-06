@@ -82,7 +82,6 @@ export class SearchResultComponent implements OnInit {
           console.log(this.rows);
         }
       );
-      console.log(this.overral_price[0]);
     // this.propCount = this.prop.length;
     }
   }

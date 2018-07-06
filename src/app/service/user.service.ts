@@ -116,6 +116,9 @@ export class UsersService {
   private _hubConnection: HubConnection;
   msgs = [];
 
+  from = 1;
+  to: number;
+
   constructor(
     private http: HttpClient,
     private route: Router
@@ -325,7 +328,7 @@ export class UsersService {
 
   SetToken(email: string, password: string): Observable<any> {
     console.log('Email = ' + email + ' Password = ' + password);
-    return this.http.get(this.BASE_URL + `api/Token/CreateToken/${email}&${password}`)
+    return this.http.get<Token>(this.BASE_URL + `api/Token/CreateToken/${email}&${password}`)
       .map((response) => {
         this.myToken = response as Token;
         console.log(this.myToken.token);
@@ -344,6 +347,11 @@ export class UsersService {
             error => {
               console.log(error.error);
               // location.reload();
+              // tslint:disable-next-line:prefer-const
+              let exact = false;
+              if (this.route.isActive('/home',  exact)) {
+                location.reload();
+              }
             }
           );
 
@@ -769,6 +777,7 @@ export class UsersService {
           this.user = null;
           if (this.sub.closed) {
             localStorage.removeItem('currentUser');
+            location.reload();
           } else {
             console.log('Error logging out');
             localStorage.removeItem('currentUser');
@@ -781,7 +790,7 @@ export class UsersService {
         },
         () => {
           console.warn('Logged Out.');
-          this.route.navigate(['/home']);
+          // this.route.navigate(['/home']);
           // if (localStorage.getItem('currentUser')) {
           //   localStorage.removeItem('currentUser');
           // }
@@ -891,7 +900,13 @@ export class UsersService {
             //   break;
             // }
           }
-
+          if (this.accommodations.length > 5) {
+          this.to = 5;
+          console.log(this.to + ' ' + this.accommodations.length);
+          } else {
+            this.to = this.accommodations.length;
+            console.log(this.to + ' ' + this.accommodations.length);
+          }
           this.accommodations.forEach(element => {
             this.images.push('data:image/jpeg;base64,' + element.picture);
           });
