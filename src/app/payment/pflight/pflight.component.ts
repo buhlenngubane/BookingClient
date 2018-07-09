@@ -71,7 +71,8 @@ export class PflightComponent implements OnInit {
         // this.amount = this.searchService.Total();
         this.searchService.Book();
 
-      }, (error) => {console.log(error); });
+      }// , (error) => {console.log(error); }
+    ).catch(err => console.error('Error catched! ' + err));
     }
   };
 

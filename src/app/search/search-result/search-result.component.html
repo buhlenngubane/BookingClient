@@ -98,21 +98,24 @@
 
   </mat-grid-tile>
 
-   <mat-grid-tile [colspan]="3" *ngFor="let prop of prop; let i = index" style="height: 200px; padding-bottom: 50px; ">
+   <mat-grid-tile [colspan]="3" *ngFor="let prop of prop; let i = index" 
+   style="height: 200px; padding-bottom: 50px; " >
       
     <mat-toolbar style="position: absolute;
     top: 16px;
     left: 16px; width: 95%;border: 1px solid black;background-color: white" 
     matTooltip="{{prop.accDetail[0].propertyAttr}}" [matTooltipShowDelay]="1000">
-    <mat-toolbar-row class="Hght" layout-wrap>
-            <img style="padding-top: 3%; width: 30%" src="data:image/jpeg;base64,{{prop.picture}}" alt="{{prop.propName}}" 
+    <mat-toolbar-row class="Hght">
+            <img style="padding-top: 3%; width: 30%"
+            src="data:image/jpeg;base64,{{prop.picture}}" alt="{{prop.propName}}" 
             srcset="" align="left">
           <br/>
           <div style="width:40%;">
                     <p>{{prop.propName}}</p>
                     <p> {{prop.accDetail[0].roomType}} room</p>
                     <p *ngIf='service.rooms.length > 0'>
-                      <span style="background-color: palegreen" *ngIf='service.rooms[i].available > 0; else Alert'>
+                      <span style="background-color: palegreen"
+                       *ngIf='service.rooms[i].available > 0; else Alert'>
                           {{service.rooms[i].available}} rooms available
                       </span>
                       <ng-template style="background-color: red" #Alert>
@@ -122,7 +125,9 @@
             </div>
             <span class="spacer"></span>
             <div>
-                <p style="color: red" *ngIf="!(searchService.availDateFrom && searchService.availDateTo); else Price"><mat-icon>event_busy</mat-icon>Price not<br/> available on date </p>
+                <p style="color: red" 
+                *ngIf="!(searchService.availDateFrom && searchService.availDateTo); else Price">
+                <mat-icon>event_busy</mat-icon>Price not<br/> available on date </p>
                 <ng-template #Price>R {{searchService.overralPrice[i].price}}</ng-template>
             </div>
           
@@ -138,4 +143,4 @@
 
   </mat-grid-tile> 
 </mat-grid-list>
-<p-growl [(ngModel)]="service.msgs"></p-growl>
+<p-growl [(ngModel)]="service.msgs" ngDefaultControl></p-growl>

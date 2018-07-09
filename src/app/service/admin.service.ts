@@ -10,9 +10,7 @@ import { User } from '../model/user';
 @Injectable()
 export class AdminService {
 
-  users: User[];
   constructor(private service: UsersService, private http: HttpClient) {
-    this.users = [] as User[];
    }
 
   GetAllUsers(usersData: User[], loading): boolean {

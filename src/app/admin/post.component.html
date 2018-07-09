@@ -26,11 +26,14 @@
                  ToString(data, data.obj[i-1])); else Arr'>
                   <mat-form-field class="wid">
 
-                    <input matInput type="text" name="acc" id="" placeholder="{{section}}" [(ngModel)]='data.bind[section]' formControlName='{{data.text}}{{i}}'
+                    <input matInput type="text" name="acc" id="" placeholder="{{section}}" 
+                    [(ngModel)]='data.bind[section]'
+                     formControlName='{{data.text}}{{i}}'
                       *ngIf='section != "picture" ; else TextArea' />
 
                     <ng-template #TextArea>
-                      <textarea matInput name="acc" id="" rows="5" placeholder="{{section}}" [(ngModel)]="data.bind[section]" formControlName='{{data.text}}{{i}}'
+                      <textarea matInput name="acc" id="" rows="5" placeholder="{{section}}" 
+                      [(ngModel)]="data.bind[section]" formControlName='{{data.text}}{{i}}'
                         style="background-color: burlywood">  </textarea>
 
                     </ng-template>
@@ -39,7 +42,8 @@
                   <div *ngIf='section === "picture"' style="padding-bottom: 5px;">
                     <label for="image">Load Image: </label>
                     <br/>
-                    <input type="file" name="files" multiple accept="image/*, .zip" (change)="onFileChange($event)" maxsize="5000" required base-sixty-four-input>
+                    <input type="file" name="files" multiple accept="image/*, .zip" 
+                    (change)="onFileChange($event)" maxsize="5000" required base-sixty-four-input>
                     <div style="overflow: auto" *ngIf='files'>
                       {{files.filename}}
                       <br/> {{files.filetype}}
@@ -54,7 +58,8 @@
                   && CheckIfArr(data,section, i, data.arr1); else End'>
                     <mat-form-field class="wid">
 
-                      <input matInput type="text" name="acc" id="" placeholder="{{data.arr1}}:{{section}}" [(ngModel)]='data.bind[data.arr1][0][section]'
+                      <input matInput type="text" name="acc" id="" placeholder="{{data.arr1}}:{{section}}"
+                       [(ngModel)]='data.bind[data.arr1][0][section]'
                         formControlName='{{data.text}}{{i}}' *ngIf='section != "picture" ; else TextArea' />
 
                       <ng-template #TextArea>
@@ -69,7 +74,8 @@
                     <div *ngIf='section === "picture"' style="padding-bottom: 5px;">
                       <label for="image">Load Image: </label>
                       <br/>
-                      <input type="file" name="files" multiple accept="image/*, .zip" (change)="onFileChange($event)" maxsize="5000" required base-sixty-four-input>
+                      <input type="file" name="files" multiple accept="image/*, .zip" 
+                      (change)="onFileChange($event)" maxsize="5000" required base-sixty-four-input>
                       <div style="overflow: auto" *ngIf='files'>
                           {{files.filename}}
                           <br/> {{files.filetype}}
@@ -83,7 +89,8 @@
                     && CheckIfArr(data,section, i, data.arr1, data.arr2) ; else Last'>
                       <mat-form-field class="wid">
 
-                        <input matInput type="text" name="acc" id="" placeholder="{{data.arr2}}:{{section}}" [(ngModel)]='data.bind[data.arr1][0][data.arr2][0][section]'
+                        <input matInput type="text" name="acc" id="" placeholder="{{data.arr2}}:{{section}}" 
+                        [(ngModel)]='data.bind[data.arr1][0][data.arr2][0][section]'
                           formControlName='{{data.text}}{{i}}' *ngIf='section != "picture" ; else TextArea' />
 
                         <ng-template #TextArea>
@@ -98,7 +105,8 @@
                       <div *ngIf='section === "picture"' style="padding-bottom: 5px;">
                         <label for="image">Load Image: </label>
                         <br/>
-                        <input type="file" name="files" multiple accept="image/*, .zip" (change)="onFileChange($event)" maxsize="5000" required base-sixty-four-input>
+                        <input type="file" name="files" multiple accept="image/*, .zip" 
+                        (change)="onFileChange($event)" maxsize="5000" required base-sixty-four-input>
                         <div style="overflow: auto" *ngIf='files'>
                             {{files.filename}}
                             <br/> {{files.filetype}}
@@ -115,7 +123,8 @@
                        ToString(data, data.obj[i-1], data.arr1, data.arr2, data.arr3));'>
                         <mat-form-field class="wid">
 
-                          <input matInput type="text" name="acc" id="" placeholder="{{data.arr3}}:{{section}}" [(ngModel)]='data.bind[data.arr1][0][data.arr2][0][data.arr3][section]'
+                          <input matInput type="text" name="acc" id="" placeholder="{{data.arr3}}:{{section}}"
+                           [(ngModel)]='data.bind[data.arr1][0][data.arr2][0][data.arr3][section]'
                             formControlName='{{data.text}}{{i}}' *ngIf='section != "picture" ; else TextArea' />
 
                           <ng-template #TextArea>
@@ -130,7 +139,8 @@
                         <div *ngIf='section === "picture"' style="padding-bottom: 5px;">
                           <label for="image">Load Image: </label>
                           <br/>
-                          <input type="file" name="files" multiple accept="image/*, .zip" (change)="onFileChange($event)" maxsize="5000" required base-sixty-four-input>
+                          <input type="file" name="files" multiple accept="image/*, .zip" 
+                          (change)="onFileChange($event)" maxsize="5000" required base-sixty-four-input>
                           <div style="overflow: auto" *ngIf='files'>
                               {{files.filename}}
                               <br/> {{files.filetype}}
@@ -145,14 +155,16 @@
 
                 </ng-template>
 
-                <button mat-button (click)='DeleteProperty(data, section)' style="margin: 5px" *ngIf='section.endsWith("Id") || section.endsWith("id")'>Remove Property</button>
+                <button mat-button (click)='DeleteProperty(data, section)' style="margin: 5px" 
+                *ngIf='section.endsWith("Id") || section.endsWith("id")'>Remove Property</button>
 
                 
                 <div>
                     <button mat-button matStepperPrevious (click)='files = null' *ngIf='i > 0'>Back</button>
                     <button mat-button matStepperNext (click)='files = null'>Next</button>
                     <br/>
-                  <button mat-raised-button color="primary" (click)="PostAll(data)" style="margin-top: 5px;" *ngIf="data.change">
+                  <button mat-raised-button color="primary" (click)="PostAll(data)" style="margin-top: 5px;" 
+                  *ngIf="data.change">
                     <mat-spinner *ngIf="loading.load; else Submit" [diameter]="30"></mat-spinner>
                     <ng-template #Submit>Submit</ng-template>
                   </button>

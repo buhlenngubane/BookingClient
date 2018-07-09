@@ -1,12 +1,12 @@
-import { Component, ChangeDetectorRef, AfterViewChecked } from '@angular/core';
+import { Component
+  , ChangeDetectorRef
+  , AfterViewChecked } from '@angular/core';
 import { UsersService } from '../service/user.service';
 import { AdminService } from '../service/admin.service';
 import { Router } from '@angular/router';
-import { User } from '../model/user';
 import { SearchService } from '../service/search.service';
-import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { Accommodations } from '../model/service-type';
-import { isNullOrUndefined, isUndefined, isNumber } from 'util';
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
+import { isUndefined } from 'util';
 
 @Component({
   selector: 'app-admin',
@@ -15,10 +15,7 @@ import { isNullOrUndefined, isUndefined, isNumber } from 'util';
 })
 export class AdminComponent {
 
-  commonLayout = [
-  ];
-
-  repeat_statement = [{
+  private repeat_statement = [{
     serviceType: 'Users',
     data: ['Displays here.']
   }, {
@@ -36,14 +33,15 @@ export class AdminComponent {
   }
   ];
   // : User[] = new User({userId: 0, name: "string"})[1];
-  active;
-  users;
-  property;
-  flight;
-  car;
-  taxi;
-  loading = { load: false, error: false, errorMessage: '' };
-  id: number;
+  private active;
+  private users;
+  private property;
+  private flight;
+  private car;
+  private taxi;
+  private loading = { load: false, error: false, errorMessage: '' };
+  private id: number;
+
   constructor(
     private service: UsersService,
     private admin: AdminService,
@@ -154,11 +152,11 @@ export class AdminPostComponent implements AfterViewChecked {
 
   // user = new User();
 
-  accEdit = false;
+  private accEdit = false;
 
   // creating model example for method use
 
-  AccommArr = ['country',
+  private AccommArr = ['country',
     'location',
     'picture',
     'propName',
@@ -170,7 +168,7 @@ export class AdminPostComponent implements AfterViewChecked {
     'dateAvailableFrom',
     'dateAvailableTo'];
 
-  Accomm = {
+  private Accomm = {
     // accId: 0,
     country: 'string',
     location: 'string',
@@ -197,7 +195,7 @@ export class AdminPostComponent implements AfterViewChecked {
     ]
   };
 
-  FlightArr = [
+  private FlightArr = [
     'locale',
     'avFlights',
     'dest',
@@ -209,7 +207,7 @@ export class AdminPostComponent implements AfterViewChecked {
     'picture'
   ];
 
-  Flight = {
+  private Flight = {
     // 'flightId': 0,
     'locale': 'string',
     'avFlights': 1,
@@ -238,7 +236,7 @@ export class AdminPostComponent implements AfterViewChecked {
     ]
   };
 
-  CarArr = [
+  private CarArr = [
     'location',
     'physicalAddress',
     'numOfSuppliers',
@@ -257,7 +255,7 @@ export class AdminPostComponent implements AfterViewChecked {
     'picture',
   ];
 
-  CarRental = {
+  private CarRental = {
     // 'crentId': 0,
     'location': 'string',
     'physicalAddress': 'string',
@@ -293,7 +291,7 @@ export class AdminPostComponent implements AfterViewChecked {
     ]
   };
 
-  AirArr = [
+  private AirArr = [
     'pickUp',
     'numOfDrops',
     'dropOff',
@@ -306,7 +304,7 @@ export class AdminPostComponent implements AfterViewChecked {
     'numOfBaggage'
   ];
 
-  AirTaxi = {
+  private AirTaxi = {
     // 'pickUpId': 0,
     'pickUp': 'string',
     'numOfDrops': 1,
@@ -337,15 +335,15 @@ export class AdminPostComponent implements AfterViewChecked {
   };
 
   // strUser = JSON.stringify(this.user, undefined, '\t');
-  strAccomm = JSON.stringify(this.Accomm, undefined, '\t');
-  strFlight = JSON.stringify(this.Flight, undefined, '\t');
-  strCarRental = JSON.stringify(this.CarRental, undefined, '\t');
-  strAirTaxi = JSON.stringify(this.AirTaxi, undefined, '\t');
+  private strAccomm = JSON.stringify(this.Accomm, undefined, '\t');
+  private strFlight = JSON.stringify(this.Flight, undefined, '\t');
+  private strCarRental = JSON.stringify(this.CarRental, undefined, '\t');
+  private strAirTaxi = JSON.stringify(this.AirTaxi, undefined, '\t');
 
-  accommodation;
-  flight;
-  carRental;
-  airTaxi;
+  private accommodation;
+  private flight;
+  private carRental;
+  private airTaxi;
 
   loop = [
     {
@@ -386,17 +384,17 @@ export class AdminPostComponent implements AfterViewChecked {
     }
   ];
 
-  loading = { load: false, error: false, errorMessage: '' };
-  files;
-  active: any;
-  firstFormGroup: FormGroup[] = [];
-  firstFormGroup0: FormGroup;
-  firstFormGroup1: FormGroup;
-  firstFormGroup2: FormGroup;
-  firstFormGroup3: FormGroup;
-  accommPicture = 2;
-  flightPicture = 1;
-  carRentalPicture = 2;
+  private loading = { load: false, error: false, errorMessage: '' };
+  private files;
+  private active: any;
+  private firstFormGroup: FormGroup[] = [];
+  private firstFormGroup0: FormGroup;
+  private firstFormGroup1: FormGroup;
+  private firstFormGroup2: FormGroup;
+  private firstFormGroup3: FormGroup;
+  private accommPicture = 2;
+  private flightPicture = 1;
+  private carRentalPicture = 2;
 
   constructor(
     private service: UsersService,
@@ -560,7 +558,7 @@ onFileChange(event) {
   }
 }
 
-  PostAll(data) {
+  PostAll(data, Form: FormGroup) {
     data.change = false;
     this.files = null;
     switch (data.text) {
@@ -614,11 +612,11 @@ onFileChange(event) {
 })
 export class AdminPutComponent implements AfterViewChecked {
 
-  accEdit = false;
+  private accEdit = false;
 
   // creating model example for method use
 
-  AccommArr = [
+  private AccommArr = [
     'accId',
     'country',
     'location',
@@ -636,7 +634,7 @@ export class AdminPutComponent implements AfterViewChecked {
     'dateAvailableFrom',
     'dateAvailableTo'];
 
-  Accomm = {
+  private Accomm = {
     accId: 1,
     country: 'string',
     location: 'string',
@@ -663,7 +661,7 @@ export class AdminPutComponent implements AfterViewChecked {
     ]
   };
 
-  FlightArr = [
+  private FlightArr = [
     'flightId',
     'locale',
     'avFlights',
@@ -682,7 +680,7 @@ export class AdminPutComponent implements AfterViewChecked {
     'picture'
   ];
 
-  Flight = {
+  private Flight = {
     'flightId': 1,
     'locale': 'string',
     'avFlights': 1,
@@ -711,7 +709,7 @@ export class AdminPutComponent implements AfterViewChecked {
     ]
   };
 
-  CarArr = [
+  private CarArr = [
     'crentId',
     'location',
     'physicalAddress',
@@ -737,7 +735,7 @@ export class AdminPutComponent implements AfterViewChecked {
     'picture',
   ];
 
-  CarRental = {
+  private CarRental = {
     'crentId': 1,
     'location': 'string',
     'physicalAddress': 'string',
@@ -773,7 +771,7 @@ export class AdminPutComponent implements AfterViewChecked {
     ]
   };
 
-  AirArr = [
+  private AirArr = [
     'pickUpId',
     'pickUp',
     'numOfDrops',
@@ -792,7 +790,7 @@ export class AdminPutComponent implements AfterViewChecked {
     'numOfBaggage'
   ];
 
-  AirTaxi = {
+  private AirTaxi = {
     'pickUpId': 1,
     'pickUp': 'string',
     'numOfDrops': 1,
@@ -824,12 +822,12 @@ export class AdminPutComponent implements AfterViewChecked {
   };
 
   // strUser = JSON.stringify(this.user, undefined, '\t');
-  strAccomm = JSON.stringify(this.Accomm, undefined, '\t');
-  strFlight = JSON.stringify(this.Flight, undefined, '\t');
-  strCarRental = JSON.stringify(this.CarRental, undefined, '\t');
-  strAirTaxi = JSON.stringify(this.AirTaxi, undefined, '\t');
+  private strAccomm = JSON.stringify(this.Accomm, undefined, '\t');
+  private strFlight = JSON.stringify(this.Flight, undefined, '\t');
+  private strCarRental = JSON.stringify(this.CarRental, undefined, '\t');
+  private strAirTaxi = JSON.stringify(this.AirTaxi, undefined, '\t');
 
-  loop = [
+  private loop = [
     {
       change: false,
       text: 'Accommodation',
@@ -868,14 +866,14 @@ export class AdminPutComponent implements AfterViewChecked {
     }
   ];
 
-  loading = { load: false, error: false, errorMessage: '' };
-  files;
-  active: any;
-  firstFormGroup: FormGroup[] = [];
-  firstFormGroup0: FormGroup;
-  firstFormGroup1: FormGroup;
-  firstFormGroup2: FormGroup;
-  firstFormGroup3: FormGroup;
+  private loading = { load: false, error: false, errorMessage: '' };
+  private files;
+  private active: any;
+  private firstFormGroup: FormGroup[] = [];
+  private firstFormGroup0: FormGroup;
+  private firstFormGroup1: FormGroup;
+  private firstFormGroup2: FormGroup;
+  private firstFormGroup3: FormGroup;
 
   constructor(
     private service: UsersService,
@@ -1126,13 +1124,13 @@ export class AdminDeleteComponent {
 
   accEdit = false;
 
-  idUser;
-  idAccomm;
-  idFlight;
-  idCarRental;
-  idAirTaxi;
+  private idUser;
+  private idAccomm;
+  private idFlight;
+  private idCarRental;
+  private idAirTaxi;
 
-  loop = [
+  private loop = [
     {
       change: false,
       text: 'User',
@@ -1162,8 +1160,8 @@ export class AdminDeleteComponent {
     }
   ];
 
-  loading = { load: false, error: false, errorMessage: '' };
-  active: any;
+  private loading = { load: false, error: false, errorMessage: '' };
+  private active: any;
 
   constructor(
     private service: UsersService,

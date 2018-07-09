@@ -159,15 +159,10 @@ export class SearchService {
           .subscribe(
             data => {
               console.log('searching');
-              // let fl = data as Flight[];
-              // console.log(fl);
-              // result=data;
               console.log(result);
               try {
-                // if(result)
                 result.splice(0);
-                // if(data)
-                // {
+
                 data.forEach(
                   // tslint:disable-next-line:no-shadowed-variable
                   element => {
@@ -180,13 +175,9 @@ export class SearchService {
               } catch (Error) {
                 console.error(Error);
               }
-              // if(!this.result.find(s=>s.locale==arr.))
-
             },
             error => {
               console.error(error.message);
-              // this.retry = error.message;
-
             },
             () => {
               console.log('search done.');
@@ -201,8 +192,6 @@ export class SearchService {
             data => {
               console.log('searching');
               console.log(result);
-              // let Dest = data as Destination[];
-              // console.log(Dest);
               try {
 
                 result.splice(0);
@@ -323,8 +312,6 @@ export class SearchService {
             data => {
               console.log(data);
               console.log(result);
-              // let airDropOff=new dropOffs[];
-              // console.log(airDropOff);
 
               try {
                 result.splice(0);
@@ -342,8 +329,6 @@ export class SearchService {
                   data.slice(0, 9).forEach(
                     // tslint:disable-next-line:no-shadowed-variable
                     element => {
-                      // console.log(this.airSearch1.length);
-
                       result.push(new dropOffs(element));
                     });
                   this.airSearch2 = result;
@@ -510,7 +495,8 @@ export class SearchService {
                 search.setValue(localStorage.getItem('info#1'));
               }
             } catch (error) {
-              console.log(error);
+              console.error(error);
+              // throw new Error(error);
             }
             /**
              * Trying Accommodations conversion
@@ -521,6 +507,7 @@ export class SearchService {
               }
             } catch (error) {
               console.log(error);
+              throw new Error(error);
             }
           },
           error => {
@@ -961,14 +948,6 @@ export class SearchService {
     this.diff = diff;
   }
 
-  set Min(min) {
-    this.min = min;
-  }
-
-  set Max(max) {
-    this.max = max;
-  }
-
   set Panel(panel) {
     console.log('not undefined' + panel);
     this.panel = panel;
@@ -1009,14 +988,6 @@ export class SearchService {
 
   get Diff() {
     return this.diff;
-  }
-
-  get Min() {
-    return this.min;
-  }
-
-  get Max() {
-    return this.max;
   }
 
   get Panel() {

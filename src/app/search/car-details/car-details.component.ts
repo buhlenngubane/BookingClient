@@ -15,9 +15,9 @@ import { CarRentalStorage } from '../../service/common-interface';
 export class CarDetailsComponent implements OnInit {
 
   result = this.service.carRentalDtls;
-  price;
-  priceDateFrom;
-  priceDateTo;
+  private price;
+  private priceDateFrom;
+  private priceDateTo;
   constructor(private service: UsersService,
   private searchService: SearchService) {
 

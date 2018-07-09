@@ -37,8 +37,6 @@ import { DatePipe } from '@angular/common';
 
 @Injectable()
 export class UsersService {
-  accommodations: Accommodations[] = [];
-
   serviceType: string;
   private user: User;
   private password: string;
@@ -51,9 +49,10 @@ export class UsersService {
   private payment: number;
   myObservable;
   // timer = Observable.timer(10000, 1000);
-  sub: Subscription;
+  private sub: Subscription;
 
   /**Accommodation**/
+  accommodations: Accommodations[] = [];
   property: Properties;
   roomsAvailable = true;
   rooms: [{ available: number }] = [{ available: 1 }];
@@ -98,9 +97,6 @@ export class UsersService {
   flightAbbrev: string;
   search: string;
 
-  /**Payment**/
-  paypalLoad = true;
-
   /**Booking**/
   accData: AccBooking[] = [];
   flightData: FlBooking[] = [];
@@ -109,6 +105,7 @@ export class UsersService {
 
   images = [];
 
+  paypalLoad = false;
   load: Loading = { error: false, load: true, errorMessage: '' };
   loggedOut = true;
 
@@ -143,7 +140,7 @@ export class UsersService {
           this._hubConnection
             .start()
             .then(() => console.log('Connection started!'))
-            .catch(err => console.log('Error while establishing connection :('));
+            .catch(err => console.log('Error while establishing connection :( ' + err));
         }
       );
 
@@ -192,14 +189,14 @@ export class UsersService {
           console.error(error + ' for signIn!!!');
           console.error(error);
           try {
-          this.check.errorMessage = error.error.toString();
+            this.check.errorMessage = error.error.toString();
 
-          if (this.check.errorMessage === 'Email exists') {
-            this.check.errorMessage = 'Email exists';
-          } else {
-            this.check.errorMessage = 'Error occured.';
-          }
-        } catch (Err) {this.check.errorMessage = 'Error occured'; }
+            if (this.check.errorMessage === 'Email exists') {
+              this.check.errorMessage = 'Email exists';
+            } else {
+              this.check.errorMessage = 'Error occured.';
+            }
+          } catch (Err) { this.check.errorMessage = 'Error occured'; }
           this.check.error = true;
 
           if (regRef.componentInstance) {
@@ -224,7 +221,6 @@ export class UsersService {
       // this.Body, this.httpOptions)
       .subscribe((response) => {
         // console.log(JSON.stringify(response));
-
         this.User = new User(response);
         /*if(this.user.userId==1)
           this.admin=true;*/
@@ -349,7 +345,7 @@ export class UsersService {
               // location.reload();
               // tslint:disable-next-line:prefer-const
               let exact = false;
-              if (this.route.isActive('/home',  exact)) {
+              if (this.route.isActive('/home', exact)) {
                 location.reload();
               }
             }
@@ -383,7 +379,7 @@ export class UsersService {
             this.route.navigate(['/home']);
             // tslint:disable-next-line:prefer-const
             let exact = false;
-            if (this.route.isActive('/home',  exact)) {
+            if (this.route.isActive('/home', exact)) {
               location.reload();
             }
             console.warn('Removed Token!!!');
@@ -428,8 +424,8 @@ export class UsersService {
               console.log(error);
               console.log(Loading);
               try {
-              loading.errorMessage = error.error.toString();
-              } catch (Err) {loading.errorMessage = 'Error occured'; }
+                loading.errorMessage = error.error.toString();
+              } catch (Err) { loading.errorMessage = 'Error occured'; }
               loading.error = true;
               loading.load = false;
               console.log(loading);
@@ -459,9 +455,9 @@ export class UsersService {
             error => {
               console.log(error);
               try {
-              const err = error.error.toString();
-              loading.errorMessage = err;
-            } catch (Err) {loading.errorMessage = 'Error occured'; }
+                const err = error.error.toString();
+                loading.errorMessage = err;
+              } catch (Err) { loading.errorMessage = 'Error occured'; }
               loading.error = true;
               loading.load = false;
             },
@@ -623,7 +619,7 @@ export class UsersService {
                     this.flightPrice.push({
                       price:
                         (+element.price + environment.business) * num,
-                        travellers: num
+                      travellers: num
                     });
                     break;
                   }
@@ -632,7 +628,7 @@ export class UsersService {
                     this.flightPrice.push({
                       price:
                         (+element.price + environment.first_class) * num,
-                        travellers: num
+                      travellers: num
                     });
                     console.log(environment.first_class + ' Price ' + +element.price + ' Num ' + num);
                     console.log((+element.price + environment.first_class) * num);
@@ -642,7 +638,7 @@ export class UsersService {
                   default: this.flightPrice.push({
                     price:
                       (element.price) * num,
-                      travellers: num
+                    travellers: num
                   });
                 }
               }
@@ -654,9 +650,11 @@ export class UsersService {
 
           this.route.navigate(['/flight-detail']);
           if (!dateDest) {
-            localStorage.setItem('info#2', loc + '*' + dest + '*' + strLoc + '*' + false + '*' + flightType + '*' + num);
+            localStorage.setItem('info#2',
+             loc + '*' + dest + '*' + strLoc + '*' + false + '*' + flightType + '*' + num);
           } else {
-            localStorage.setItem('info#2', loc + '*' + dest + '*' + strLoc + '*' + strDest + '*' + flightType + '*' + num);
+            localStorage.setItem('info#2',
+             loc + '*' + dest + '*' + strLoc + '*' + strDest + '*' + flightType + '*' + num);
           }
         },
         error => {
@@ -790,13 +788,9 @@ export class UsersService {
         },
         () => {
           console.warn('Logged Out.');
-          // this.route.navigate(['/home']);
-          // if (localStorage.getItem('currentUser')) {
-          //   localStorage.removeItem('currentUser');
-          // }
           // tslint:disable-next-line:prefer-const
           let exact = false;
-          if (this.route.isActive('/home', exact)) {}
+          if (this.route.isActive('/home', exact)) { }
         }
       ).closed;
   }
@@ -824,18 +818,6 @@ export class UsersService {
 
   set Property(property) {
     this.property = property;
-  }
-
-  set Flight(flight) {
-    this.flight = flight;
-  }
-
-  set Payment(payment) {
-    this.payment = payment;
-  }
-
-  set AccData(accData) {
-    this.accData = accData;
   }
 
   // *******Get*******//
@@ -868,14 +850,6 @@ export class UsersService {
     return this.getToken;
   }
 
-  get Admin() {
-    return this.admin;
-  }
-
-  get ServiceType() {
-    return this.serviceType;
-  }
-
   get Accommodations() {
     return this.accommodations;
   }
@@ -901,8 +875,8 @@ export class UsersService {
             // }
           }
           if (this.accommodations.length > 5) {
-          this.to = 5;
-          console.log(this.to + ' ' + this.accommodations.length);
+            this.to = 5;
+            console.log(this.to + ' ' + this.accommodations.length);
           } else {
             this.to = this.accommodations.length;
             console.log(this.to + ' ' + this.accommodations.length);
@@ -958,24 +932,16 @@ export class UsersService {
     return this.authenticated;
   }
 
-  get User(): User {
+  get User() {
     return this.user;
   }
 
-  get Property() {
-    return this.property;
-  }
-
-  get Flight() {
-    return this.flight;
+  get Admin() {
+    return this.admin;
   }
 
   get AccData() {
     return this.accData;
-  }
-
-  get Payment() {
-    return this.payment;
   }
 
   private handleError(error: HttpErrorResponse) {

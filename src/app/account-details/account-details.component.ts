@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { UsersService } from '../service/user.service';
-import { SignInComponent } from '../sign-in/sign-in.component';
 import { MatDialogRef, MatTabChangeEvent } from '@angular/material';
 import { User } from '../model/user';
 import { AccBooking, CarBooking, FlBooking, AirBooking } from '../model/service-type';
@@ -14,22 +13,22 @@ import { AccBooking, CarBooking, FlBooking, AirBooking } from '../model/service-
 })
 export class AccountDetailsComponent implements OnInit {
 
-  step: number;
-  Submited = false;
-  postChanges: FormGroup;
-  name: string;
-  surname: string;
-  email: string;
-  password: string;
-  phone: string;
-  user: User;
-  focus: boolean[] = [];
+  private step: number;
+  private Submited = false;
+  private postChanges: FormGroup;
+  private name: string;
+  private surname: string;
+  private email: string;
+  private password: string;
+  private phone: string;
+  private user: User;
+  private focus: boolean[] = [];
   loading: any;
   msLoading: any;
-  accData: AccBooking[] = [];
-  flightData: FlBooking[] = [];
-  carRentalData: CarBooking[] = [];
-  airTaxiData: AirBooking[] = [];
+  private accData: AccBooking[] = [];
+  private flightData: FlBooking[] = [];
+  private carRentalData: CarBooking[] = [];
+  private airTaxiData: AirBooking[] = [];
 
   private emailPattern =
     '^[a-z0-9._%+-]+@[a-z0-9.-]+[.][a-z]{2,4}$';

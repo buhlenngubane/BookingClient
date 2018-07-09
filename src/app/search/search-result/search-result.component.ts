@@ -45,7 +45,6 @@ export class SearchResultComponent implements OnInit {
     public snackBar: MatSnackBar,
     private route: Router
   ) {
-    console.log('Log something');
     for (let index = 1; index < 30; index++) {
       this.Num.push({ text: ' rooms', number: (index + 1) });
     }
@@ -66,7 +65,6 @@ export class SearchResultComponent implements OnInit {
       // }
 
       this.prop = searchService.Property;
-      console.log('Going Home');
     } else {
       console.log('Getting' + JSON.stringify(searchService.Property));
       this.prop = searchService.Property;

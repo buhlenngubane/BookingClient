@@ -102,7 +102,7 @@
 
   <mat-grid-tile [colspan]='2' style="overflow: auto;">
     <a style="position: absolute; top: 50%; left: 3%;border-radius: 100%;z-index:999;width: 3px; color: blue"
-       (click)='From()'><mat-icon>chevron_left</mat-icon></a>
+      *ngIf='from > 1' (click)='From()'><mat-icon>chevron_left</mat-icon></a>
     <span class="spanCard" *ngFor="let acc of accommodation | slice:1 + service.from:service.to+1">
     <mat-card class="card" (click)="Search(acc.accId)">
       <a routerLink="">
