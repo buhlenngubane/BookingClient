@@ -816,9 +816,9 @@ export class UsersService {
     this.serviceType = serviceType;
   }
 
-  set Property(property) {
-    this.property = property;
-  }
+  // set Property(property) {
+  //   this.property = property;
+  // }
 
   // *******Get*******//
 

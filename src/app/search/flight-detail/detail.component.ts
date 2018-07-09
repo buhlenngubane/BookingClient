@@ -45,7 +45,7 @@ export class DetailComponent implements OnInit {
 
   IfLoggedIn(flight: FlightDetails) {
     if (this.service.User) {
-      this.searchService.Total('flight');
+      // this.searchService.Total('flight');
       this.service.serviceType = 'flight';
       // this.searchService.Check();
       console.log(flight);

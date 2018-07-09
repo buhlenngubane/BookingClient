@@ -621,9 +621,11 @@ export class SearchService {
     console.log('In payment!');
     if (this.service.User) {
       console.log(myRoute);
+      console.log(obj.Property as Properties);
       switch (myRoute) {
         case ('acc-detail'): {
-          this.service.Property = obj.Property;
+          this.service.property = obj.Property as Properties;
+          console.log('Not undefined = ' + JSON.stringify(this.service.property));
           this.DateFrom = obj.DateFrom;
           this.DateTo = obj.DateTo;
           this.Panel = obj.str;
@@ -685,16 +687,17 @@ export class SearchService {
     switch (serviceType) {
       case ('accommodation'):
       try {
-        if (this.service.Property && this.Panel) {
+        if (this.service.property && this.Panel) {
           // let number = rooms.split(" ");
-          this.total = +this.service.Property.accDetail[0].pricePerNight * (this.Nights * (this.Rooms));
+          this.total = +this.service.property.accDetail[0].pricePerNight * (this.Nights * (this.Rooms));
 
           console.log(this.total + ' service ' +
-            this.service.Property.accDetail[0].pricePerNight + ' Nights ' + this.Nights + ' Panel number: ' +
+            this.service.property.accDetail[0].pricePerNight + ' Nights ' + this.Nights + ' Panel number: ' +
             this.Rooms + ' Panel text: ' + this.panel + ' panel stringfy: ' + this.panel);
             break;
         }
-      } catch (err) {break; }
+        console.log('What ?' + this.service.property);
+      } catch (err) { console.log('Error occured : ' + err); break; }
 
       // tslint:disable-next-line:no-switch-case-fall-through
       case ('flight'):
@@ -778,7 +781,7 @@ export class SearchService {
 
         this.bookingObj = new AccBooking({
           userId: this.service.User.userId,
-          detailId: this.service.Property.accDetail[0].detailId,
+          detailId: this.service.property.accDetail[0].detailId,
           bookDate: this.DateFrom,
           numOfNights: this.nights,
           payStatus: true,

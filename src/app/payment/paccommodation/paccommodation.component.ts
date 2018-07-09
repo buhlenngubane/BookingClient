@@ -18,7 +18,7 @@ export class PaccommodationComponent {
   paypalLoad: boolean = true;
   total = Math.round(this.searchService.Total() / 13);
   // state=this.searchService.success[0];
-  property: Properties = this.service.Property ? this.service.Property : new Properties();
+  property: Properties = this.service.property ? this.service.property : new Properties();
   display = [
     {
       name: 'PropertyName',
@@ -50,8 +50,8 @@ export class PaccommodationComponent {
     private service: UsersService,
     private searchService: SearchService
   ) {
-      if (service.Property) {
-        this.property = service.Property;
+      if (service.property) {
+        this.property = service.property;
       }
    }
 
