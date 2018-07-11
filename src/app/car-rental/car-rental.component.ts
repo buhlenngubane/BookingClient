@@ -90,6 +90,10 @@ export class CarRentalComponent implements OnInit {
     } else {
       this.minDate2 = new Date(event.value.toDateString());
       this.minDate2.setHours(24);
+
+      if (this.dateTo.valueOf() < this.minDate2.valueOf()) {
+        this.dateTo = new Date(this.minDate2.toDateString());
+      }
     }
   }
 

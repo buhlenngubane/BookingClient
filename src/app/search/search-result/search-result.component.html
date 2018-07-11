@@ -1,10 +1,10 @@
-<div style="background-color: slategray; text-align: center;height: 50px">
-        <h1 *ngIf="prop">{{prop.length}} Properties Found</h1>
+<div style="background-color: slategray; text-align: center;height: 70px">
+        <h1 *ngIf="prop"> Properties Found: {{prop.length}}</h1>
       <p>Hover to see additional property attributes</p> 
     </div>
 <mat-grid-list cols="4" rowHeight="350">
 
-  <mat-grid-tile [rowspan]="searchService.rows">
+  <mat-grid-tile [rowspan]="2 + prop.length">
 
     <mat-toolbar class="toolbar" style="position: absolute;
     top: 16px;
@@ -47,7 +47,7 @@
           (dateChange)="addEvent('change', $event)" 
           [max]="maxDate" 
           [(ngModel)]="dateForm" 
-          [matDatepicker]="picker1" placeholder="Choose a date" name="date" disabled>
+          [matDatepicker]="picker1" placeholder="Date From" name="date" disabled>
           <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
           <mat-datepicker #picker1 startView="month" disabled="false"></mat-datepicker>
           <mat-hint *ngIf='!searchService.availDateFrom'>
@@ -62,7 +62,7 @@
       <mat-toolbar-row>
         <mat-form-field class="full-width">
           <input matInput [min]="minDate2" [max]="maxDate2" 
-          [matDatepicker]="picker2" placeholder="Choose a date" [(ngModel)]="dateTo" name="date2" disabled>
+          [matDatepicker]="picker2" placeholder="Date To" [(ngModel)]="dateTo" name="date2" disabled>
           <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
           <mat-datepicker #picker2 startView="month" disabled="false"></mat-datepicker>
           <mat-hint *ngIf='!searchService.availDateTo && searchService.availDateFrom;'>
@@ -104,7 +104,8 @@
     <mat-toolbar style="position: absolute;
     top: 16px;
     left: 16px; width: 95%;border: 1px solid black;background-color: white" 
-    matTooltip="{{prop.accDetail[0].propertyAttr}}" [matTooltipShowDelay]="1000">
+    matTooltip="{{prop.accDetail[searchService.index[i]].propertyAttr}}" 
+    [matTooltipShowDelay]="1000" *ngIf='prop.accDetail.length > 0'>
     <mat-toolbar-row class="Hght">
             <img style="padding-top: 3%; width: 30%"
             src="data:image/jpeg;base64,{{prop.picture}}" alt="{{prop.propName}}" 
@@ -112,27 +113,51 @@
           <br/>
           <div style="width:40%;">
                     <p>{{prop.propName}}</p>
-                    <p> {{prop.accDetail[0].roomType}} room</p>
-                    <p *ngIf='service.rooms.length > 0'>
+                    <p> {{prop.accDetail[searchService.index[i]].roomType}} room</p>
+                    <p *ngIf='service.rooms.length > 0 && searchService.availRooms[i]; else RedRoom'>
                       <span style="background-color: palegreen"
-                       *ngIf='service.rooms[i].available > 0; else Alert'>
-                          {{service.rooms[i].available}} rooms available
+                       *ngIf='service.rooms[searchService.index[i]]
+                       .detail[searchService.index[i]].available > 0; else Alert'>
+                       {{service.rooms[i].detail[searchService.index[i]].available}} rooms available
                       </span>
-                      <ng-template style="background-color: red" #Alert>
-                          {{service.rooms[i].available}} rooms available
+                      <ng-template #Alert>
+                      <span style="color: red">
+                          {{service.rooms[i].detail[searchService.index[i]].available}} rooms available
+                          </span>
                       </ng-template>
                     </p>
+                    <ng-template #RedRoom>
+                        <span style="color: red">
+                            {{service.rooms[i].detail[searchService.index[i]].available}} rooms available
+                        </span>
+                    </ng-template>
             </div>
             <span class="spacer"></span>
             <div>
-                <p style="color: red" 
+                <p style="color: red;" 
                 *ngIf="!(searchService.availDateFrom && searchService.availDateTo); else Price">
-                <mat-icon>event_busy</mat-icon>Price not<br/> available on date </p>
-                <ng-template #Price>R {{searchService.overralPrice[i].price}}</ng-template>
+                <mat-icon>event_busy</mat-icon>
+                Price not<br/> available on date 
+              </p>
+              
+                <ng-template #Price>
+
+                  <span *ngIf='searchService.availRooms[i]; else ChgRooms'>
+                  R {{searchService.overralPrice[i].detail[searchService.index[i]].price}}
+                </span>
+
+                <ng-template #ChgRooms>
+                  <p style="color: goldenrod">
+                    Price unavailable<br/> due to room count
+                  </p>
+                </ng-template>
+
+                </ng-template>
             </div>
           
     </mat-toolbar-row>
-    <mat-toolbar-row *ngIf="searchService.availDateFrom && searchService.availDateTo;">
+    <mat-toolbar-row *ngIf="searchService.availDateFrom &&
+     searchService.availDateTo && searchService.availRooms[i];">
       <span class="spacer"></span>
       <button mat-raised-button color='primary' (click)='ifLoggedIn(prop)'>Book</button>
     </mat-toolbar-row>

@@ -55,7 +55,15 @@ export class UsersService {
   accommodations: Accommodations[] = [];
   property: Properties;
   roomsAvailable = true;
-  rooms: [{ available: number }] = [{ available: 1 }];
+  /**Returns rooms available on database**/
+  rooms: [{detail: [
+    // { available: number }
+    {available: number}
+  ]}] = [{detail: [
+    // { available: 1 }
+  {available: 1}
+  ]}];
+
 
   /**Flight**/
   private flights: Flights[];
@@ -146,11 +154,11 @@ export class UsersService {
 
     this._hubConnection.on('BroadcastMessage', (message: string) => {
       this.msgs.push({ severity: 'warn', summary: message });
-      if (this.rooms.length > 0) {
-        this.rooms.forEach(element => {
-          element.available--;
-        });
-      }
+      // if (this.rooms.length > 0) {
+      //   this.rooms.forEach(element => {
+      //     element.available--;
+      //   });
+      // }
     });
     this._hubConnection.serverTimeoutInMilliseconds = 100000000;
   }

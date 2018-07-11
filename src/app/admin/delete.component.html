@@ -6,8 +6,8 @@
             </mat-panel-title>
             <mat-panel-description>
                     {{data.text}} 
-                    <span *ngIf='!loading.error && active === data.text' style="color: lightgreen"> Success</span>
-                    <span *ngIf='loading.error && active === data.text' style="color: red"> Delete Error</span>
+                    <span *ngIf='!loading.error && active === data.text && !loading.load' style="color: lightgreen"> Success</span>
+                    <span *ngIf='loading.error && active === data.text && !loading.load' style="color: red"> Delete Error</span>
             </mat-panel-description>
           </mat-expansion-panel-header>
       
@@ -28,7 +28,8 @@
                 <button mat-button color="primary" (click)="data.change=true">
                   Delete
                 </button>
-                <button mat-raised-button color="primary" (click)="DeleteAll(data)" *ngIf="data.change">
+                <button mat-raised-button color="primary" (click)="DeleteAll(data)" *ngIf="data.change"
+                [disabled] = 'loading.load'>
                   <mat-spinner *ngIf="loading.load; else Submit" [diameter]="30"></mat-spinner>
                   <ng-template #Submit>Submit</ng-template>
                 </button>

@@ -7,12 +7,48 @@ import { FormControl, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatDatepickerInputEvent } from '@angular/material';
-import { NgxGalleryAnimation } from 'ngx-gallery';
+import {
+  trigger,
+  state,
+  style,
+  animate,
+  transition,
+  group
+} from '@angular/animations';
+
 
 @Component({
   selector: 'app-accommodation',
   templateUrl: './accommodation.component.html',
-  styleUrls: ['./accommodation.component.css']
+  styleUrls: ['./accommodation.component.css'],
+  animations: [
+    trigger('flyInOut', [
+      state('in', style({width: 120, transform: 'translateX(0)', opacity: 1})),
+      transition('void => *', [
+        style({width: 10, transform: 'translateX(50px)', opacity: 0}),
+        group([
+          animate('0.3s 0.1s ease-out', style({
+            transform: 'translateX(0)',
+            width: 120
+          })),
+          animate('0.2s ease-in', style({
+            opacity: 1
+          }))
+        ])
+      ]),
+      transition('* => void', [
+        group([
+          animate('0.1s ease-in', style({
+            transform: 'translateX(50px)',
+            width: 10
+          })),
+          animate('0.1s 0.2s ease-out', style({
+            opacity: 0
+          }))
+        ])
+      ])
+    ])
+  ]
 })
 export class AccommodationComponent implements OnInit {
 
@@ -67,6 +103,7 @@ export class AccommodationComponent implements OnInit {
     // this.accommodation.forEach(element => {
     //   this.images.push('data:image/jpeg;base64,' + element.picture);
     // });
+    console.log(service.to + ' against ' + service.accommodations.length + ' against ' + this.accommodation.length);
   }
 
   ngOnInit() {
@@ -112,6 +149,10 @@ export class AccommodationComponent implements OnInit {
     } else {
       this.minDate2 = new Date(event.value.toDateString());
       this.minDate2.setHours(48);
+
+      if (this.dateTo.valueOf() < this.minDate2.valueOf()) {
+        this.dateTo = new Date(this.minDate2.toDateString());
+      }
     }
   }
 

@@ -55,7 +55,7 @@
             [min]="minDate" 
             [max]="maxDate" 
             (dateChange)="addEvent('change', $event)" 
-            [matDatepicker]="picker1" placeholder="Choose a date" [(ngModel)]="dateFrom"
+            [matDatepicker]="picker1" placeholder="PickUp Date" [(ngModel)]="dateFrom"
               disabled>
             <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
             <mat-datepicker #picker1 disabled="false"></mat-datepicker>
@@ -66,7 +66,7 @@
                   [min]="minDate" 
                   [max]="maxDate" 
                   (dateChange)="addEvent('change', $event)" 
-                  [matDatepicker]="picker1" placeholder="Choose a date" [(ngModel)]="dateFrom"
+                  [matDatepicker]="picker1" placeholder="PickUp Date" [(ngModel)]="dateFrom"
                     disabled>
                   <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
                   <mat-datepicker #picker1 disabled="false"></mat-datepicker>
@@ -93,13 +93,16 @@
         </mat-toolbar-row>
 
         <mat-toolbar-row >
-            <mat-slide-toggle [(ngModel)]="searchService.returnJourney" >Return Jorney</mat-slide-toggle>
+            <mat-slide-toggle [(ngModel)]="searchService.returnJourney" style="width: 100%">Return Jorney</mat-slide-toggle>
             <span class="spacer"></span>
             <mat-form-field class="commonWid" *ngIf="!change.nav">
                 <input matInput type="number" placeholder="Number Of Passengers" [formControl]="passengers">
                 <mat-error *ngIf='passengers.invalid'>
                   {{loading.errorMessage3}}
                 </mat-error>
+                <mat-hint *ngIf = 'searchService.noTaxi && loading.error'>
+                  {{loading.errorMessage}}
+                </mat-hint>
               </mat-form-field>
         </mat-toolbar-row>
 
@@ -116,7 +119,7 @@
             
                 <mat-form-field class="else">
                     <input matInput type="search" [textMask]="mask" [min]="minDate2" [max]="maxDate2" 
-                    [matDatepicker]="picker1" placeholder="Choose a date" [(ngModel)]="returnDate"
+                    [matDatepicker]="picker1" placeholder="DropOff Date" [(ngModel)]="returnDate"
                       disabled>
                     <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
                     <mat-datepicker #picker1 disabled="false"></mat-datepicker>

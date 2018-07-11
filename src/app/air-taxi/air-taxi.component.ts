@@ -54,7 +54,7 @@ export class AirSearchBarComponent implements OnInit {
   returnJ;
 
   // object to check if error occur
-  loading = { errorMessage: '', error: false, errorMessage2: '', error2: false, errorMessage3: '' };
+  loading = { errorMessage: '', error: false, errorMessage2: '', error2: false, errorMessage3: '', load: false };
 
   constructor(private service: UsersService,
     private searchService: SearchService) {
@@ -126,7 +126,7 @@ export class AirSearchBarComponent implements OnInit {
   addEvent(type: string, event: MatDatepickerInputEvent<Date>) {
     if (this.returnDate.valueOf() < event.value.valueOf()) {
       this.returnDate = new Date(event.value.toDateString());
-      this.returnDate.setHours(48);
+      this.returnDate.setHours(24);
 
       if (this.maxDate2.valueOf() < this.returnDate.valueOf()) {
         this.returnDate = new Date(this.maxDate2.toDateString());
@@ -135,7 +135,7 @@ export class AirSearchBarComponent implements OnInit {
     } else
       if (this.returnDate.toDateString() === event.value.toDateString()) {
         this.returnDate = new Date(event.value.toDateString());
-        this.returnDate.setHours(48);
+        this.returnDate.setHours(24);
 
         if (this.maxDate2.valueOf() < this.returnDate.valueOf()) {
           this.returnDate = new Date(this.maxDate2.valueOf());
@@ -144,7 +144,11 @@ export class AirSearchBarComponent implements OnInit {
         this.minDate2 = new Date(this.returnDate.toDateString());
       } else {
         this.minDate2 = new Date(event.value.toDateString());
-        this.minDate2.setHours(48);
+        this.minDate2.setHours(24);
+
+        if (this.returnDate.valueOf() < this.minDate2.valueOf()) {
+          this.returnDate = new Date(this.minDate2.toDateString());
+        }
       }
   }
 

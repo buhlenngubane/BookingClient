@@ -48,6 +48,7 @@ export class SearchResultComponent implements OnInit {
     for (let index = 1; index < 30; index++) {
       this.Num.push({ text: ' rooms', number: (index + 1) });
     }
+    // console.log(searchService.index);
 
     if (service.accommodations.length === 0) {
       if (localStorage.getItem('info#1')) {
@@ -103,7 +104,7 @@ export class SearchResultComponent implements OnInit {
       if (this.maxDate2.valueOf() < this.dateTo.valueOf()) {
         this.dateTo = new Date(this.maxDate2.toDateString());
       }
-      this.minDate2 = this.dateTo;
+      this.minDate2 = new Date(this.dateTo.toDateString());
     } else
     if (this.dateTo.toDateString() === event.value.toDateString()) {
       this.dateTo = new Date(event.value.toDateString());
@@ -113,10 +114,14 @@ export class SearchResultComponent implements OnInit {
         this.dateTo = new Date(this.maxDate2.valueOf());
       }
 
-      this.minDate2 = this.dateTo;
+      this.minDate2 = new Date(this.dateTo.toDateString());
     } else {
       this.minDate2 = new Date(event.value.toDateString());
       this.minDate2.setHours(48);
+
+      if (this.dateTo.valueOf() < this.minDate2.valueOf()) {
+        this.dateTo = new Date(this.minDate2.toDateString());
+      }
     }
   }
 

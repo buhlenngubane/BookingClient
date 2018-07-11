@@ -36,7 +36,7 @@
           [min]="minDate" 
           [max]="maxDate" 
           (dateChange)="addEvent('change', $event)" 
-          [matDatepicker]="picker1" placeholder="Choose a date" [(ngModel)]="dateForm"
+          [matDatepicker]="picker1" placeholder="Date From" [(ngModel)]="dateForm"
             disabled>
           <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
           <mat-datepicker #picker1 disabled="false"></mat-datepicker>
@@ -49,7 +49,8 @@
         </span>
 
         <mat-form-field class="date">
-          <input matInput [min]="minDate2" [max]="maxDate2" [matDatepicker]="picker2" placeholder="Choose a date" [(ngModel)]="dateTo"
+          <input matInput [min]="minDate2" [max]="maxDate2" [matDatepicker]="picker2"
+           placeholder="Date To" [(ngModel)]="dateTo"
             disabled>
           <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
           <mat-datepicker #picker2 disabled="false"></mat-datepicker>
@@ -100,15 +101,17 @@
     </a>
   </mat-grid-tile>
 
-  <mat-grid-tile [colspan]='2' style="overflow: auto;">
+  <mat-grid-tile [colspan]='2' [rowspan]='2'  style="overflow-y: visible">
     <a style="position: absolute; top: 50%; left: 3%;border-radius: 100%;z-index:999;width: 3px; color: blue"
-      *ngIf='from > 1' (click)='From()'><mat-icon>chevron_left</mat-icon></a>
-    <span class="spanCard" *ngFor="let acc of accommodation | slice:1 + service.from:service.to+1">
-    <mat-card class="card" (click)="Search(acc.accId)">
+      *ngIf='service.from > 1' (click)='From()'><mat-icon style="border: outset; border-radius: 100%;">chevron_left</mat-icon></a>
+    <span *ngFor="let acc of accommodation | slice:1 + service.from:service.to" 
+    style="padding-right: 20px; padding-left: 20px; width: 50%"
+    [@flyInOut]="'in'">
+    <mat-card (click)="Search(acc.accId)" style="width: 190px; border-radius: 8px;">
       <a routerLink="">
-          <div class="poraloid"  layout-wrap>
+          <div >
             <img mat-card-image src="data:image/jpeg;base64,{{acc.picture}}"
-             alt="{{acc.location}}" srcset="" width="100px">
+             alt="{{acc.location}}" srcset="" height="130px">
             
             <mat-card-header >
               <mat-card-title style="color: black">{{acc.location}}</mat-card-title>
@@ -125,7 +128,7 @@
     </mat-card>
    </span>
    <a style="position: absolute; top: 50%; right: 3%;border-radius: 100%;z-index: 999;width: 3px; color: blue"
-    *ngIf='to < accommodation.length' (click) = 'To()'><mat-icon>chevron_right</mat-icon></a>
+    *ngIf='service.to < accommodation.length' (click) = 'To()'><mat-icon style="border: outset; border-radius: 100%;">chevron_right</mat-icon></a>
   </mat-grid-tile>
 
 </mat-grid-list>

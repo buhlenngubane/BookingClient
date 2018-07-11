@@ -466,6 +466,7 @@ export class AdminPostComponent implements AfterViewChecked {
     this.cdr.detectChanges();
  }
 
+// Checking if data is part of object to filter duplication
  ToString(data, section, arr1?, arr2?, arr3?) {
   try {
     if (arr1 === undefined) {
@@ -496,6 +497,7 @@ export class AdminPostComponent implements AfterViewChecked {
   } catch (Err) {return false; }
 }
 
+// Checking if picture is part of array property to filter duplication
 CheckIfArr(data , section, index, arr1?, arr2?, arr3?) {
   const i = this.Flight['destination'][0]['flightDetail'] ;
   const str = 'sd';
@@ -532,24 +534,21 @@ CheckIfArr(data , section, index, arr1?, arr2?, arr3?) {
   return true;
 }
 
-onFileChange(event) {
+onFileChange(event, formGroup: FormGroup, i) {
   try {
+    // const chg = (form + i) as FormControl;
     const reader = new FileReader();
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
       console.log('In file ' + JSON.stringify(event.target.files));
       reader.readAsDataURL(file);
       reader.onload = () => {
-        this.files = {
-          filename: file.name,
-          filetype: file.type,
-          base64: reader.result.split(',')[1]
-        };
-        // this.form.get('avatar').setValue({
+        // this.files = {
         //   filename: file.name,
         //   filetype: file.type,
-        //   value: reader.result.split(',')[1]
-        // })
+        //   base64: reader.result.split(',')[1]
+        // };
+        formGroup.controls[i].setValue(reader.result.split(',')[1]);
         console.log(this.files);
       };
     }
@@ -558,9 +557,11 @@ onFileChange(event) {
   }
 }
 
-  PostAll(data, Form: FormGroup) {
+  PostAll(data) {
     data.change = false;
     this.files = null;
+    console.log(JSON.stringify(data));
+
     switch (data.text) {
 
       case ('Accommodation'):
@@ -1042,24 +1043,21 @@ export class AdminPutComponent implements AfterViewChecked {
     return true;
   }
 
-  onFileChange(event) {
+  onFileChange(event, formGroup: FormGroup, i) {
     try {
+      // const chg = (form + i) as FormControl;
       const reader = new FileReader();
       if (event.target.files && event.target.files.length > 0) {
         const file = event.target.files[0];
         console.log('In file ' + JSON.stringify(event.target.files));
         reader.readAsDataURL(file);
         reader.onload = () => {
-          this.files = {
-            filename: file.name,
-            filetype: file.type,
-            base64: reader.result.split(',')[1]
-          };
-          // this.form.get('avatar').setValue({
+          // this.files = {
           //   filename: file.name,
           //   filetype: file.type,
-          //   value: reader.result.split(',')[1]
-          // })
+          //   base64: reader.result.split(',')[1]
+          // };
+          formGroup.controls[i].setValue(reader.result.split(',')[1]);
           console.log(this.files);
         };
       }
@@ -1070,6 +1068,7 @@ export class AdminPutComponent implements AfterViewChecked {
 
 
   PutAll(data) {
+    data.change = false;
     this.files = null;
     switch (data.text) {
 

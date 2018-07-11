@@ -12,6 +12,7 @@ import { AirTaxiStorage } from '../../service/common-interface';
 export class AirDetailsComponent implements OnInit {
 
   result = this.searchService.airDetails;
+  loading = { errorMessage: '', error: false, errorMessage2: '', error2: false, errorMessage3: '', load: false };
 
   constructor(private service: UsersService
     , private searchService: SearchService) {
@@ -24,7 +25,7 @@ export class AirDetailsComponent implements OnInit {
           /**Check if dateTo is null**/
           items.returnDate !== null ?
             new Date(items.returnDate) : null,
-          +items.passengers);
+          +items.passengers, this.loading);
         console.log(items.returnDate + ' passengers ' + items.passengers);
         items.returnDate !== null ?
           searchService.returnJourney = true :

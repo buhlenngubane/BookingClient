@@ -6,8 +6,8 @@
       </mat-panel-title>
       <mat-panel-description>
         {{data.text}}
-        <span *ngIf='!loading.error && active === data.text' style="color: lightgreen"> Success</span>
-        <span *ngIf='loading.error && active === data.text' style="color: red"> Post Error</span>
+        <span *ngIf='!loading.error && active === data.text && !loading.load' style="color: lightgreen"> Success, Id = {{admin.id}}</span>
+        <span *ngIf='loading.error && active === data.text && !loading.load' style="color: red"> Post Error</span>
       </mat-panel-description>
     </mat-expansion-panel-header>
 
@@ -43,11 +43,11 @@
                     <label for="image">Load Image: </label>
                     <br/>
                     <input type="file" name="files" multiple accept="image/*, .zip" 
-                    (change)="onFileChange($event)" maxsize="5000" required base-sixty-four-input>
+                    (change)="onFileChange($event, firstFormGroup[u], data.text + i)" maxsize="5000" required base-sixty-four-input>
                     <div style="overflow: auto" *ngIf='files'>
-                      {{files.filename}}
+                      <!-- {{files.filename}}
                       <br/> {{files.filetype}}
-                      <br/> {{files.base64}}
+                      <br/> {{files.base64}} -->
 
                     </div>
                   </div>
@@ -75,11 +75,11 @@
                       <label for="image">Load Image: </label>
                       <br/>
                       <input type="file" name="files" multiple accept="image/*, .zip" 
-                      (change)="onFileChange($event)" maxsize="5000" required base-sixty-four-input>
+                      (change)="onFileChange($event, firstFormGroup[u], data.text + i)" maxsize="5000" required base-sixty-four-input>
                       <div style="overflow: auto" *ngIf='files'>
-                          {{files.filename}}
+                          <!-- {{files.filename}}
                           <br/> {{files.filetype}}
-                          <br/> {{files.base64}}
+                          <br/> {{files.base64}} -->
                       </div>
                     </div>
 
@@ -106,11 +106,11 @@
                         <label for="image">Load Image: </label>
                         <br/>
                         <input type="file" name="files" multiple accept="image/*, .zip" 
-                        (change)="onFileChange($event)" maxsize="5000" required base-sixty-four-input>
+                        (change)="onFileChange($event, firstFormGroup[u], data.text + i)" maxsize="5000" required base-sixty-four-input>
                         <div style="overflow: auto" *ngIf='files'>
-                            {{files.filename}}
+                            <!-- {{files.filename}}
                             <br/> {{files.filetype}}
-                            <br/> {{files.base64}}
+                            <br/> {{files.base64}} -->
 
                         </div>
                       </div>
@@ -140,11 +140,11 @@
                           <label for="image">Load Image: </label>
                           <br/>
                           <input type="file" name="files" multiple accept="image/*, .zip" 
-                          (change)="onFileChange($event)" maxsize="5000" required base-sixty-four-input>
+                          (change)="onFileChange($event, firstFormGroup[u], i)" maxsize="5000" required base-sixty-four-input>
                           <div style="overflow: auto" *ngIf='files'>
-                              {{files.filename}}
+                              <!-- {{files.filename}}
                               <br/> {{files.filetype}}
-                              <br/> {{files.base64}}
+                              <br/> {{files.base64}} -->
 
                           </div>
                         </div>
@@ -163,11 +163,16 @@
                     <button mat-button matStepperPrevious (click)='files = null' *ngIf='i > 0'>Back</button>
                     <button mat-button matStepperNext (click)='files = null'>Next</button>
                     <br/>
+                    <div *ngIf="data.change">
+                        <mat-spinner *ngIf="loading.load; else Submit" [diameter]="30"></mat-spinner>
+                      <ng-template #Submit>
                   <button mat-raised-button color="primary" (click)="PostAll(data)" style="margin-top: 5px;" 
-                  *ngIf="data.change">
-                    <mat-spinner *ngIf="loading.load; else Submit" [diameter]="30"></mat-spinner>
-                    <ng-template #Submit>Submit</ng-template>
+                   [disabled] = 'loading.load'>
+                    Submit
+                    
                   </button>
+                </ng-template>
+                </div>
                 </div>
               </form>
             </mat-step>

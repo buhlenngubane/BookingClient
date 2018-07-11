@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { Accommodations, Flights, CarRentals, AirDetails, CarRentalDetails, Properties } from '../model/service-type';
+import { Accommodations, Flights, CarRentals, AirDetails, CarRentalDetails, Properties, PickUps } from '../model/service-type';
 import { UsersService } from './user.service';
 // tslint:disable-next-line:import-blacklist
 import { Subscription } from 'rxjs';
@@ -10,6 +10,7 @@ import { User } from '../model/user';
 @Injectable()
 export class AdminService {
 
+  id: number;
   constructor(private service: UsersService, private http: HttpClient) {
    }
 
@@ -190,11 +191,13 @@ export class AdminService {
   PostAccomm(accommodation, loading) {
     console.log('Accommodation');
     loading.load = true;
-    return this.http.post(environment.base_url + `api/Accommodations/PostAccommodation`, accommodation)
+    console.log('loading.load' + loading.load);
+    return this.http.post<Accommodations>(environment.base_url + `api/Accommodations/PostAccommodation`, accommodation)
     .subscribe(
       data => {
         console.log(data);
         accommodation = data;
+        this.id = data.accId;
         console.log(JSON.stringify(accommodation));
       },
       error => {
@@ -217,11 +220,12 @@ export class AdminService {
   PostFlight(flight, loading) {
     console.log('Post Flight');
     loading.load = true;
-    return this.http.post(environment.base_url + `api/Flights/PostFlight`, flight)
+    return this.http.post<Flights>(environment.base_url + `api/Flights/PostFlight`, flight)
     .subscribe(
       data => {
         console.log(data);
         flight = data;
+        this.id = data.flightId;
         console.log(JSON.stringify(flight));
       },
       error => {
@@ -243,11 +247,12 @@ export class AdminService {
 
   PostCarRental(carRental, loading) {
     loading.load = true;
-    return this.http.post(environment.base_url + `api/CarRentals/PostCarRental`, carRental)
+    return this.http.post<CarRentals>(environment.base_url + `api/CarRentals/PostCarRental`, carRental)
     .subscribe(
       data => {
         console.log(data);
         carRental = data;
+        this.id = data.cRentId;
         console.log(JSON.stringify(carRental));
       },
       error => {
@@ -269,11 +274,12 @@ export class AdminService {
 
   PostAirTaxi(airTaxi, loading) {
     loading.load = true;
-    return this.http.post(environment.base_url + `api/AirTaxis/AirTaxiPickUps/PostAirTaxiPickUp`, airTaxi)
+    return this.http.post<PickUps>(environment.base_url + `api/AirTaxis/AirTaxiPickUps/PostAirTaxiPickUp`, airTaxi)
     .subscribe(
       data => {
         console.log(data);
         airTaxi = data;
+        this.id = data.pickUpId;
         console.log(JSON.stringify(airTaxi));
       },
       error => {
@@ -323,11 +329,12 @@ export class AdminService {
 
   PutAccomm(accommodation, loading) {
     loading.load = true;
-    return this.http.put(environment.base_url + `api/Accommodations/PutAccommodation`, accommodation)
+    return this.http.put<Accommodations>(environment.base_url + `api/Accommodations/PutAccommodation`, accommodation)
     .subscribe(
       data => {
         console.log(data);
         accommodation = data;
+        this.id = data.accId;
         console.log(accommodation);
       },
       error => {
@@ -349,11 +356,12 @@ export class AdminService {
 
   PutFlight(flight, loading) {
     loading.load = true;
-    return this.http.put(environment.base_url + `api/Flights/PutFlight`, flight)
+    return this.http.put<Flights>(environment.base_url + `api/Flights/PutFlight`, flight)
     .subscribe(
       data => {
         console.log(data);
         flight = data;
+        this.id = data.flightId;
         console.log(flight);
       },
       error => {
@@ -375,11 +383,12 @@ export class AdminService {
 
   PutCarRental(carRental, loading) {
     loading.load = true;
-    return this.http.put(environment.base_url + `api/CarRentals/PutCarRental`, carRental)
+    return this.http.put<CarRentals>(environment.base_url + `api/CarRentals/PutCarRental`, carRental)
     .subscribe(
       data => {
         console.log(data);
         carRental = data;
+        this.id = data.cRentId;
         console.log(carRental);
       },
       error => {
@@ -401,11 +410,12 @@ export class AdminService {
 
   PutAirTaxi(airTaxi, loading) {
     loading.load = true;
-    return this.http.put(environment.base_url + `api/AirTaxis/AirTaxiPickUps/PutAirTaxiPickUp/${7}`, airTaxi)
+    return this.http.put<PickUps>(environment.base_url + `api/AirTaxis/AirTaxiPickUps/PutAirTaxiPickUp/${7}`, airTaxi)
     .subscribe(
       data => {
         console.log(data);
         airTaxi = data;
+        this.id = data.pickUpId;
         console.log(airTaxi);
       },
       error => {

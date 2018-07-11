@@ -145,6 +145,10 @@ export class SearchBarComponent implements OnInit {
       } else {
         this.service.FminDate2 = new Date(event.value.toDateString());
         this.service.FminDate2.setHours(48);
+
+        if (this.service.FdateTo.valueOf() < this.service.FminDate2.valueOf()) {
+          this.service.FdateTo = new Date(this.service.FminDate2.toDateString());
+        }
       }
   }
 

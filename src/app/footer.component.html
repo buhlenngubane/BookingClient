@@ -18,8 +18,10 @@
         </div>
     </mat-grid-tile>
     <mat-grid-tile>
+        <div style="width: 80%; text-align: center">
              Booking.com is part of Booking Holdings Inc., 
-                    the world leader in online travel and related services.
-               <img src="" alt="pics" style="padding: 10px" *ngFor='let pics of IniPics'>
+                    the world leader in online travel and related services.<br/>
+               <span align='center'><img src="{{pics}}" alt="pics" style="padding: 10px;" *ngFor='let pics of IniPics'></span>
+            </div>
     </mat-grid-tile>
 </mat-grid-list>
