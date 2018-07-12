@@ -95,7 +95,7 @@
                   {{loading.errorMessage}}
                 </div>
                 <div *ngIf="!loading.error && focus[0]">
-                  <mat-grid-list cols="6" rowHeight="100" style="overflow: auto">
+                  <mat-grid-list cols="7" rowHeight="100" style="overflow: auto">
                     <mat-grid-tile class="border">
                       <p>Property</p>
                     </mat-grid-tile>
@@ -104,6 +104,9 @@
                     </mat-grid-tile>
                     <mat-grid-tile class="border">
                       <p>BookDate</p>
+                    </mat-grid-tile>
+                    <mat-grid-tile class="border">
+                      <p>RoomsBooked</p>
                     </mat-grid-tile>
                     <mat-grid-tile class="border">
                       <p>PayType</p>
@@ -123,6 +126,9 @@
                           </mat-grid-tile>
                           <mat-grid-tile>
                             <p>{{Accommodation.bookDate}}</p>
+                          </mat-grid-tile>
+                          <mat-grid-tile>
+                            <p>{{Accommodation.roomsBooked}}</p>
                           </mat-grid-tile>
                           <mat-grid-tile>
                             <p>{{Accommodation.payType}}</p>

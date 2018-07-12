@@ -192,7 +192,8 @@ export class AdminService {
     console.log('Accommodation');
     loading.load = true;
     console.log('loading.load' + loading.load);
-    return this.http.post<Accommodations>(environment.base_url + `api/Accommodations/PostAccommodation`, accommodation)
+    return this.http.post<Accommodations>(environment.base_url +
+       `api/Accommodations/PostAccommodation`, accommodation)
     .subscribe(
       data => {
         console.log(data);
@@ -329,7 +330,8 @@ export class AdminService {
 
   PutAccomm(accommodation, loading) {
     loading.load = true;
-    return this.http.put<Accommodations>(environment.base_url + `api/Accommodations/PutAccommodation`, accommodation)
+    return this.http.put<Accommodations>(environment.base_url +
+       `api/Accommodations/PutAccommodation`, accommodation)
     .subscribe(
       data => {
         console.log(data);
@@ -410,7 +412,8 @@ export class AdminService {
 
   PutAirTaxi(airTaxi, loading) {
     loading.load = true;
-    return this.http.put<PickUps>(environment.base_url + `api/AirTaxis/AirTaxiPickUps/PutAirTaxiPickUp/${7}`, airTaxi)
+    return this.http.put<PickUps>(environment.base_url +
+       `api/AirTaxis/AirTaxiPickUps/PutAirTaxiPickUp/${7}`, airTaxi)
     .subscribe(
       data => {
         console.log(data);

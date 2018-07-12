@@ -3,7 +3,7 @@ import { SearchService } from '../../service/search.service';
 import { Subject } from 'rxjs/Subject';
 import { Properties, Accommodations } from '../../model/service-type';
 import { UsersService } from '../../service/user.service';
-import { MatSnackBar, MatDatepickerInputEvent } from '@angular/material';
+import { MatSnackBar, MatDatepickerInputEvent, MatSnackBarConfig } from '@angular/material';
 import { FormControl, Validators } from '@angular/forms';
 import { Router, NavigationEnd } from '@angular/router';
 
@@ -38,7 +38,8 @@ export class SearchResultComponent implements OnInit {
   // private error = false;
   // private errorMessage = '';
   errorCheck = {error: false, errorMessage: ''};
-  private navigationSubscription;
+  public config: MatSnackBarConfig;
+
   constructor(
     private service: UsersService,
     private searchService: SearchService,
@@ -48,6 +49,9 @@ export class SearchResultComponent implements OnInit {
     for (let index = 1; index < 30; index++) {
       this.Num.push({ text: ' rooms', number: (index + 1) });
     }
+
+    // tslint:disable-next-line:no-unused-expression
+    service.GetAccommodation;
     // console.log(searchService.index);
 
     if (service.accommodations.length === 0) {
@@ -81,6 +85,15 @@ export class SearchResultComponent implements OnInit {
           console.log(this.rows);
         }
       );
+
+      service._hubConnection.on('BroadcastMessage', (message: string) => {
+
+        this.config.announcementMessage = message;
+        this.config.panelClass = 'snack-color';
+        this.config.duration = 5000;
+        this.snackBar.openFromComponent(SearchResultComponent, this.config);
+        console.log('booked property ' + JSON.stringify(message));
+      });
     // this.propCount = this.prop.length;
     }
   }
@@ -140,9 +153,26 @@ export class SearchResultComponent implements OnInit {
       // if (display) {
         // console.log('Should redirect ' + display.accId.toString());
         this.errorCheck.error = false;
+        // if (search.value.includes(',')) {
+          const display =
+          this.result.find(s =>
+             s.country.includes(search.value.split(',')[0].trim()) && s.location.includes(search.value.split(',')[1].trim())) ?
+          this.result.find(s =>
+             s.country.includes(search.value.split(',')[0].trim()) && s.location.includes(search.value.split(',')[1].trim())) :
+          this.result.find(s => s.country.includes(search.value.trim()) || s.location.includes(search.value.trim()));
+        // }
+        if (display) {
         this.searchService.Search(this.dateForm, this.dateTo, this.panel,
-           search, this.errorCheck);
+           {country: display.country, location: display.location}, this.errorCheck);
            this.avRooms = true;
+           search.setValue(display.country + ', ' + display.location);
+        } else {
+          // search.setErrors(Validators.pattern(''));
+          search.markAsUntouched();
+          this.errorCheck.errorMessage = 'Accommodation not yet available';
+          this.errorCheck.error = true;
+          // console.log('Set error ' + this.error);
+        }
       // } else {
       // }
     // }

@@ -27,6 +27,7 @@ img.First{
 .Hght{
     height: auto;
     padding-bottom: 30px;
+    word-wrap: break-word;
 }
 .full-width{
     width: 90%;

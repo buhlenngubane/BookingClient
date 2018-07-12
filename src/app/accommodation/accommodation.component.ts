@@ -199,11 +199,17 @@ export class AccommodationComponent implements OnInit {
       !this.search.invalid
       // this.search && !this.search.value.startsWith(' ') && this.search.value.search(new RegExp('[0-9]', 'i'))
   ) {
-      const arr = this.search.value.split(', ');
-      console.log(arr);
+      const arr = this.search.value + '';
+      const str = ' sdfd';
+
+      console.log(str.trim());
       // search current result of searchString
-      const display = this.service.accommodations.find(m => m.country === arr[0] && m.location === arr[1]);
-      // this.result.splice(0).push(display);
+      const display = this.result.find(m =>
+         m.country.includes(arr.split(',')[0].trim()) && m.location.includes(arr.split(',')[1].trim())) ?
+         this.result.find(m =>
+          m.country.includes(arr.split(',')[0].trim()) && m.location.includes(arr.split(',')[1].trim())) :
+      this.result.find(m => m.country.includes(search.value.trim()) || m.location.includes(search.value.trim()));
+
       console.log(display);
       this.serviceSearch.SearchParam = this.search;
 
@@ -212,6 +218,8 @@ export class AccommodationComponent implements OnInit {
         this.error = false;
 
         this.serviceSearch.Search(this.dateForm, this.dateTo, this.panel, display);
+        search.setValue(display.country + ', ' + display.location);
+
       } else {
         // search.setErrors(Validators.pattern(''));
         search.markAsUntouched();

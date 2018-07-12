@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { FormControl, Validators, FormBuilder } from '@angular/forms';
 import { MatSnackBar, MatDatepickerInputEvent } from '@angular/material';
 import { when } from 'q';
-import { Flights } from '../model/service-type';
+import { Flights, Destinations } from '../model/service-type';
 import { DISABLED, FormGroup } from '@angular/forms/src/model';
 // tslint:disable-next-line:comment-format
 //import { Flight } from '../model/service-type';
@@ -152,8 +152,12 @@ export class SearchBarComponent implements OnInit {
       }
   }
 
-  LoadDetails(): void {
-
+ LoadDetails() {
+    // if (this.service.Flights.length === 0) {
+    // await this.service.GetFlight();
+    // console.log('awaiting');
+    // }
+    console.log(this.service.Flights);
     if (
       !this.firstSearch.invalid && !this.secondSearch.invalid
     ) {
@@ -168,19 +172,52 @@ export class SearchBarComponent implements OnInit {
       console.log('Must be ' + this.panel.value);
       this.searchService.flightType = this.panel.value;
 
-      this.firstSearch.markAsTouched();
-      this.secondSearch.markAsTouched();
-
-      console.log('But is ' + this.searchService.flightType);
       this.searchService.numOfTravellers = this.travellers.value;
-      this.searchService.return === true ?
-        // this.result2.length === 0 ? this.loading.errorMessage = 'Flights unavailable' :
+      if (this.firstSearch.touched) {
+
+        // Checking if flights are available in search results
+        const display =
+          this.result.find(s =>
+            s.locale.includes(this.firstSearch.value));
+        const dest = display ? display.destination.find(s => s.dest.includes(this.secondSearch.value)) : null;
+        console.log('dest ');
+
+           if (display && dest) {
+            //  Check if there is return trip
+            this.searchService.return === true ?
+            this.service.SearchFlights(display.locale,
+              dest.dest, this.service.FdateFrom, this.service.FdateTo,
+              this.panel.value, this.travellers.value, this.loading) :
+            this.service.SearchFlights(display.locale,
+              dest.dest, this.service.FdateFrom, null, this.panel.value,
+              this.travellers.value, this.loading);
+           } else {
+             this.secondSearch.markAsTouched();
+            this.searchService.return === true ?
         this.service.SearchFlights(this.firstSearch.value,
           this.secondSearch.value, this.service.FdateFrom, this.service.FdateTo,
           this.panel.value, this.travellers.value, this.loading) :
         this.service.SearchFlights(this.firstSearch.value,
           this.secondSearch.value, this.service.FdateFrom, null, this.panel.value,
           this.travellers.value, this.loading);
+          }
+      } else {
+
+      this.firstSearch.markAsTouched();
+      this.secondSearch.markAsTouched();
+
+      console.log('But is ' + this.searchService.flightType);
+
+
+      // if (display) {
+      this.searchService.return === true ?
+        this.service.SearchFlights(this.firstSearch.value,
+          this.secondSearch.value, this.service.FdateFrom, this.service.FdateTo,
+          this.panel.value, this.travellers.value, this.loading) :
+        this.service.SearchFlights(this.firstSearch.value,
+          this.secondSearch.value, this.service.FdateFrom, null, this.panel.value,
+          this.travellers.value, this.loading);
+      }
     } else if (this.firstSearch.invalid) {
 
       this.firstSearch.markAsTouched();

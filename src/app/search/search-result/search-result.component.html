@@ -1,3 +1,4 @@
+<p-growl [(value)]="service.msgs"></p-growl>
 <div style="background-color: slategray; text-align: center;height: 70px">
         <h1 *ngIf="prop"> Properties Found: {{prop.length}}</h1>
       <p>Hover to see additional property attributes</p> 
@@ -89,8 +90,6 @@
         </mat-toolbar-row>
 
       <mat-toolbar-row>
-        <span class="fill-remaining-space"></span>
-        <span class="align-center"></span>
         <span class="spacer"></span>
         <a mat-raised-button routerLink="." class="anchor" color="primary" (click) = "Find(search)">Search</a>
       </mat-toolbar-row>
@@ -99,7 +98,7 @@
   </mat-grid-tile>
 
    <mat-grid-tile [colspan]="3" *ngFor="let prop of prop; let i = index" 
-   style="height: 200px; padding-bottom: 50px; " >
+   style="height: 200px; padding-bottom: 50px; overflow: hidden; " >
       
     <mat-toolbar style="position: absolute;
     top: 16px;
@@ -111,8 +110,10 @@
             src="data:image/jpeg;base64,{{prop.picture}}" alt="{{prop.propName}}" 
             srcset="" align="left">
           <br/>
-          <div style="width:40%;">
-                    <p>{{prop.propName}}</p>
+          <div style="width:40%; word-wrap: break-word;">
+                    <p style="word-wrap: break-word;      
+                    white-space: -moz-pre-wrap; 
+                    white-space: pre-wrap; ">{{prop.propName}}</p>
                     <p> {{prop.accDetail[searchService.index[i]].roomType}} room</p>
                     <p *ngIf='service.rooms.length > 0 && searchService.availRooms[i]; else RedRoom'>
                       <span style="background-color: palegreen"
@@ -168,4 +169,3 @@
 
   </mat-grid-tile> 
 </mat-grid-list>
-<p-growl [(ngModel)]="service.msgs" ngDefaultControl></p-growl>

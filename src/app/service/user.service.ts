@@ -34,6 +34,9 @@ import 'rxjs/add/observable/interval';
 // tslint:disable-next-line:import-blacklist
 import { Subscription } from 'rxjs';
 import { DatePipe } from '@angular/common';
+import { Message } from 'primeng/api';
+import { Messages } from '../../../node_modules/primeng/primeng';
+import {MatSnackBar} from '@angular/material';
 
 @Injectable()
 export class UsersService {
@@ -118,8 +121,8 @@ export class UsersService {
   loggedOut = true;
 
   pipe = new DatePipe('en-US');
-  private _hubConnection: HubConnection;
-  msgs = [];
+  _hubConnection: HubConnection;
+  msgs: Message[] = [];
 
   from = 1;
   to: number;
@@ -128,6 +131,7 @@ export class UsersService {
     private http: HttpClient,
     private route: Router
   ) {
+
     // this.user=new User();
     this.error = false;
     this.FdateTo.setHours(48);
@@ -152,26 +156,16 @@ export class UsersService {
         }
       );
 
-    this._hubConnection.on('BroadcastMessage', (message: string) => {
-      this.msgs.push({ severity: 'warn', summary: message });
-      // if (this.rooms.length > 0) {
-      //   this.rooms.forEach(element => {
-      //     element.available--;
-      //   });
-      // }
-    });
     this._hubConnection.serverTimeoutInMilliseconds = 100000000;
   }
 
   /***User Function Calls***/
 
   userRegister(customer: object, regRef: MatDialogRef<RegisterComponent>): boolean {
-    // this.body = customer;
     this.User = new User(customer);
-    // console.log(this.user);
 
     return this.http.post<User>(this.BASE_URL + 'api/Users/Register',
-      this.User)// , this.httpOptions)
+      this.User)
       .map((response) => {
         console.log(response);
         this.SetToken(this.user.email, this.password)
@@ -260,7 +254,6 @@ export class UsersService {
       },
         error => {
           console.error(error.error + ' for signIn!!!');
-          // this.data = error.error;
           try {
             this.check.errorMessage = error.error.toString();
 
@@ -306,7 +299,6 @@ export class UsersService {
           try {
             this.check.errorMessage = error.error.toString();
             console.error(error.error);
-            // console.error(this.httpOptions);
             if (this.check.errorMessage.includes('400')) {
               loading.errorMessage = 'Internal server error';
               this.check.errorMessage = 'Internal server error';
@@ -320,7 +312,6 @@ export class UsersService {
 
           loading.load = false;
           loading.error = true;
-          // message.error="";
         },
         () => {
           console.log('Update Done uncheck interface');
@@ -350,7 +341,6 @@ export class UsersService {
             ,
             error => {
               console.log(error.error);
-              // location.reload();
               // tslint:disable-next-line:prefer-const
               let exact = false;
               if (this.route.isActive('/home', exact)) {
@@ -824,10 +814,6 @@ export class UsersService {
     this.serviceType = serviceType;
   }
 
-  // set Property(property) {
-  //   this.property = property;
-  // }
-
   // *******Get*******//
 
   /*Subcription In Getters; Was Testing*/
@@ -878,9 +864,6 @@ export class UsersService {
           console.log(data);
           for (let index = 0; index < data.length; index++) {
             this.accommodations[index] = data[index];
-            // if (index === 14) {
-            //   break;
-            // }
           }
           if (this.accommodations.length > 5) {
             this.to = 5;

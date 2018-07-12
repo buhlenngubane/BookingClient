@@ -3,7 +3,7 @@ import { UsersService } from '../service/user.service';
 import { FormControl, Validators } from '@angular/forms';
 import { Subject } from 'rxjs/Subject';
 import { SearchService } from '../service/search.service';
-import { Cars, Destinations } from '../model/service-type';
+import { Cars, Destinations, CarRentals } from '../model/service-type';
 import { Time } from '@angular/common';
 import { MatDatepickerInputEvent } from '@angular/material';
 import { CarRentalStorage } from '../service/common-interface';
@@ -33,7 +33,7 @@ export class CarRentalComponent implements OnInit {
   error = false;
   errorMessage = '';
   loading = { error: false, errorMessage: '' };
-  result: Destinations[] = [];
+  result: CarRentals[] = [];
 
   constructor(private service: UsersService,
     private searchService: SearchService) {
@@ -101,6 +101,13 @@ export class CarRentalComponent implements OnInit {
   time: Time = { hours: 12, minutes: 3 };
   Find() {
     if (!this.search.invalid) {
+      // let display = null;
+      // try {
+        console.log(this.result[0].location);
+      const display = this.result.find(s => s.location.includes(this.search.value));
+      // } catch (Err) {
+        // console.log(Err);
+      // }
       const hour = this.timeFrom.value + '';
       const hour2 = this.timeTo.value;
 
@@ -125,12 +132,8 @@ export class CarRentalComponent implements OnInit {
 
       this.search.markAsUntouched();
 
-      // this.loading.errorMessage = 'Rental not yet available';
-
       console.log(this.carRentalDtls.length);
-
-      // this.carRentalDtls.length === 0 ? this.loading.error = true :
-        this.service.CarRentalDetails(this.search.value,
+        this.service.CarRentalDetails(display ? display.location : this.search.value,
            this.dateForm, this.dateTo, this.timeFrom.value, this.timeTo.value, this.loading);
     } else if (this.search.untouched) {
       console.log('Untouched?');

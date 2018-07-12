@@ -30,8 +30,8 @@
       <input matInput type="search" name="secondSearch" placeholder="Return" [formControl]="secondSearch" [matAutocomplete]="auto2"
         (keyup)="searchTerm$2.next($event.target.value)">
       <mat-autocomplete #auto2="matAutocomplete">
-        <mat-option *ngFor="let result of result2 | slice:0:9" [value]="result.destination1">
-          {{ result.destination1 }}
+        <mat-option *ngFor="let result of result2 | slice:0:9" [value]="result.dest">
+          {{ result.dest }}
         </mat-option>
       </mat-autocomplete>
       <mat-error *ngIf='secondSearch.invalid'>

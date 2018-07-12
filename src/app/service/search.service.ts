@@ -69,7 +69,7 @@ export class SearchService {
   flightType = 'Economy';
   numOfTravellers = 1;
   private fPrice = 1;
-  numCount: [{number: number}];
+  numCount: [{ number: number }];
   names: FormControl[];
   names_valid = true;
   submitted = false;
@@ -104,7 +104,7 @@ export class SearchService {
   { success: false },
   { success: false }];
   routeString: string;
-  overralPrice = [{detail: []}];
+  overralPrice = [{ detail: [] }];
   /***End***/
 
   constructor(
@@ -211,6 +211,7 @@ export class SearchService {
                   console.log('True ' + data.filter(s => s.flightId === this.searchFlight[0].flightId));
                 } else if (str.value !== '' && this.searchFlight.length === 0) {
                   console.log(this.service.Flights);
+                  if (this.service.Flights) {
                   data.filter(s => s.flightId === this.service.Flights[0].flightId)
                     .forEach(
                       // tslint:disable-next-line:no-shadowed-variable
@@ -219,12 +220,23 @@ export class SearchService {
                         result.push(element);
                       }
                     );
+                  } else {
+                    data.filter(s => s.flightId === this.service.FlightDetail[0].dest.flightId)
+                    .forEach(
+                      // tslint:disable-next-line:no-shadowed-variable
+                      element => {
+
+                        result.push(element);
+                      }
+                    );
+                  }
+                  console.log('Should include flights ' + JSON.stringify(result));
                 } else {
                   data.forEach(
                     // tslint:disable-next-line:no-shadowed-variable
                     element => {
 
-                      result.push(new Destinations(element));
+                      result.push(element);
                     }
                   );
                 }
@@ -402,18 +414,24 @@ export class SearchService {
 
   Search(dateForm: Date, dateTo: Date, panel: FormControl, accommodationOrsearch?, errorCheck?):
     boolean {
-      this.rows = 2;
+    this.rows = 2;
     let country = '';
     let location = '';
     const accom = accommodationOrsearch as Accommodations;
     const search = accommodationOrsearch as FormControl;
+
     try {
-      if (accom.country) {
+      const value = search.value + '';
+      if (value.includes(',')) {
+        country = value.split(',')[0].trim();
+        location = value.split(',')[1].trim();
+      } else if (accom.country && accom.location) {
         country = accom.country;
-        location = accom.location ? accom.location : '';
-      } else if (search.value) {
-        country = search.value.split(', ')[0];
-        location = search.value.includes(',') ? search.value.split(', ')[1] : '';
+        location = accom.location;
+      } else {
+        errorCheck.errorMessage = 'Accommodation not yet available';
+                errorCheck.error = true;
+        return false;
       }
     } catch (error) {
       console.error(error);
@@ -445,74 +463,90 @@ export class SearchService {
                   this.availRooms.push(true) :
                   this.availRooms.push(false);
 
-                  this.service.rooms.push({detail: [{available: 1}]});
-                  this.overralPrice.push({detail: []});
-                  this.index.push(0);
-                  console.log(this.overralPrice);
-                  this.service.rooms[count].detail.splice(0);
-                  // this.overralPrice[count].detail.splice(0);
+                this.service.rooms.push({ detail: [{ available: 1 }] });
+                this.overralPrice.push({ detail: [] });
+                this.index.push(0);
+                console.log(this.overralPrice);
+                this.service.rooms[count].detail.splice(0);
+                // this.overralPrice[count].detail.splice(0);
 
                 /**Check if date available**/
                 for (let index = 0; index < element.accDetail.length; index++) {
                   // const element = element.accDetail[index];
                   const Fromdate = element.accDetail[index].dateAvailableFrom.toString().split('T')[0];
-                const FromY = Fromdate.split('-')[0];
-                const FromM = Fromdate.split('-')[1];
-                const Fromday = Fromdate.split('-')[2];
-                const nowY = pip.transform(dateForm, 'yyyy');
-                const nowM = pip.transform(dateForm, 'MM');
-                const nowDay = pip.transform(dateForm, 'dd');
+                  const FromY = Fromdate.split('-')[0];
+                  const FromM = Fromdate.split('-')[1];
+                  const Fromday = Fromdate.split('-')[2];
+                  const nowY = pip.transform(dateForm, 'yyyy');
+                  const nowM = pip.transform(dateForm, 'MM');
+                  const nowDay = pip.transform(dateForm, 'dd');
 
-                const Todate = element.accDetail[index].dateAvailableTo.toString().split('T')[0];
-                const ToY = Todate.split('-')[0];
-                const ToM = Todate.split('-')[1];
-                const Today = Todate.split('-')[2];
-                const returnY = pip.transform(dateTo, 'yyyy');
-                const returnM = pip.transform(dateTo, 'MM');
-                const returnDay = pip.transform(dateTo, 'dd');
+                  const Todate = element.accDetail[index].dateAvailableTo.toString().split('T')[0];
+                  const ToY = Todate.split('-')[0];
+                  const ToM = Todate.split('-')[1];
+                  const Today = Todate.split('-')[2];
+                  const returnY = pip.transform(dateTo, 'yyyy');
+                  const returnM = pip.transform(dateTo, 'MM');
+                  const returnDay = pip.transform(dateTo, 'dd');
 
-                this.overralPrice[count].detail.push({
-                  price:
-                    element.accDetail[index].pricePerNight *
-                    +panel.value.split(' ')[0] * this.diff
-                });
-                // Pushing rooms available for display
-                this.service.rooms[count].detail.push({available: +element.accDetail[index].availableRooms});
+                  this.overralPrice[count].detail.push({
+                    price:
+                      element.accDetail[index].pricePerNight *
+                      +panel.value.split(' ')[0] * this.diff
+                  });
+                  // Pushing rooms available for display
+                  this.service.rooms[count].detail.push({ available: +element.accDetail[index].availableRooms });
 
-                if (
-                  (+FromY <= +nowY)
-                   && (
-                     ((+Fromday <= +nowDay) && FromM === nowM)
-                     ||
-                     (((+FromY < +nowY) && FromM < nowM) || (+FromY < +nowY))
+                  if (
+                    (+FromY <= +nowY)
+                    && (
+                      (
+                        (+Fromday <= +nowDay) && FromM === nowM
+                      )
+                      ||
+                      (
+                        (
+                          (+FromY < +nowY) && FromM < nowM
+                        )
+                        ||
+                        (+FromY < +nowY)
+                      )
                     )
                   ) {
-                  this.availDateFrom = true;
-                } else {
-                  this.availDateFrom = false;
-                }
+                    this.availDateFrom = true;
+                  } else {
+                    this.availDateFrom = false;
+                  }
 
-                if (
-                  (+ToY >= +returnY)
-                  && ((
-                    (+Today >= +returnDay) && ToM === returnM)
-                  ||
-                   ((ToY === returnY) && (+ToM > +returnM)) || (+ToY > +returnY))
-                  && this.availDateFrom) {
-                  this.availDateTo = true;
-                  // When there is more than one accommodation detail
-                  this.index[count++] = index;
-                  break;
-                } else {
-                this.index[count++] = 0; this.availDateTo = false;
-              }
-                /*End*/
-                console.log(this.availDateFrom + ' ' + this.availDateTo);
-                console.log(this.availRooms );
+                  if (
+                    (+ToY >= +returnY)
+                    &&
+                    (
+                      (
+                        (+Today >= +returnDay) && ToM === returnM
+                      )
+                      ||
+                      (
+                        (ToY === returnY) && (+ToM > +returnM)
+                      )
+                      ||
+                      (+ToY > +returnY)
+                    )
+                    && this.availDateFrom) {
+                    this.availDateTo = true;
+                    // When there is more than one accommodation detail
+                    this.index[count++] = index;
+                    break;
+                  } else {
+                    this.index[count++] = 0; this.availDateTo = false;
+                  }
+                  /*End*/
+                  console.log(this.availDateFrom + ' ' + this.availDateTo);
+                  console.log(this.availRooms);
 
-                console.log(
-                  this.overralPrice.length + ' ' + this.index
-                );
+                  console.log(
+                    this.overralPrice.length + ' ' + this.index
+                  );
                 }
               }
             );
@@ -526,60 +560,43 @@ export class SearchService {
             this.Panel = panel.value;
             this.Nights = this.diff;
 
-            // if (this.property.length > 0) {
             if (this.Property.length > 0) {
-              this.route.navigate(['/acc-detail']);
+              // tslint:disable-next-line:prefer-const
+              let exact;
+              if (!this.route.isActive('/acc-detail', exact)) {
+                this.route.navigate(['/acc-detail']);
+              }
             } else {
-              panel.setErrors({'roomsAvailable': true});
+              panel.setErrors({ 'roomsAvailable': true });
             }
 
-            /*
-            * Trying FormControl Conversion
-            */
-            try {
-              if (localStorage.getItem('info#1') && search.status) {
-                console.log(search);
-                search.setValue(localStorage.getItem('info#1'));
-              }
-            } catch (error) {
-              console.error(error);
-              // throw new Error(error);
-            }
-            /**
-             * Trying Accommodations conversion
-             */
-            try {
-              if (accom.country && accom.location) {
-                localStorage.setItem('info#1', accom.country + ', ' + accom.location);
-              }
-            } catch (error) {
-              console.log(error);
-              throw new Error(error);
-            }
+            localStorage.setItem('info#1', country + ', ' + location);
           },
           error => {
             console.error(error.message);
             // tslint:disable-next-line:prefer-const
             let exact;
             try {
-            if (error.message.includes('404') && search.status) {
-              if (this.route.isActive('/acc-detail', exact)) {
-                this.route.navigate(['/home']);
+              if (error.message.includes('404') && search.status) {
+                if (this.route.isActive('/acc-detail', exact)) {
+                  this.route.navigate(['/home']);
+                }
+                search.markAsUntouched();
+                errorCheck.errorMessage = 'Accommodation not yet available';
+                errorCheck.error = true;
+              } else {
+                this.service.check.errorMessage = 'Error Connecting To Server';
+                this.service.error = true;
+                if (this.route.isActive('/acc-detail', exact)) {
+                  this.route.navigate(['/home']);
+                }
               }
-              search.markAsUntouched();
-              errorCheck.errorMessage = 'Accommodation not yet available';
-              errorCheck.error = true;
-            } else {
-              this.service.check.errorMessage = 'Error Connecting To Server';
-              this.service.error = true;
+            } catch (Err) {
+              this.service.check.errorMessage = 'Error occured';
               if (this.route.isActive('/acc-detail', exact)) {
                 this.route.navigate(['/home']);
               }
             }
-          } catch (Err) {this.service.check.errorMessage = 'Error occured';
-          if (this.route.isActive('/acc-detail', exact)) {
-            this.route.navigate(['/home']);
-          } }
           },
           () => {
             console.log('search done.');
@@ -620,11 +637,11 @@ export class SearchService {
                   if (element.taxi.numOfSeats > passengers) {
                     this.airDetails.push(element);
                     this.noTaxi = false;
-                  } else {this.noTaxi = true; }
+                  } else { this.noTaxi = true; }
 
                   this.returnJourney ?
-                  this.aTotal.push(+element.price * 2) :
-                  this.aTotal.push(+element.price);
+                    this.aTotal.push(+element.price * 2) :
+                    this.aTotal.push(+element.price);
                 }
               }
 
@@ -635,15 +652,19 @@ export class SearchService {
             this.navigate.nav = true;
             this.route.navigate(['/air-detail']);
             if (this.returnJourney) {
-              const obj = {pickUp: pickUp, dropOff: dropOff,
-                dateFrom: dateFrom, returnDate: dateTo, passengers: passengers};
-            localStorage.setItem('info#4',
-             JSON.stringify(obj));
-            } else {
-              const obj = {pickUp: pickUp, dropOff: dropOff,
-                dateFrom: dateFrom, returnDate: null, passengers: passengers};
+              const obj = {
+                pickUp: pickUp, dropOff: dropOff,
+                dateFrom: dateFrom, returnDate: dateTo, passengers: passengers
+              };
               localStorage.setItem('info#4',
-              JSON.stringify(obj));
+                JSON.stringify(obj));
+            } else {
+              const obj = {
+                pickUp: pickUp, dropOff: dropOff,
+                dateFrom: dateFrom, returnDate: null, passengers: passengers
+              };
+              localStorage.setItem('info#4',
+                JSON.stringify(obj));
             }
           } else {
             if (loading) {
@@ -651,10 +672,10 @@ export class SearchService {
               loading.error = true;
             }
           }
-            if (this.noTaxi) {
-              loading.errorMessage = 'No Taxi for amount of Passengers';
-              loading.error = true;
-            }
+          if (this.noTaxi) {
+            loading.errorMessage = 'No Taxi for amount of Passengers';
+            loading.error = true;
+          }
           console.log('Passengers ' + passengers + ' Taxi ');
           this.numOfPassengers = passengers;
         },
@@ -663,8 +684,8 @@ export class SearchService {
           try {
             if (error.message.includes('unknown url')) {
               this.service.check.errorMessage = 'Error connecting to server';
-            } else {this.service.check.errorMessage = 'Error occured'; }
-          } catch (Err) {this.service.check.errorMessage = 'Error occured'; }
+            } else { this.service.check.errorMessage = 'Error occured'; }
+          } catch (Err) { this.service.check.errorMessage = 'Error occured'; }
           this.service.check.error = true;
           loading.load = false;
         },
@@ -746,73 +767,73 @@ export class SearchService {
     console.log(serviceType);
     switch (serviceType) {
       case ('accommodation'):
-      try {
-        if (this.service.property && this.Panel) {
-          // let number = rooms.split(" ");
-          this.total = +this.service.property.accDetail[0].pricePerNight * (this.Nights * (this.Rooms));
+        try {
+          if (this.service.property && this.Panel) {
+            // let number = rooms.split(" ");
+            this.total = +this.service.property.accDetail[0].pricePerNight * (this.Nights * (this.Rooms));
 
-          console.log(this.total + ' service ' +
-            this.service.property.accDetail[0].pricePerNight + ' Nights ' + this.Nights + ' Panel number: ' +
-            this.Rooms + ' Panel text: ' + this.panel + ' panel stringfy: ' + this.panel);
+            console.log(this.total + ' service ' +
+              this.service.property.accDetail[0].pricePerNight + ' Nights ' + this.Nights + ' Panel number: ' +
+              this.Rooms + ' Panel text: ' + this.panel + ' panel stringfy: ' + this.panel);
             break;
-        }
-        console.log('What ?' + this.service.property);
-      } catch (err) { console.log('Error occured : ' + err); break; }
+          }
+          console.log('What ?' + this.service.property);
+        } catch (err) { console.log('Error occured : ' + err); break; }
 
       // tslint:disable-next-line:no-switch-case-fall-through
       case ('flight'):
-      try {
-        if (this.service.FlightDetail.length > 0) {
-          console.log('Flight type : ' + this.flightType);
-          switch (this.flightType) {
-            case ('Economy'): {
-              if (index !== null) {
-                this.total = (+this.fPrice + environment.economy) * this.numOfTravellers;
-              console.log(this.total + ' ' + environment.economy + ' ' + this.numOfTravellers);
-              break;
-               }
-            }
-
-            // tslint:disable-next-line:no-switch-case-fall-through
-            case ('Premium Economy'): {
-              if (index !== null) {
-                this.total = (+this.fPrice + environment.premium_economy) * this.numOfTravellers;
-                break;
+        try {
+          if (this.service.FlightDetail.length > 0) {
+            console.log('Flight type : ' + this.flightType);
+            switch (this.flightType) {
+              case ('Economy'): {
+                if (index !== null) {
+                  this.total = (+this.fPrice + environment.economy) * this.numOfTravellers;
+                  console.log(this.total + ' ' + environment.economy + ' ' + this.numOfTravellers);
+                  break;
+                }
               }
-            }
 
-            // tslint:disable-next-line:no-switch-case-fall-through
-            case ('Business'): {
-              if (index !== null) {
-                this.total = (+this.fPrice + environment.business) * this.numOfTravellers;
-                break;
+              // tslint:disable-next-line:no-switch-case-fall-through
+              case ('Premium Economy'): {
+                if (index !== null) {
+                  this.total = (+this.fPrice + environment.premium_economy) * this.numOfTravellers;
+                  break;
+                }
               }
-            }
 
-            // tslint:disable-next-line:no-switch-case-fall-through
-            case ('First Class'): {
-              if (index !== null) {
-                this.total = (+this.fPrice + environment.first_class) * this.numOfTravellers;
-                break;
+              // tslint:disable-next-line:no-switch-case-fall-through
+              case ('Business'): {
+                if (index !== null) {
+                  this.total = (+this.fPrice + environment.business) * this.numOfTravellers;
+                  break;
+                }
+              }
+
+              // tslint:disable-next-line:no-switch-case-fall-through
+              case ('First Class'): {
+                if (index !== null) {
+                  this.total = (+this.fPrice + environment.first_class) * this.numOfTravellers;
+                  break;
+                }
               }
             }
           }
-        }
-      } catch (err) {break; }
+        } catch (err) { break; }
 
       // tslint:disable-next-line:no-switch-case-fall-through
       case ('carRental'):
         {
           try {
-          if (this.service.carRental) {
-            console.log('Minused values are equal to :' +
-            (+this.service.carRental.price * Math.round((this.cDateReturn.valueOf() -
-             this.cDateFrom.valueOf()) / 1000 / 60 / 60 / 24)));
-            this.total = +this.service.carRental.price * Math.round((this.cDateReturn.valueOf() -
-            this.cDateFrom.valueOf()) / 1000 / 60 / 60 / 24);
-            break;
-          }
-        } catch (err) {break; }
+            if (this.service.carRental) {
+              console.log('Minused values are equal to :' +
+                (+this.service.carRental.price * Math.round((this.cDateReturn.valueOf() -
+                  this.cDateFrom.valueOf()) / 1000 / 60 / 60 / 24)));
+              this.total = +this.service.carRental.price * Math.round((this.cDateReturn.valueOf() -
+                this.cDateFrom.valueOf()) / 1000 / 60 / 60 / 24);
+              break;
+            }
+          } catch (err) { break; }
         }
 
       // tslint:disable-next-line:no-switch-case-fall-through
@@ -820,14 +841,14 @@ export class SearchService {
         {
           console.log(this.service.airTaxi);
           try {
-          if (this.returnJourney) {
-            this.total = +this.service.airTaxi.price * this.numOfPassengers * 2;
-            break;
-          } else {
-            this.total = +this.service.airTaxi.price * this.numOfPassengers;
-            break;
-          }
-        } catch (err) {break; }
+            if (this.returnJourney) {
+              this.total = +this.service.airTaxi.price * this.numOfPassengers * 2;
+              break;
+            } else {
+              this.total = +this.service.airTaxi.price * this.numOfPassengers;
+              break;
+            }
+          } catch (err) { break; }
         }
     }
     return this.total;
@@ -843,6 +864,7 @@ export class SearchService {
           userId: this.service.User.userId,
           detailId: this.service.property.accDetail[0].detailId,
           bookDate: this.DateFrom,
+          roomsBooked: this.Rooms,
           numOfNights: this.nights,
           payStatus: true,
           payType: 'PayPal',
@@ -885,7 +907,7 @@ export class SearchService {
             }
           ) : names = null;
 
-          if (names === null) {surnames = null; }
+          if (names === null) { surnames = null; }
           console.log(names + '   ' + surnames);
           this.bookingObj = new FlBooking({
             userId: this.service.User.userId,
@@ -1014,7 +1036,6 @@ export class SearchService {
   set Panel(panel) {
     console.log('not undefined' + panel);
     this.panel = panel;
-    // console.log(panel.number)
   }
 
   set Num(num) {

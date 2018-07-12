@@ -79,6 +79,12 @@ export class Destinations {
     'flightId': number;
 
     'dest': string;
+    'flight': {
+        'flightId': number;
+        'locale': string;
+        'avFlights': number;
+
+      };
 
     constructor(data?: any) {
         Object.assign(this, data);
@@ -244,6 +250,7 @@ export class AccBooking {
     'detailId': number;
     'numOfNights': number;
     'bookDate': Date;
+    'roomsBooked': number;
     'payType': string;
     'payStatus': boolean;
     'total': number;
