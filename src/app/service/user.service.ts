@@ -224,8 +224,6 @@ export class UsersService {
       .subscribe((response) => {
         // console.log(JSON.stringify(response));
         this.User = new User(response);
-        /*if(this.user.userId==1)
-          this.admin=true;*/
         this.password = this.user.password;
         // this.User.password = '';
         console.log('Token launch');
@@ -334,18 +332,17 @@ export class UsersService {
         this.sub = Observable.interval(30000)
           .subscribe(
             tick => {
-              if (this.sub && !this.loggedOut) {
+              if (!this.loggedOut) {
                 this.RefreshMe();
+              } else {
+                this.sub.unsubscribe();
+                location.reload();
               }
             }
             ,
             error => {
               console.log(error.error);
-              // tslint:disable-next-line:prefer-const
-              let exact = false;
-              if (this.route.isActive('/home', exact)) {
-                location.reload();
-              }
+              location.reload();
             }
           );
 
@@ -374,13 +371,8 @@ export class UsersService {
           error => {
             console.log(error.error);
             localStorage.removeItem('currentUser');
-            this.route.navigate(['/home']);
-            // tslint:disable-next-line:prefer-const
-            let exact = false;
-            if (this.route.isActive('/home', exact)) {
-              location.reload();
-            }
             console.warn('Removed Token!!!');
+            location.reload();
             try {
               this.sub.unsubscribe();
             } catch (Err) {
@@ -592,9 +584,7 @@ export class UsersService {
       .subscribe(
         data => {
           console.log(data);
-          // this.flightDetail = data;
           this.flightDetail.splice(0);
-          // let index = 0;
           this.flightPrice.splice(0);
           if (num >= 1 && num <= 30) {
             data.forEach(
@@ -716,7 +706,6 @@ export class UsersService {
           console.error(error.message);
           const err = error.error;
           const emsg = err;
-          // console.log(emsg.includes('404'));
           if (error.message.includes('404')) {
             console.log('In hear');
             load.errorMessage = 'Rental not available yet.';

@@ -778,6 +778,7 @@ export class SearchService {
             break;
           }
           console.log('What ?' + this.service.property);
+          break;
         } catch (err) { console.log('Error occured : ' + err); break; }
 
       // tslint:disable-next-line:no-switch-case-fall-through
@@ -792,36 +793,37 @@ export class SearchService {
                   console.log(this.total + ' ' + environment.economy + ' ' + this.numOfTravellers);
                   break;
                 }
+                break;
               }
 
-              // tslint:disable-next-line:no-switch-case-fall-through
               case ('Premium Economy'): {
                 if (index !== null) {
                   this.total = (+this.fPrice + environment.premium_economy) * this.numOfTravellers;
                   break;
                 }
+                break;
               }
 
-              // tslint:disable-next-line:no-switch-case-fall-through
               case ('Business'): {
                 if (index !== null) {
                   this.total = (+this.fPrice + environment.business) * this.numOfTravellers;
                   break;
                 }
+                break;
               }
 
-              // tslint:disable-next-line:no-switch-case-fall-through
               case ('First Class'): {
                 if (index !== null) {
                   this.total = (+this.fPrice + environment.first_class) * this.numOfTravellers;
                   break;
                 }
+                break;
               }
             }
           }
+          break;
         } catch (err) { break; }
 
-      // tslint:disable-next-line:no-switch-case-fall-through
       case ('carRental'):
         {
           try {
@@ -833,6 +835,7 @@ export class SearchService {
                 this.cDateFrom.valueOf()) / 1000 / 60 / 60 / 24);
               break;
             }
+            break;
           } catch (err) { break; }
         }
 
@@ -900,7 +903,6 @@ export class SearchService {
               if (index++ > 0) {
                 names += ',';
                 surnames += ',';
-                console.log('Concatinationg');
               }
               names += element;
               console.log('Inserting element = ' + element);

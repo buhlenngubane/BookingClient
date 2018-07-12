@@ -5,7 +5,7 @@ import { Properties, Accommodations } from '../../model/service-type';
 import { UsersService } from '../../service/user.service';
 import { MatSnackBar, MatDatepickerInputEvent, MatSnackBarConfig } from '@angular/material';
 import { FormControl, Validators } from '@angular/forms';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-search-result',
@@ -35,8 +35,6 @@ export class SearchResultComponent implements OnInit {
   private avRooms = true;
   private rows = 2;
 
-  // private error = false;
-  // private errorMessage = '';
   errorCheck = {error: false, errorMessage: ''};
   public config: MatSnackBarConfig;
 
@@ -52,7 +50,6 @@ export class SearchResultComponent implements OnInit {
 
     // tslint:disable-next-line:no-unused-expression
     service.GetAccommodation;
-    // console.log(searchService.index);
 
     if (service.accommodations.length === 0) {
       if (localStorage.getItem('info#1')) {
@@ -105,10 +102,6 @@ export class SearchResultComponent implements OnInit {
   }
 
   addEvent(type: string, event: MatDatepickerInputEvent<Date>) {
-    // const changeDate = new Date(event.value.getFullYear(), event.value.getMonth(), event.value.getDate());
-    // changeDate.setHours(48);
-    // this.dateTo = changeDate;
-    // this.minDate2 = this.dateTo;
 
     if (this.dateTo.valueOf() < event.value.valueOf()) {
       this.dateTo = new Date(event.value.toDateString());
@@ -143,17 +136,8 @@ export class SearchResultComponent implements OnInit {
     if (
       !this.search.invalid
   ) {
-      // if (search.value.includes(',')) {
-      // const arr = this.search.value.split(', ')+'';
-      // console.log(arr);
-      // console.log(this.result.find(m => m.country == arr[0] && m.location == arr[1]));
-      // const display = this.service.accommodations.find(m => m.country === arr[0] && m.location === arr[1]);
-      // this.result.splice(0).push(display);
       this.searchService.SearchParam = this.search;
-      // if (display) {
-        // console.log('Should redirect ' + display.accId.toString());
         this.errorCheck.error = false;
-        // if (search.value.includes(',')) {
           const display =
           this.result.find(s =>
              s.country.includes(search.value.split(',')[0].trim()) && s.location.includes(search.value.split(',')[1].trim())) ?
@@ -167,15 +151,10 @@ export class SearchResultComponent implements OnInit {
            this.avRooms = true;
            search.setValue(display.country + ', ' + display.location);
         } else {
-          // search.setErrors(Validators.pattern(''));
           search.markAsUntouched();
           this.errorCheck.errorMessage = 'Accommodation not yet available';
           this.errorCheck.error = true;
-          // console.log('Set error ' + this.error);
         }
-      // } else {
-      // }
-    // }
     } else if (search.untouched) {
       console.log('Untouched');
       search.markAsTouched();
@@ -195,7 +174,6 @@ export class SearchResultComponent implements OnInit {
     this.service.serviceType = 'accommodation';
     console.log(property);
     if (this.service.User) {
-      // if (property.accDetail.find(s => s.availableRooms >= +this.panel.value)) {
         this.searchService.PaymentReceive('acc-detail',
         {
           Property: property,
@@ -203,9 +181,6 @@ export class SearchResultComponent implements OnInit {
           DateTo: this.dateTo,
           str: this.panel.value
         });
-      // } else {
-      //   this.avRooms = false;
-      // }
     } else {
       this.service.check.errorMessage = 'Login or Register to book';
       this.service.check.error = true;
