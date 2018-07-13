@@ -143,7 +143,9 @@ export class SearchResultComponent implements OnInit {
              s.country.includes(search.value.split(',')[0].trim()) && s.location.includes(search.value.split(',')[1].trim())) ?
           this.result.find(s =>
              s.country.includes(search.value.split(',')[0].trim()) && s.location.includes(search.value.split(',')[1].trim())) :
-          this.result.find(s => s.country.includes(search.value.trim()) || s.location.includes(search.value.trim()));
+          this.result.find(s => s.country.includes(search.value.trim()) || s.location.includes(search.value.trim())) ?
+          this.result.find(s => s.country.includes(search.value.trim()) || s.location.includes(search.value.trim())) :
+          this.result[0];
         // }
         if (display) {
         this.searchService.Search(this.dateForm, this.dateTo, this.panel,

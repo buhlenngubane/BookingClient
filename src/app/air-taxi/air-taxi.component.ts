@@ -177,8 +177,12 @@ export class AirSearchBarComponent implements OnInit {
 
       this.firstSearch.markAsUntouched();
 
-      const from = this.result1.find(s => s.pickUp.includes(this.firstSearch.value));
-      const to = this.result2.find(s => s.dropOff.includes(this.secondSearch.value));
+      const from = this.result1.find(s => s.pickUp.includes(this.firstSearch.value)) ?
+      this.result1.find(s => s.pickUp.includes(this.firstSearch.value)) :
+      this.result1.length > 0 ? this.result1[0] : null;
+      const to = this.result2.find(s => s.dropOff.includes(this.secondSearch.value)) ?
+      this.result2.find(s => s.dropOff.includes(this.secondSearch.value)) :
+      this.result2.length > 0 ? this.result2[0] : null;
 
       this.searchService.AirTaxis(from ? from.pickUp : this.firstSearch.value, to ? to.dropOff : this.secondSearch.value,
         this.dateFrom, this.returnDate, +this.passengers.value, this.loading);

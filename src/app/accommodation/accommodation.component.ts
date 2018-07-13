@@ -204,11 +204,15 @@ export class AccommodationComponent implements OnInit {
 
       console.log(str.trim());
       // search current result of searchString
-      const display = this.result.find(m =>
+      const display =
+       this.result.find(m =>
          m.country.includes(arr.split(',')[0].trim()) && m.location.includes(arr.split(',')[1].trim())) ?
          this.result.find(m =>
           m.country.includes(arr.split(',')[0].trim()) && m.location.includes(arr.split(',')[1].trim())) :
-      this.result.find(m => m.country.includes(search.value.trim()) || m.location.includes(search.value.trim()));
+      this.result.find(m => m.country.includes(search.value.trim()) || m.location.includes(search.value.trim())) ?
+      this.result.find(m => m.country.includes(search.value.trim()) || m.location.includes(search.value.trim())) :
+      this.result[0]
+      ;
 
       console.log(display);
       this.serviceSearch.SearchParam = this.search;

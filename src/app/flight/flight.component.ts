@@ -178,7 +178,11 @@ export class SearchBarComponent implements OnInit {
         // Checking if flights are available in search results
         const display =
           this.result.find(s =>
-            s.locale.includes(this.firstSearch.value));
+            s.locale.includes(this.firstSearch.value)) ?
+            this.result.find(s =>
+              s.locale.includes(this.firstSearch.value)) :
+              this.result.length > 0 ? this.result[0] :
+              null;
         const dest = display ? display.destination.find(s => s.dest.includes(this.secondSearch.value)) : null;
         console.log('dest ');
 

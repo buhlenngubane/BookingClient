@@ -805,7 +805,7 @@ export class UsersService {
 
   // *******Get*******//
 
-  /*Subcription In Getters; Was Testing*/
+  /*Subcription In Getters;*/
   get Me() {
     this.GetToken = 'Bearer ' + localStorage.getItem('currentUser');
     // if(){}
@@ -946,6 +946,7 @@ export class UsersService {
   }
 
 }
+
 interface Token {
   token: string;
 }

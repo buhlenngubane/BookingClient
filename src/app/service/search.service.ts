@@ -428,11 +428,11 @@ export class SearchService {
       } else if (accom.country && accom.location) {
         country = accom.country;
         location = accom.location;
-      } else {
-        errorCheck.errorMessage = 'Accommodation not yet available';
-                errorCheck.error = true;
-        return false;
-      }
+      } // else {
+      //   errorCheck.errorMessage = 'Accommodation not yet available';
+      //           errorCheck.error = true;
+      //   return false;
+      // }
     } catch (error) {
       console.error(error);
     }
