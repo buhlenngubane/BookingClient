@@ -103,7 +103,7 @@ export class CarRentalComponent implements OnInit {
     if (!this.search.invalid) {
       // let display = null;
       // try {
-        console.log(this.result[0].location);
+        // console.log(this.result[0].location);
       const display = this.result.find(s => s.location.includes(this.search.value)) ?
       this.result.find(s => s.location.includes(this.search.value)) :
       this.result.length > 0 ? this.result[0] : null;

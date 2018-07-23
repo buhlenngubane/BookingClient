@@ -140,9 +140,9 @@ export class SearchResultComponent implements OnInit {
         this.errorCheck.error = false;
           const display =
           this.result.find(s =>
-             s.country.includes(search.value.split(',')[0].trim()) && s.location.includes(search.value.split(',')[1].trim())) ?
+             s.country.includes(search.value.split(',')[0].trim()) && s.location.includes(search.value.split(',')[1])) ?
           this.result.find(s =>
-             s.country.includes(search.value.split(',')[0].trim()) && s.location.includes(search.value.split(',')[1].trim())) :
+             s.country.includes(search.value.split(',')[0].trim()) && s.location.includes(search.value.split(',')[1])) :
           this.result.find(s => s.country.includes(search.value.trim()) || s.location.includes(search.value.trim())) ?
           this.result.find(s => s.country.includes(search.value.trim()) || s.location.includes(search.value.trim())) :
           this.result[0];
@@ -153,9 +153,10 @@ export class SearchResultComponent implements OnInit {
            this.avRooms = true;
            search.setValue(display.country + ', ' + display.location);
         } else {
-          search.markAsUntouched();
-          this.errorCheck.errorMessage = 'Accommodation not yet available';
-          this.errorCheck.error = true;
+          this.searchService.Search(this.dateForm, this.dateTo, this.panel,
+            search, this.errorCheck);
+            this.avRooms = true;
+            // search.setValue(display.country + ', ' + display.location);
         }
     } else if (search.untouched) {
       console.log('Untouched');

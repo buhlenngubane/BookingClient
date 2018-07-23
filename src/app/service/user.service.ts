@@ -162,20 +162,25 @@ export class UsersService {
   /***User Function Calls***/
 
   userRegister(customer: object, regRef: MatDialogRef<RegisterComponent>): boolean {
-    this.User = new User(customer);
+    this.user = new User(customer);
+    // this.user.admin = false;
+    console.log(this.user);
 
     return this.http.post<User>(this.BASE_URL + 'api/Users/Register',
       this.User)
       .map((response) => {
         console.log(response);
-        this.SetToken(this.user.email, this.password)
+        this.SetToken(this.user.email, this.user.password)
           .subscribe(
             () => {
             },
             error => {
               console.error(error + ' for token!!!');
               this.body = error;
+              this.check.errorMessage = 'Something went wrong.';
+              this.check.error = true;
               regRef.disableClose = false;
+              regRef.close();
               this.loggedOut = true;
             }, () => {
               console.log('Done auth');

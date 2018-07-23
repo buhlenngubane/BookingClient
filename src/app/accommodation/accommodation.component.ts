@@ -206,7 +206,7 @@ export class AccommodationComponent implements OnInit {
       // search current result of searchString
       const display =
        this.result.find(m =>
-         m.country.includes(arr.split(',')[0].trim()) && m.location.includes(arr.split(',')[1].trim())) ?
+         m.country.includes(arr.split(',')[0].trim()) && m.location.includes(arr.split(',')[1])) ?
          this.result.find(m =>
           m.country.includes(arr.split(',')[0].trim()) && m.location.includes(arr.split(',')[1].trim())) :
       this.result.find(m => m.country.includes(search.value.trim()) || m.location.includes(search.value.trim())) ?

@@ -435,6 +435,7 @@ export class SearchService {
       // }
     } catch (error) {
       console.error(error);
+      return false;
     }
     try {
       return this.http.get<Properties[]>(environment.base_url +
