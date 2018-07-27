@@ -25,8 +25,8 @@
               [matAutocomplete]="auto" 
               (keyup)="searchTerm$.next($event.target.value)"
               class="search">
-              <mat-autocomplete #auto="matAutocomplete">
-                <mat-option *ngFor="let result of result | slice:0:9" [value]="result.country+', '+result.location">
+              <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption>
+                <mat-option *ngFor="let result of result | slice:0:9" (mouseover)="onFocus(result.country+', '+result.location)" [value]="result.country+', '+result.location">
                   {{ result.country }} {{result.location}}
                 </mat-option>
               </mat-autocomplete>
@@ -91,7 +91,7 @@
 
       <mat-toolbar-row>
         <span class="spacer"></span>
-        <a mat-raised-button routerLink="." class="anchor" color="primary" (click) = "Find(search)">Search</a>
+        <a mat-raised-button class="anchor" color="primary" (mouseup) = "Find(search)">Search</a>
       </mat-toolbar-row>
     </mat-toolbar>
 
@@ -160,12 +160,9 @@
     <mat-toolbar-row *ngIf="searchService.availDateFrom &&
      searchService.availDateTo && searchService.availRooms[i];">
       <span class="spacer"></span>
-      <button mat-raised-button color='primary' (click)='ifLoggedIn(prop)'>Book</button>
+      <button mat-raised-button color='primary' (mouseup)='ifLoggedIn(prop)'>Book</button>
     </mat-toolbar-row>
 
     </mat-toolbar>
-
-
-
   </mat-grid-tile> 
 </mat-grid-list>

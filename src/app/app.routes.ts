@@ -18,7 +18,7 @@ export const routes: Routes = [
     {path: 'flight', component: FlightComponent},
     {path: 'car-rentals', component: CarRentalComponent},
     {path: 'air-taxi', component: AirTaxiComponent},
-    {path: 'acc-detail', component: SearchResultComponent},
+    {path: 'acc-detail/:dest', component: SearchResultComponent},
     {path: 'flight-detail', component: DetailComponent},
     {path: 'car-detail', component: CarDetailsComponent},
     {path: 'air-detail', component: AirDetailsComponent},

@@ -112,6 +112,15 @@ export class SearchBarComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  onFocus(s: string, num) {
+    console.log(s);
+    if (num === 1) {
+    this.firstSearch.setValue(s);
+    } else {
+      this.secondSearch.setValue(s);
+    }
+  }
+
   swap(): void {
     console.log('swap');
     const temp = this.firstSearch.value;

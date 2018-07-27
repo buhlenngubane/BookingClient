@@ -15,8 +15,8 @@
               placeholder="search" [formControl]="search" 
               [matAutocomplete]="auto" 
               (keyup)="searchTerm$.next($event.target.value)" class="search">
-              <mat-autocomplete #auto="matAutocomplete">
-                <mat-option *ngFor="let result of result " [value]="result.location">
+              <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption>
+                <mat-option *ngFor="let result of result " (mouseover)="onFocus(result.location)" [value]="result.location">
                   {{result.location}}
                 </mat-option>
               </mat-autocomplete>

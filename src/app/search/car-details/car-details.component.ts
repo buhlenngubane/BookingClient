@@ -3,6 +3,7 @@ import { UsersService } from '../../service/user.service';
 import { Cars, CarRentalDetails } from '../../model/service-type';
 import { SearchService } from '../../service/search.service';
 import { CarRentalStorage } from '../../service/common-interface';
+import { ActivatedRoute } from '../../../../node_modules/@angular/router';
 // import { Car } from '../../service/common-interface';
 // import { HttpClient } from '@angular/common/http';
 // import { environment } from '../../../environments/environment';
@@ -19,15 +20,24 @@ export class CarDetailsComponent implements OnInit {
   private priceDateFrom;
   private priceDateTo;
   constructor(private service: UsersService,
-  private searchService: SearchService) {
+  private searchService: SearchService, private route: ActivatedRoute) {
 
     if (service.carRentalDtls.length === 0) {
-      const item = JSON.parse(localStorage.getItem('info#3')) as CarRentalStorage;
-      localStorage.getItem('info#3') ?
-      this.service.CarRentalDetails(item.search, item.dateFrom, item.dateTo, item.timeFrom, item.timeTo) :
-      searchService.GoBack('/car-rentals');
-      this.service.priceDateFrom = new Date(item.dateFrom).valueOf();
-      this.service.priceDateTo = new Date(item.dateTo).valueOf();
+      this.route.params.subscribe(params => {
+        console.log(params);
+        const items = JSON.parse(JSON.stringify(params)) as CarRentalStorage;
+        items.search ?
+        this.service.CarRentalDetails(items.search, items.dateFrom, items.dateTo, items.timeFrom, items.timeTo)
+        : searchService.GoBack('car-rentals');
+        this.service.priceDateFrom = new Date(items.dateFrom).valueOf();
+      this.service.priceDateTo = new Date(items.dateTo).valueOf();
+      });
+      // const item = JSON.parse(localStorage.getItem('info#3')) as CarRentalStorage;
+      // localStorage.getItem('info#3') ?
+      // this.service.CarRentalDetails(item.search, item.dateFrom, item.dateTo, item.timeFrom, item.timeTo) :
+      // searchService.GoBack('/car-rentals');
+      // this.service.priceDateFrom = new Date(item.dateFrom).valueOf();
+      // this.service.priceDateTo = new Date(item.dateTo).valueOf();
     }
    }
 

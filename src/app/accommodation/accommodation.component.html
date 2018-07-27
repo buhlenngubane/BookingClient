@@ -8,25 +8,23 @@
       </mat-toolbar-row>
 
       <mat-toolbar-row class="spaceLayout">
-        <!--<form class="form">-->
           <mat-form-field class="full-width">
           <input matInput type="search"  name="search" 
           placeholder="search" [formControl]="search" 
           [matAutocomplete]="auto" 
           (keyup)="searchTerm$.next($event.target.value)" class="search">
-          <mat-autocomplete #auto="matAutocomplete">
-            <mat-option *ngFor="let result of result " [value]="result.country+', '+result.location">
-              {{ result.country }} {{result.location}}
+          <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption>
+            <mat-option *ngFor="let result of result " (mouseover)="onFocus(result.country+', '+result.location)" [value]="result.country+', '+result.location">
+              {{ result.country }} {{result.location}} 
             </mat-option>
           </mat-autocomplete>
           <mat-error *ngIf='search.invalid && search.pristine'>
-            {{errorMessage}}
+            {{checkError.errorMessage}}
           </mat-error>
-          <mat-hint align="end" *ngIf='error && search.untouched'>
-            {{errorMessage}}
+          <mat-hint align="end" *ngIf='checkError.error && search.untouched'>
+            {{checkError.errorMessage}}
           </mat-hint>
         </mat-form-field>
-        <!--</form>-->
       </mat-toolbar-row>
 
       <mat-toolbar-row>
@@ -40,9 +38,6 @@
             disabled>
           <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
           <mat-datepicker #picker1 disabled="false"></mat-datepicker>
-          <!-- <mat-hint *ngIf='!serviceSearch.availDate'>
-            Properties at this date<br/> have no available rooms
-          </mat-hint> -->
         </mat-form-field>
 
         <span class="spacer">
@@ -80,7 +75,7 @@
         <span class="fill-remaining-space"></span>
         <span class="align-center"></span>
         <span class="spacer"></span>
-        <button mat-raised-button (click)="Find(search)" color="primary">Search</button>
+        <button mat-raised-button (mouseup)="Find(search)" color="primary">Search</button>
       </mat-toolbar-row>
 
 
@@ -88,11 +83,11 @@
   </mat-grid-tile>
 
   <mat-grid-tile *ngFor="let acc of accommodation | slice:0:2">
-    <a routerLink="" (click)="Search(acc.accId)">
+    <a (mouseup)="Search(acc.accId)">
 
       <div class="container" layout-wrap>
 
-        <img src="data:image/jpeg;base64,{{acc.picture}}" alt="{{acc.location}}" srcset="" class="ImgGrid">
+        <img src="data:image/jpeg;base64,{{acc.picture}}" alt="{{acc.location}}" srcset="" class="ImgGrid"/>
 
         <div class="topleft">{{acc.location}}</div>
 
@@ -107,8 +102,8 @@
     <span *ngFor="let acc of accommodation | slice:1 + service.from:service.to" 
     style="padding-right: 10px; padding-left: 10px; width: 50%"
     [@flyInOut]="'in'">
-    <mat-card (click)="Search(acc.accId)" style="width: 190px; border-radius: 8px;">
-      <a routerLink="">
+    <mat-card (mouseup)="Search(acc.accId)" style="width: 190px; border-radius: 8px;">
+      <a>
           <div >
             <img mat-card-image src="data:image/jpeg;base64,{{acc.picture}}"
              alt="{{acc.location}}" srcset="" height="130px">

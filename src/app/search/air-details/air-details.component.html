@@ -1,5 +1,5 @@
 <mat-grid-list cols="4">
-  <mat-grid-tile [rowspan]="4 + result.length" class="Wid">
+  <mat-grid-tile [rowspan]="2 + result.length" class="Wid">
       <app-air-search-bar class="topleft"></app-air-search-bar>
   </mat-grid-tile>
   <mat-grid-tile [colspan]="3" *ngFor="let result of result; let i = index" class="topleft">
@@ -40,6 +40,5 @@
   <mat-grid-tile [colspan]='3' *ngIf='result.length === 0' style="background-color: grey">
       <mat-spinner *ngIf="loading.load; else NoTaxi" [diameter]="30"></mat-spinner>
       <ng-template #NoTaxi>No taxis found</ng-template>
-    
   </mat-grid-tile>
 </mat-grid-list>

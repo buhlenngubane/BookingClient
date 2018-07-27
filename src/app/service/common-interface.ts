@@ -5,7 +5,7 @@ export interface Users {
     email: string;
     password: string;
     phone: string;
-        admin: false;
+    admin: false;
 }
 
 // tslint:disable-next-line:class-name

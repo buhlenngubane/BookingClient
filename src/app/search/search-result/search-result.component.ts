@@ -5,7 +5,9 @@ import { Properties, Accommodations } from '../../model/service-type';
 import { UsersService } from '../../service/user.service';
 import { MatSnackBar, MatDatepickerInputEvent, MatSnackBarConfig } from '@angular/material';
 import { FormControl, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import { switchMap } from '../../../../node_modules/rxjs/operators/switchMap';
+import { map } from '../../../../node_modules/rxjs/operators';
 
 @Component({
   selector: 'app-search-result',
@@ -42,26 +44,38 @@ export class SearchResultComponent implements OnInit {
     private service: UsersService,
     private searchService: SearchService,
     public snackBar: MatSnackBar,
-    private route: Router
+    private route: ActivatedRoute
   ) {
+    if (this.Num.length < 2) {
     for (let index = 1; index < 30; index++) {
       this.Num.push({ text: ' rooms', number: (index + 1) });
     }
+  }
 
     // tslint:disable-next-line:no-unused-expression
     service.GetAccommodation;
 
     if (service.accommodations.length === 0) {
-      if (localStorage.getItem('info#1')) {
-        this.searchService.Search(
-          this.dateForm,
-          this.dateTo,
-            this.panel,
-            {country: localStorage.getItem('info#1').split(', ')[0],
-              location: localStorage.getItem('info#1').split(', ')[1]}, this.errorCheck);
 
-           this.search.setValue(localStorage.getItem('info#1'));
-      }
+      // if (localStorage.getItem('info#1')) {
+        // this.searchService.Search(
+        //   this.dateForm,
+        //   this.dateTo,
+        //     this.panel,
+        //     {country: localStorage.getItem('info#1').split(', ')[0],
+        //       location: localStorage.getItem('info#1').split(', ')[1]}, this.errorCheck);
+        this.route.paramMap.subscribe(
+          // map(
+            params => {
+            params.get('session_id');
+          this.searchService.Search(
+              this.dateForm,
+              this.dateTo,
+                this.panel,
+                {country: params.get('dest').split(', ')[0],
+                  location: params.get('dest').split(', ')[1]}, this.errorCheck);
+           this.search.setValue(params.get('dest')); }); // );
+      // }
       // else {
       //   searchService.GoBack('/home');
       // }
@@ -90,6 +104,7 @@ export class SearchResultComponent implements OnInit {
         this.config.duration = 5000;
         this.snackBar.openFromComponent(SearchResultComponent, this.config);
         console.log('booked property ' + JSON.stringify(message));
+        // service.rooms[i].detail[searchService.index[i]].available;
       });
     // this.propCount = this.prop.length;
     }
@@ -99,6 +114,11 @@ export class SearchResultComponent implements OnInit {
     this.dateForm.getDate() === this.dateTo.getDate() ?
      this.dateTo.setHours(48) :
       this.dateTo.getHours();
+  }
+
+  onFocus(s: string) {
+    console.log(s);
+    this.search.setValue(s);
   }
 
   addEvent(type: string, event: MatDatepickerInputEvent<Date>) {
@@ -138,7 +158,9 @@ export class SearchResultComponent implements OnInit {
   ) {
       this.searchService.SearchParam = this.search;
         this.errorCheck.error = false;
-          const display =
+        let display = null;
+        if (!search.value.includes(',')) {
+        display =
           this.result.find(s =>
              s.country.includes(search.value.split(',')[0].trim()) && s.location.includes(search.value.split(',')[1])) ?
           this.result.find(s =>
@@ -146,6 +168,7 @@ export class SearchResultComponent implements OnInit {
           this.result.find(s => s.country.includes(search.value.trim()) || s.location.includes(search.value.trim())) ?
           this.result.find(s => s.country.includes(search.value.trim()) || s.location.includes(search.value.trim())) :
           this.result[0];
+        }
         // }
         if (display) {
         this.searchService.Search(this.dateForm, this.dateTo, this.panel,
@@ -156,7 +179,6 @@ export class SearchResultComponent implements OnInit {
           this.searchService.Search(this.dateForm, this.dateTo, this.panel,
             search, this.errorCheck);
             this.avRooms = true;
-            // search.setValue(display.country + ', ' + display.location);
         }
     } else if (search.untouched) {
       console.log('Untouched');

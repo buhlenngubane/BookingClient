@@ -104,6 +104,15 @@ export class AirSearchBarComponent implements OnInit {
     searchService.numOfPassengers = this.passengers.value;
   }
 
+  onFocus(s: string, num) {
+    console.log(s);
+    if (num === 1) {
+    this.firstSearch.setValue(s);
+    } else {
+      this.secondSearch.setValue(s);
+    }
+  }
+
   ngOnInit(): void {
     if (!this.service.timeFrom) {
       if (this.str < 10) {

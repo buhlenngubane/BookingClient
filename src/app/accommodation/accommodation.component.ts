@@ -72,8 +72,8 @@ export class AccommodationComponent implements OnInit {
   private Num = [{ text: ' room', number: 1 }];
   value1: any;
   value2: any;
-  error = false;
-  errorMessage = '';
+  checkError = {error: false,
+  errorMessage: ''};
 
   constructor(
     private service: UsersService,
@@ -127,6 +127,10 @@ export class AccommodationComponent implements OnInit {
     // this.dateTo.disable();
   }
 
+  Check() {
+    console.log('MiddleClick!!!');
+  }
+
   addEvent(type: string, event: MatDatepickerInputEvent<Date>) {
     if (this.dateTo.valueOf() < event.value.valueOf()) {
       this.dateTo = new Date(event.value.toDateString());
@@ -171,17 +175,14 @@ export class AccommodationComponent implements OnInit {
     }
   }
 
-  // Sanitize(image) {
-  //   let str = '';
-  //   str = image;
-  //   console.log(str);
-  //   console.log(image);
-  //   return this._sanitizer.bypassSecurityTrustStyle(`url(${str})`);
-  // }
+  onFocus(s: string) {
+    console.log(s);
+    this.search.setValue(s);
+  }
 
   Search(value: string): void {
     console.log('Value == ' + value);
-    this.error = false;
+    this.checkError.error = false;
     const display = this.service.accommodations.find(m => m.accId === +value);
     // const arr = this.search.value.split(', ');
     if (display) {
@@ -193,18 +194,21 @@ export class AccommodationComponent implements OnInit {
     // }
   }
 
+  LOG() {
+    console.log('Logging!!!');
+  }
+
   Find(search: FormControl): void {
 
     if (
       !this.search.invalid
-      // this.search && !this.search.value.startsWith(' ') && this.search.value.search(new RegExp('[0-9]', 'i'))
   ) {
       const arr = this.search.value + '';
       const str = ' sdfd';
-
+      let display = null;
       console.log(str.trim());
-      // search current result of searchString
-      const display =
+      if (!arr.includes(',')) {
+       display =
        this.result.find(m =>
          m.country.includes(arr.split(',')[0].trim()) && m.location.includes(arr.split(',')[1])) ?
          this.result.find(m =>
@@ -212,36 +216,34 @@ export class AccommodationComponent implements OnInit {
       this.result.find(m => m.country.includes(search.value.trim()) || m.location.includes(search.value.trim())) ?
       this.result.find(m => m.country.includes(search.value.trim()) || m.location.includes(search.value.trim())) :
       this.result[0]
-      ;
+      ; }
 
       console.log(display);
       this.serviceSearch.SearchParam = this.search;
 
       if (display) {
         console.log('Should redirect ' + display.accId.toString());
-        this.error = false;
+        this.checkError.error = false;
 
         this.serviceSearch.Search(this.dateForm, this.dateTo, this.panel, display);
         search.setValue(display.country + ', ' + display.location);
 
       } else {
-        // search.setErrors(Validators.pattern(''));
-        search.markAsUntouched();
-        this.errorMessage = 'Accommodation not yet available';
-        this.error = true;
-        console.log('Set error ' + this.error);
+        this.checkError.error = false;
+
+        this.serviceSearch.Search(this.dateForm, this.dateTo, this.panel, search);
       }
     } else if (search.untouched) {
       console.log('Untouched');
       search.markAsTouched();
-      this.errorMessage = 'Please fill in search.';
+      this.checkError.errorMessage = 'Please fill in search.';
     } else {
-      this.error = false;
+      this.checkError.error = false;
       const str = search.value + '';
 
       search.markAsPristine();
-      search.hasError('required') ? this.errorMessage = 'Please fill in search.' :
-      this.errorMessage = 'Input pattern invalid.';
+      search.hasError('required') ? this.checkError.errorMessage = 'Please fill in search.' :
+      this.checkError.errorMessage = 'Input pattern invalid.';
       console.log('hear');
     }
   }

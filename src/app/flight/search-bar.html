@@ -8,8 +8,8 @@
       <input matInput type="search" name="firstSearch" placeholder="Destination" [formControl]="firstSearch" [matAutocomplete]="auto"
         (keyup)="searchTerm$.next($event.target.value)">
 
-      <mat-autocomplete #auto="matAutocomplete">
-        <mat-option *ngFor="let result of result | slice:0:9" [value]="result.locale">
+      <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption>
+        <mat-option *ngFor="let result of result | slice:0:9" (mouseover)="onFocus(result.locale,1)" [value]="result.locale">
           {{ result.locale }}
         </mat-option>
       </mat-autocomplete>
@@ -29,8 +29,8 @@
 
       <input matInput type="search" name="secondSearch" placeholder="Return" [formControl]="secondSearch" [matAutocomplete]="auto2"
         (keyup)="searchTerm$2.next($event.target.value)">
-      <mat-autocomplete #auto2="matAutocomplete">
-        <mat-option *ngFor="let result of result2 | slice:0:9" [value]="result.dest">
+      <mat-autocomplete #auto2="matAutocomplete" autoActiveFirstOption>
+        <mat-option *ngFor="let result of result2 | slice:0:9" (mouseover)="onFocus(result.dest,2)" [value]="result.dest">
           {{ result.dest }}
         </mat-option>
       </mat-autocomplete>

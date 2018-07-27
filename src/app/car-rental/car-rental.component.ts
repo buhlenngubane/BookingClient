@@ -67,6 +67,11 @@ export class CarRentalComponent implements OnInit {
     }
   }
 
+  onFocus(s: string) {
+    console.log(s);
+    this.search.setValue(s);
+  }
+
   addEvent(type: string, event: MatDatepickerInputEvent<Date>) {
 
     if (this.dateTo.valueOf() < event.value.valueOf()) {

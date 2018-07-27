@@ -91,6 +91,7 @@ export class UsersService {
   price = [];
   priceDateFrom;
   priceDateTo;
+
   /**AirTaxi**/
   airTaxi: AirDetails;
   timeFrom: FormControl;
@@ -161,7 +162,7 @@ export class UsersService {
 
   /***User Function Calls***/
 
-  userRegister(customer: object, regRef: MatDialogRef<RegisterComponent>): boolean {
+  userRegister(customer, regRef: MatDialogRef<RegisterComponent>): boolean {
     this.user = new User(customer);
     // this.user.admin = false;
     console.log(this.user);
@@ -700,7 +701,10 @@ export class UsersService {
           );
           console.log(this.carRentalDtls);
 
-          this.route.navigate(['car-detail']);
+          this.route.navigate(['car-detail', {
+            search: search,
+            dateFrom: dateFrom, dateTo: dateTo, timeFrom: timeFrom, timeTo: timeTo}
+          ]);
 
           localStorage.setItem('info#3', JSON.stringify({
             search: search,
@@ -711,6 +715,7 @@ export class UsersService {
           console.error(error.message);
           const err = error.error;
           const emsg = err;
+          try {
           if (error.message.includes('404')) {
             console.log('In hear');
             load.errorMessage = 'Rental not available yet.';
@@ -724,6 +729,7 @@ export class UsersService {
             this.load.errorMessage = error.error;
             this.load.error = true;
           }
+        } catch (Err) {}
         },
         () => {
           console.log('Done.');

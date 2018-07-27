@@ -565,7 +565,7 @@ export class SearchService {
               // tslint:disable-next-line:prefer-const
               let exact;
               if (!this.route.isActive('/acc-detail', exact)) {
-                this.route.navigate(['/acc-detail']);
+                this.route.navigate(['/acc-detail', country + ', ' + location]);
               }
             } else {
               panel.setErrors({ 'roomsAvailable': true });
@@ -651,12 +651,13 @@ export class SearchService {
 
             /**Navigation has changed**/
             this.navigate.nav = true;
-            this.route.navigate(['/air-detail']);
+
             if (this.returnJourney) {
               const obj = {
                 pickUp: pickUp, dropOff: dropOff,
                 dateFrom: dateFrom, returnDate: dateTo, passengers: passengers
               };
+              this.route.navigate(['/air-detail', obj]);
               localStorage.setItem('info#4',
                 JSON.stringify(obj));
             } else {
@@ -664,6 +665,7 @@ export class SearchService {
                 pickUp: pickUp, dropOff: dropOff,
                 dateFrom: dateFrom, returnDate: null, passengers: passengers
               };
+              this.route.navigate(['/air-detail', obj]);
               localStorage.setItem('info#4',
                 JSON.stringify(obj));
             }

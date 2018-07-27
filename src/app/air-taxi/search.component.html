@@ -10,8 +10,8 @@
             <input matInput type="search" name="firstSearch" placeholder="From" 
             [formControl]="firstSearch" 
             [matAutocomplete]="auto" (keyup)="searchTerm$.next($event.target.value)" class="InputSearch">
-            <mat-autocomplete #auto="matAutocomplete">
-              <mat-option *ngFor="let result of result1" [value]="result.pickUp">
+            <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption>
+              <mat-option *ngFor="let result of result1" (mouseover)="onFocus(result.pickUp,1)" [value]="result.pickUp">
                 {{ result.pickUp }}
               </mat-option>
             </mat-autocomplete>
@@ -32,8 +32,8 @@
             [matAutocomplete]="auto2"  (keyup)="searchTerm$2.next($event.target.value)"
             class="InputSearch"
             >
-            <mat-autocomplete #auto2="matAutocomplete">
-              <mat-option *ngFor="let result of result2" [value]="result.dropOff">
+            <mat-autocomplete #auto2="matAutocomplete" autoActiveFirstOption>
+              <mat-option *ngFor="let result of result2" (mouseover)="onFocus(result.dropOff,2)" [value]="result.dropOff">
                 {{ result.dropOff }}
               </mat-option>
             </mat-autocomplete>
